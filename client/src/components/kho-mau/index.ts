@@ -1,0 +1,1 @@
+export { KhoCVMau } from './KhoCVMau';

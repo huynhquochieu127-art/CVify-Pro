@@ -1,0 +1,73 @@
+// server/prisma/schema.prisma
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model NguoiDung {
+  id            Int          @id @default(autoincrement())
+  email         String       @unique
+  mat_khau      String
+  ho_ten        String
+  vai_tro       String       @default("nguoi_dung")
+  ngay_tao      DateTime     @default(now())
+  ngay_cap_nhat DateTime     @updatedAt
+
+  ho_so_goc     HoSoGoc?
+  danh_sach_cv  DanhSachCv[]
+
+  @@map("nguoi_dung")
+}
+
+model MauCv {
+  id                 Int          @id @default(autoincrement())
+  ten_mau            String
+  anh_xem_truoc      String?
+  bo_cuc_mac_dinh    Json?
+  dinh_dang_mac_dinh Json?
+  dang_hoat_dong     Boolean      @default(true)
+
+  danh_sach_cv       DanhSachCv[]
+
+  @@map("mau_cv")
+}
+
+model HoSoGoc {
+  id                Int       @id @default(autoincrement())
+  ma_nguoi_dung     Int       @unique
+  anh_dai_dien      String?
+  thong_tin_ca_nhan Json?
+  kinh_nghiem       Json?
+  hoc_van           Json?
+  ky_nang           Json?
+  du_an             Json?
+  chung_chi         Json?
+
+  nguoi_dung        NguoiDung @relation(fields: [ma_nguoi_dung], references: [id], onDelete: Cascade)
+
+  @@map("ho_so_goc")
+}
+
+model DanhSachCv {
+  id            Int       @id @default(autoincrement())
+  ma_nguoi_dung Int
+  ma_mau        Int?
+  tieu_de_cv    String    @default("CV Chưa đặt tên")
+  ma_chia_se    String?   @unique
+  cong_khai     Boolean   @default(false)
+  thu_tu_khoi   Json?
+  noi_dung_cv   Json?
+  dinh_dang_cv  Json?
+  ngay_tao      DateTime  @default(now())
+  ngay_sua      DateTime  @updatedAt
+
+  nguoi_dung    NguoiDung @relation(fields: [ma_nguoi_dung], references: [id], onDelete: Cascade)
+  mau_cv        MauCv?    @relation(fields: [ma_mau], references: [id], onDelete: SetNull)
+
+  @@map("danh_sach_cv")
+}
