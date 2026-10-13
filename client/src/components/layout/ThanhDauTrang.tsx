@@ -66,7 +66,7 @@ export const ThanhDauTrang: React.FC<ThanhDauTrangProps> = ({
   return (
     <>
       <header
-        className={`sticky top-0 z-30 bg-white border-b border-slate-200 shadow-2xs transition-all ${
+        className={`sticky top-0 z-30 bg-white border-b border-[#d9deeb] transition-all ${
           coTaskbar ? 'pl-18' : ''
         }`}
       >
@@ -76,11 +76,11 @@ export const ThanhDauTrang: React.FC<ThanhDauTrangProps> = ({
             onClick={onVeTrangChu}
             className="flex items-center gap-2 cursor-pointer group"
           >
-            <div className="w-8 h-8 rounded-md bg-[#0a66c2] text-white flex items-center justify-center font-black text-sm shadow-xs group-hover:scale-105 transition">
+            <div className="w-8 h-8 rounded-lg bg-[#1a91f0] text-white flex items-center justify-center font-bold text-sm shadow-xs group-hover:scale-105 transition">
               CV
             </div>
-            <span className="font-extrabold text-base tracking-tight text-slate-900 group-hover:text-[#0a66c2] transition">
-              CVify <span className="text-[#0a66c2]">Pro</span>
+            <span className="font-extrabold text-base tracking-tight text-[#0f141e] group-hover:text-[#1a91f0] transition">
+              CVify <span className="text-[#1a91f0]">Pro</span>
             </span>
           </div>
 
@@ -92,7 +92,7 @@ export const ThanhDauTrang: React.FC<ThanhDauTrangProps> = ({
                 <button
                   type="button"
                   onClick={onMoDangNhap}
-                  className="text-xs font-semibold text-slate-700 hover:text-[#0a66c2] px-3.5 py-1.5 rounded-full hover:bg-slate-100 transition cursor-pointer"
+                  className="text-xs font-medium text-[#1e2532] hover:text-[#1a91f0] px-3.5 py-1.5 rounded-full hover:bg-[#f7f9fc] transition cursor-pointer"
                 >
                   Đăng Nhập
                 </button>
@@ -100,7 +100,7 @@ export const ThanhDauTrang: React.FC<ThanhDauTrangProps> = ({
                 <button
                   type="button"
                   onClick={onMoDangKy}
-                  className="text-xs font-bold text-[#0a66c2] border border-[#0a66c2] hover:bg-blue-50/70 px-4 py-1.5 rounded-full transition active:scale-95 cursor-pointer shadow-2xs"
+                  className="text-xs font-medium text-white bg-[#1a91f0] hover:bg-[#016fd0] px-4 py-1.5 rounded-full transition active:scale-95 cursor-pointer shadow-xs"
                 >
                   Đăng Ký
                 </button>
@@ -122,10 +122,10 @@ export const ThanhDauTrang: React.FC<ThanhDauTrangProps> = ({
                       alt={nguoiDung.ten}
                       referrerPolicy="no-referrer"
                       onError={() => setLoiAnhAvatar(true)}
-                      className="w-8 h-8 rounded-full object-cover border-2 border-[#0a66c2]"
+                      className="w-8 h-8 rounded-full object-cover border-2 border-[#1a91f0]"
                     />
                   ) : (
-                    <div className="w-8 h-8 rounded-full bg-[#0a66c2] text-white flex items-center justify-center font-bold text-xs border-2 border-white shadow-xs">
+                    <div className="w-8 h-8 rounded-full bg-[#1a91f0] text-white flex items-center justify-center font-bold text-xs border-2 border-white shadow-xs">
                       {chuCaiDau}
                     </div>
                   )}
@@ -138,7 +138,7 @@ export const ThanhDauTrang: React.FC<ThanhDauTrangProps> = ({
                   <ChevronDown
                     size={14}
                     className={`text-slate-400 transition-transform duration-200 ${
-                      moDropdown ? 'rotate-180 text-[#0a66c2]' : ''
+                      moDropdown ? 'rotate-180 text-[#1a91f0]' : ''
                     }`}
                   />
                 </button>
@@ -157,7 +157,7 @@ export const ThanhDauTrang: React.FC<ThanhDauTrangProps> = ({
                           className="w-10 h-10 rounded-full object-cover border border-blue-200 shrink-0"
                         />
                       ) : (
-                        <div className="w-10 h-10 rounded-full bg-blue-50 text-[#0a66c2] flex items-center justify-center font-bold text-sm border border-blue-200 shrink-0">
+                        <div className="w-10 h-10 rounded-full bg-blue-50 text-[#1a91f0] flex items-center justify-center font-bold text-sm border border-blue-200 shrink-0">
                           {chuCaiDau}
                         </div>
                       )}
@@ -180,7 +180,7 @@ export const ThanhDauTrang: React.FC<ThanhDauTrangProps> = ({
                           setMoDropdown(false);
                           setMoModalThongTin(true);
                         }}
-                        className="w-full flex items-center gap-2.5 px-3 py-2 text-slate-700 hover:text-[#0a66c2] hover:bg-slate-50 rounded-xl transition cursor-pointer font-medium"
+                        className="w-full flex items-center gap-2.5 px-3 py-2 text-slate-700 hover:text-[#1a91f0] hover:bg-slate-50 rounded-xl transition cursor-pointer font-medium"
                       >
                         <User size={15} className="text-slate-500" />
                         <span>Thông tin tài khoản</span>
@@ -220,7 +220,7 @@ export const ThanhDauTrang: React.FC<ThanhDauTrangProps> = ({
             </button>
 
             <div className="text-center mb-5">
-              <div className="w-16 h-16 rounded-full bg-[#0a66c2] text-white font-extrabold text-xl flex items-center justify-center mx-auto mb-3 shadow-md">
+              <div className="w-16 h-16 rounded-full bg-[#1a91f0] text-white font-extrabold text-xl flex items-center justify-center mx-auto mb-3 shadow-md">
                 {chuCaiDau}
               </div>
               <h3 className="text-base font-bold text-slate-900">{nguoiDung.ten}</h3>

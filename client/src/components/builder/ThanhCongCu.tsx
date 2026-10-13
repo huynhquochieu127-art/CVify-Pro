@@ -15,12 +15,12 @@ import { useKhoLuuTruCV } from '../../store';
 
 // Danh sách các bảng màu CV chuyên nghiệp chuẩn ATS
 const DANH_SACH_MAU = [
-  { ten: 'Xanh LinkedIn', maMau: '#0a66c2' },
+  { ten: 'Xanh Tín Hiệu (Resume.io)', maMau: '#1a91f0' },
   { ten: 'Xanh Đậm', maMau: '#1e40af' },
   { ten: 'Xanh Ngọc', maMau: '#0d9488' },
-  { ten: 'Tím Hiện Đại', maMau: '#7c3aed' },
+  { ten: 'Tím Iris', maMau: '#5660e8' },
   { ten: 'Đỏ Mận', maMau: '#e11d48' },
-  { ten: 'Xám Tối Giản', maMau: '#334155' },
+  { ten: 'Mực Đen', maMau: '#1e2532' },
 ];
 
 export interface ThanhCongCuProps {
@@ -112,14 +112,14 @@ export const ThanhCongCu: React.FC<ThanhCongCuProps> = ({
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 sm:px-6 py-2.5 shadow-xs print:hidden">
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#d9deeb] px-4 sm:px-6 py-2.5 shadow-xs print:hidden">
       <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
         {/* Nút quay về Quản lý CV / Trang chủ & Tiêu đề CV */}
         <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={handleQuayLai}
-            className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 hover:text-[#0a66c2] bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-xl border border-slate-200 transition active:scale-95 cursor-pointer shrink-0"
+            className="flex items-center gap-1.5 text-xs font-semibold text-[#1e2532] hover:text-[#1a91f0] bg-[#f7f9fc] hover:bg-[#e7eaf4] px-3.5 py-2 rounded-full border border-[#d9deeb] transition active:scale-95 cursor-pointer shrink-0"
             title={tieuDeQuayLai}
           >
             <ArrowLeft size={15} />
@@ -127,25 +127,25 @@ export const ThanhCongCu: React.FC<ThanhCongCuProps> = ({
           </button>
 
           {/* Ô sửa tên bản CV trực tiếp */}
-          <div className="hidden sm:flex items-center gap-2 pl-3 border-l border-slate-200">
+          <div className="hidden sm:flex items-center gap-2 pl-3 border-l border-[#d9deeb]">
             <div className="relative flex items-center group">
               <input
                 type="text"
                 value={tieuDeCVHienTai}
                 onChange={(e) => datTieuDeCV(e.target.value)}
                 placeholder="Nhập tên bản CV..."
-                className="text-xs font-bold text-slate-800 bg-transparent hover:bg-slate-50 focus:bg-white border border-transparent hover:border-slate-300 focus:border-[#0a66c2] rounded-lg px-2 py-1 focus:outline-none transition max-w-[200px] truncate"
+                className="text-xs font-bold text-[#0f141e] bg-transparent hover:bg-[#f7f9fc] focus:bg-white border border-transparent hover:border-[#d9deeb] focus:border-[#1a91f0] rounded-lg px-2.5 py-1 focus:outline-none transition max-w-[200px] truncate"
                 title="Nhấn để đổi tên CV"
               />
-              <Edit2 size={12} className="text-slate-400 opacity-0 group-hover:opacity-100 transition -ml-5 pointer-events-none" />
+              <Edit2 size={12} className="text-[#828ba2] opacity-0 group-hover:opacity-100 transition -ml-5 pointer-events-none" />
             </div>
           </div>
         </div>
 
         {/* Thanh chọn màu chủ đạo */}
-        <div className="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
-          <Palette size={14} className="text-slate-500" />
-          <span className="text-xs font-medium text-slate-600 hidden md:inline">
+        <div className="flex items-center gap-2 bg-[#f7f9fc] px-3.5 py-1.5 rounded-full border border-[#d9deeb]">
+          <Palette size={14} className="text-[#656e83]" />
+          <span className="text-xs font-medium text-[#656e83] hidden md:inline">
             Màu chủ đạo:
           </span>
           <div className="flex items-center gap-1.5">
@@ -156,7 +156,7 @@ export const ThanhCongCu: React.FC<ThanhCongCuProps> = ({
                 title={m.ten}
                 className={`w-4.5 h-4.5 rounded-full transition-transform cursor-pointer ${
                   dinhDang.mauChuDao === m.maMau
-                    ? 'scale-125 ring-2 ring-offset-2 ring-slate-400'
+                    ? 'scale-125 ring-2 ring-offset-2 ring-[#1a91f0]'
                     : 'hover:scale-110'
                 }`}
                 style={{ backgroundColor: m.maMau }}
@@ -172,7 +172,7 @@ export const ThanhCongCu: React.FC<ThanhCongCuProps> = ({
             type="button"
             onClick={handleLuuCV}
             disabled={dangLuu}
-            className={`flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-xl shadow-xs transition active:scale-95 cursor-pointer ${
+            className={`flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-full shadow-xs transition active:scale-95 cursor-pointer ${
               thongBaoLuu
                 ? 'bg-emerald-600 text-white'
                 : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-300'
@@ -196,11 +196,11 @@ export const ThanhCongCu: React.FC<ThanhCongCuProps> = ({
             )}
           </button>
 
-          {/* Nút In ấn / Xuất PDF */}
+          {/* Nút In ấn / Xuất PDF (Resume.io Primary Pill CTA) */}
           <button
             type="button"
             onClick={handleInPDF}
-            className="flex items-center gap-1.5 bg-[#0a66c2] hover:bg-[#004182] text-white text-xs font-semibold px-3.5 py-2 rounded-xl shadow-xs transition active:scale-95 cursor-pointer"
+            className="flex items-center gap-1.5 bg-[#1a91f0] hover:bg-[#016fd0] text-white text-xs font-medium px-4 py-2 rounded-full shadow-xs transition active:scale-95 cursor-pointer"
           >
             <Printer size={14} />
             <span>Tải / In PDF</span>

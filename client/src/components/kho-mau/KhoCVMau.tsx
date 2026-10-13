@@ -17,9 +17,9 @@ const DANH_SACH_MAU_CV = [
     ten: 'Mẫu Hiện Đại (Modern ATS)',
     phanLoai: 'IT & Kỹ Thuật',
     tag: 'Phổ biến nhất',
-    tagMau: 'bg-[#0a66c2] text-white',
+    tagMau: 'bg-[#1a91f0] text-white',
     moTa: 'Tối ưu đặc biệt cho ngành Công nghệ thông tin, Lập trình viên, UI/UX Designer với bố cục kỹ năng & kinh nghiệm rõ ràng.',
-    mauChuDao: '#0a66c2',
+    mauChuDao: '#1a91f0',
     soCot: '2 Cột',
   },
   {
@@ -60,7 +60,7 @@ export const KhoCVMau: React.FC<KhoCVMauProps> = ({ onChuyenTrinhThietKe }) => {
       {/* Header Kho Mẫu */}
       <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-bold text-[#0a66c2] uppercase tracking-wider bg-blue-50 px-3 py-1 rounded-full border border-blue-200/60 inline-flex items-center gap-1.5 mb-2">
+          <span className="text-xs font-bold text-[#1a91f0] uppercase tracking-wider bg-blue-50 px-3 py-1 rounded-full border border-blue-200/60 inline-flex items-center gap-1.5 mb-2">
             <LayoutTemplate size={13} />
             Kho Template Chuẩn Tuyển Dụng
           </span>
@@ -75,7 +75,7 @@ export const KhoCVMau: React.FC<KhoCVMauProps> = ({ onChuyenTrinhThietKe }) => {
         <button
           type="button"
           onClick={() => onChuyenTrinhThietKe()}
-          className="px-4 py-2.5 bg-[#0a66c2] hover:bg-[#004182] text-white font-bold text-xs rounded-xl shadow-xs transition active:scale-95 cursor-pointer flex items-center justify-center gap-2 shrink-0"
+          className="px-4 py-2.5 bg-[#1a91f0] hover:bg-[#004182] text-white font-bold text-xs rounded-xl shadow-xs transition active:scale-95 cursor-pointer flex items-center justify-center gap-2 shrink-0"
         >
           <Sparkles size={15} />
           <span>Tạo CV Mới Ngay</span>
@@ -87,7 +87,7 @@ export const KhoCVMau: React.FC<KhoCVMauProps> = ({ onChuyenTrinhThietKe }) => {
         {DANH_SACH_MAU_CV.map((mau) => (
           <div
             key={mau.id}
-            className="bg-white rounded-xl border border-slate-200/90 overflow-hidden shadow-xs hover:shadow-md hover:border-[#0a66c2]/40 transition-all duration-300 flex flex-col justify-between group"
+            className="bg-white rounded-xl border border-slate-200/90 overflow-hidden shadow-xs hover:shadow-md hover:border-[#1a91f0]/40 transition-all duration-300 flex flex-col justify-between group"
           >
             <div>
               {/* Khung mô phỏng tờ CV thu nhỏ */}
@@ -131,7 +131,7 @@ export const KhoCVMau: React.FC<KhoCVMauProps> = ({ onChuyenTrinhThietKe }) => {
                     {mau.soCot}
                   </span>
                 </div>
-                <p className="text-[11px] font-medium text-[#0a66c2] mb-1.5">
+                <p className="text-[11px] font-medium text-[#1a91f0] mb-1.5">
                   {mau.phanLoai}
                 </p>
                 <p className="text-xs text-slate-500 leading-relaxed line-clamp-3">
@@ -145,7 +145,7 @@ export const KhoCVMau: React.FC<KhoCVMauProps> = ({ onChuyenTrinhThietKe }) => {
               <button
                 type="button"
                 onClick={() => onChuyenTrinhThietKe(mau.id)}
-                className="w-full flex items-center justify-center gap-1.5 bg-[#0a66c2] hover:bg-[#004182] text-white font-bold text-xs py-2 rounded-lg transition active:scale-98 cursor-pointer shadow-2xs"
+                className="w-full flex items-center justify-center gap-1.5 bg-[#1a91f0] hover:bg-[#004182] text-white font-bold text-xs py-2 rounded-lg transition active:scale-98 cursor-pointer shadow-2xs"
               >
                 <span>Dùng Mẫu Này</span>
                 <ChevronRight size={14} />

@@ -6,53 +6,94 @@
 @import "tailwindcss";
 
 /* ============================================================
-   DESIGN TOKENS — CSS Custom Properties
+   DESIGN TOKENS — CSS Custom Properties (Resume.io Style)
    ============================================================ */
 :root {
-  /* Brand */
-  --brand: #0a66c2;
-  --brand-dark: #004182;
-  --brand-light: #e8f0fe;
+  /* Resume.io Palette Tokens */
+  --color-ink: #1e2532;
+  --color-carbon: #0f141e;
+  --color-pencil: #656e83;
+  --color-fog: #828ba2;
+  --color-haze: #9fa6bb;
+  --color-paper: #ffffff;
+  --color-mist: #f7f9fc;
+  --color-lavender-wash: #f1f2ff;
+  --color-chalk: #d9deeb;
+  --color-ash: #e7eaf4;
+  --color-signal-blue: #1a91f0;
+  --color-deep-signal: #016fd0;
+  --color-iris: #5660e8;
+  --color-midnight: #1a1c6a;
+  --color-mint-whisper: #e7f4ed;
+  --color-blush-whisper: #ffebe4;
+  --color-rose-whisper: #edd7df;
+
+  /* Mapped Brand Variables */
+  --brand: #1a91f0;
+  --brand-dark: #016fd0;
+  --brand-light: #f1f2ff;
 
   /* Surface / Background */
-  --bg: #f8fafc;
+  --bg: #ffffff;
   --surface: #ffffff;
-  --surface-2: #f1f5f9;
-  --border: #e2e8f0;
-  --border-strong: #cbd5e1;
+  --surface-2: #f7f9fc;
+  --border: #d9deeb;
+  --border-strong: #9fa6bb;
 
   /* Text */
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
+  --text-primary: #1e2532;
+  --text-secondary: #656e83;
+  --text-muted: #828ba2;
 
   /* Accent */
   --success: #10b981;
   --warning: #f59e0b;
   --error: #ef4444;
-  --purple: #7c3aed;
+  --purple: #5660e8;
 
-  /* Shadows */
-  --shadow-xs: 0 1px 2px rgba(0,0,0,0.05);
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
-  --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
-  --shadow-lg: 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
-  --shadow-xl: 0 20px 25px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.04);
-  --glow-blue: 0 0 30px rgba(10,102,194,0.25);
-  --glow-purple: 0 0 30px rgba(124,58,237,0.25);
+  /* Flat worksheet subtle elevations */
+  --shadow-xs: 0 1px 2px rgba(30, 37, 50, 0.03);
+  --shadow-sm: 0 1px 3px rgba(30, 37, 50, 0.05);
+  --shadow-md: 0 4px 12px rgba(30, 37, 50, 0.05);
+  --shadow-lg: 0 8px 24px rgba(30, 37, 50, 0.06);
+  --shadow-xl: 0 12px 32px rgba(30, 37, 50, 0.08);
 
   /* Radius */
-  --r-sm: 6px;
-  --r-md: 10px;
+  --r-sm: 4px;
+  --r-md: 8px;
   --r-lg: 16px;
-  --r-xl: 24px;
+  --r-xl: 20px;
+  --r-btn: 36px;
   --r-full: 9999px;
 
   /* Transitions */
   --t-fast: 150ms cubic-bezier(0.4,0,0.2,1);
-  --t-base: 250ms cubic-bezier(0.4,0,0.2,1);
-  --t-slow: 400ms cubic-bezier(0.4,0,0.2,1);
+  --t-base: 200ms cubic-bezier(0.4,0,0.2,1);
+  --t-slow: 350ms cubic-bezier(0.4,0,0.2,1);
   --t-spring: 300ms cubic-bezier(0.34,1.56,0.64,1);
+}
+
+@theme {
+  --color-ink: #1e2532;
+  --color-carbon: #0f141e;
+  --color-pencil: #656e83;
+  --color-fog: #828ba2;
+  --color-haze: #9fa6bb;
+  --color-paper: #ffffff;
+  --color-mist: #f7f9fc;
+  --color-lavender-wash: #f1f2ff;
+  --color-chalk: #d9deeb;
+  --color-ash: #e7eaf4;
+  --color-signal-blue: #1a91f0;
+  --color-deep-signal: #016fd0;
+  --color-iris: #5660e8;
+  --color-midnight: #1a1c6a;
+  --color-mint-whisper: #e7f4ed;
+  --color-blush-whisper: #ffebe4;
+  --color-rose-whisper: #edd7df;
+
+  --radius-cards: 16px;
+  --radius-buttons: 36px;
 }
 
 /* ============================================================
@@ -65,37 +106,57 @@ html { scroll-behavior: smooth; }
 body {
   margin: 0;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  background-color: #f4f2ee;
-  color: var(--text-primary);
+  background-color: #ffffff;
+  color: var(--color-ink);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 /* ============================================================
-   UTILITY CLASSES
+   UTILITY CLASSES (Flat Worksheet — Resume.io Style)
    ============================================================ */
+
+/* Button and Card utilities */
+.btn-primary-pill {
+  background-color: var(--color-signal-blue);
+  color: #ffffff;
+  border-radius: 36px;
+  font-weight: 500;
+  padding: 10px 24px;
+  transition: background-color var(--t-base), transform var(--t-fast);
+}
+.btn-primary-pill:hover {
+  background-color: var(--color-deep-signal);
+}
+
+.card-worksheet {
+  background-color: var(--color-paper);
+  border: 1px solid var(--color-chalk);
+  border-radius: 16px;
+  transition: border-color var(--t-base);
+}
 
 /* Glass morphism */
 .glass {
-  background: rgba(255,255,255,0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 .glass-dark {
-  background: rgba(15,23,42,0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(15,20,30,0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
 /* Gradient text */
 .text-gradient {
-  background: linear-gradient(135deg, #0a66c2, #7c3aed);
+  background: linear-gradient(135deg, #1a91f0, #5660e8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 .text-gradient-green {
-  background: linear-gradient(135deg, #059669, #0a66c2);
+  background: linear-gradient(135deg, #10b981, #1a91f0);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -192,8 +253,8 @@ body {
 .animate-fade-in { animation: fadeIn 0.35s ease-out forwards; }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(10,102,194,0.4); }
-  50%       { box-shadow: 0 0 0 8px rgba(10,102,194,0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(26,145,240,0.4); }
+  50%       { box-shadow: 0 0 0 8px rgba(26,145,240,0); }
 }
 .pulse-glow { animation: pulse-glow 2s infinite; }
 
@@ -232,10 +293,10 @@ body {
    ============================================================ */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+::-webkit-scrollbar-thumb { background: #d9deeb; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #9fa6bb; }
 
 /* ============================================================
    SELECTION
    ============================================================ */
-::selection { background: #0a66c2; color: white; }
+::selection { background: #1a91f0; color: white; }

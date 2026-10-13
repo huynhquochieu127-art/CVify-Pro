@@ -110,7 +110,7 @@ export const TrinhThietKeCV: React.FC = () => {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <div className="flex-1 flex flex-col lg:flex-row min-h-[calc(100vh-53px)] bg-slate-100/70 overflow-hidden">
+      <div className="flex-1 flex flex-col lg:flex-row min-h-[calc(100vh-53px)] bg-[#f7f9fc] overflow-hidden">
         {/* =================================================================== */}
         {/* CỘT TRÁI: SIDEBAR DANH SÁCH KHỐI & UPLOAD AVATAR                    */}
         {/* =================================================================== */}
@@ -127,8 +127,8 @@ export const TrinhThietKeCV: React.FC = () => {
       {/* Hiệu ứng kéo thả mượt mà với DragOverlay */}
       <DragOverlay>
         {activeKhoi ? (
-          <div className="flex items-center gap-2.5 p-3 rounded-xl bg-white border-2 border-[#0a66c2] shadow-2xl scale-105 opacity-90 cursor-grabbing min-w-[240px]">
-            <GripVertical size={16} className="text-[#0a66c2]" />
+          <div className="flex items-center gap-2.5 p-3 rounded-xl bg-white border-2 border-[#1a91f0] shadow-2xl scale-105 opacity-90 cursor-grabbing min-w-[240px]">
+            <GripVertical size={16} className="text-[#1a91f0]" />
             <span
               className="p-1.5 rounded-lg text-white"
               style={{ backgroundColor: cv.dinhDang.mauChuDao }}
@@ -136,8 +136,8 @@ export const TrinhThietKeCV: React.FC = () => {
               {React.createElement(activeKhoi.icon, { size: 15 })}
             </span>
             <div>
-              <p className="text-xs font-bold text-slate-900">{activeKhoi.ten}</p>
-              <p className="text-[10px] text-slate-500">Đang kéo vào tờ A4...</p>
+              <p className="text-xs font-bold text-[#0f141e]">{activeKhoi.ten}</p>
+              <p className="text-[10px] text-[#828ba2]">Đang kéo vào tờ A4...</p>
             </div>
           </div>
         ) : null}

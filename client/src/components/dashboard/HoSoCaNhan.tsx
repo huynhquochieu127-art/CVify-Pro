@@ -119,7 +119,7 @@ export const HoSoCaNhan: React.FC<HoSoCaNhanProps> = ({ nguoiDung, onChuyenTrinh
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs mb-6">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="p-2 rounded-xl bg-blue-50 text-[#0a66c2]">
+            <span className="p-2 rounded-xl bg-blue-50 text-[#1a91f0]">
               <UserCheck size={22} />
             </span>
             <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
@@ -135,7 +135,7 @@ export const HoSoCaNhan: React.FC<HoSoCaNhanProps> = ({ nguoiDung, onChuyenTrinh
           <button
             type="button"
             onClick={handleLuuHoSo}
-            className="flex items-center gap-2 bg-[#0a66c2] hover:bg-[#004182] text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl shadow-xs transition active:scale-95 cursor-pointer"
+            className="flex items-center gap-2 bg-[#1a91f0] hover:bg-[#004182] text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl shadow-xs transition active:scale-95 cursor-pointer"
           >
             <Save size={16} />
             <span>Lưu Hồ Sơ</span>
@@ -145,7 +145,7 @@ export const HoSoCaNhan: React.FC<HoSoCaNhanProps> = ({ nguoiDung, onChuyenTrinh
             <button
               type="button"
               onClick={onChuyenTrinhThietKe}
-              className="flex items-center gap-1.5 text-xs font-bold text-[#0a66c2] bg-blue-50 hover:bg-blue-100 px-3.5 py-2.5 rounded-xl transition cursor-pointer"
+              className="flex items-center gap-1.5 text-xs font-bold text-[#1a91f0] bg-blue-50 hover:bg-blue-100 px-3.5 py-2.5 rounded-xl transition cursor-pointer"
             >
               <Sparkles size={15} />
               <span>Tạo CV Từ Hồ Sơ</span>
@@ -185,7 +185,7 @@ export const HoSoCaNhan: React.FC<HoSoCaNhanProps> = ({ nguoiDung, onChuyenTrinh
         {/* Khối 1: Thông tin cơ bản */}
         <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-2xs">
           <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2 mb-4 pb-2 border-b border-slate-100">
-            <User size={16} className="text-[#0a66c2]" />
+            <User size={16} className="text-[#1a91f0]" />
             <span>Thông Tin Liên Hệ Cơ Bản</span>
           </h2>
 
@@ -199,7 +199,7 @@ export const HoSoCaNhan: React.FC<HoSoCaNhanProps> = ({ nguoiDung, onChuyenTrinh
                 value={hoTen}
                 onChange={(e) => setHoTen(e.target.value)}
                 placeholder="VD: Nguyễn Văn A"
-                className="w-full text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0a66c2]/20 focus:border-[#0a66c2] transition"
+                className="w-full text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1a91f0]/20 focus:border-[#1a91f0] transition"
               />
             </div>
 
@@ -212,7 +212,7 @@ export const HoSoCaNhan: React.FC<HoSoCaNhanProps> = ({ nguoiDung, onChuyenTrinh
                 value={chucVu}
                 onChange={(e) => setChucVu(e.target.value)}
                 placeholder="VD: Nhân viên Kinh doanh, Lập trình viên..."
-                className="w-full text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0a66c2]/20 focus:border-[#0a66c2] transition"
+                className="w-full text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1a91f0]/20 focus:border-[#1a91f0] transition"
               />
             </div>
 
@@ -225,7 +225,7 @@ export const HoSoCaNhan: React.FC<HoSoCaNhanProps> = ({ nguoiDung, onChuyenTrinh
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="email@example.com"
-                className="w-full text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0a66c2]/20 focus:border-[#0a66c2] transition"
+                className="w-full text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1a91f0]/20 focus:border-[#1a91f0] transition"
               />
             </div>
 
@@ -238,7 +238,7 @@ export const HoSoCaNhan: React.FC<HoSoCaNhanProps> = ({ nguoiDung, onChuyenTrinh
                 value={soDienThoai}
                 onChange={(e) => setSoDienThoai(e.target.value)}
                 placeholder="VD: 0912 345 678"
-                className="w-full text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0a66c2]/20 focus:border-[#0a66c2] transition"
+                className="w-full text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1a91f0]/20 focus:border-[#1a91f0] transition"
               />
             </div>
 
@@ -251,7 +251,7 @@ export const HoSoCaNhan: React.FC<HoSoCaNhanProps> = ({ nguoiDung, onChuyenTrinh
                 value={diaChi}
                 onChange={(e) => setDiaChi(e.target.value)}
                 placeholder="VD: Quận 1, TP. Hồ Chí Minh"
-                className="w-full text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0a66c2]/20 focus:border-[#0a66c2] transition"
+                className="w-full text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1a91f0]/20 focus:border-[#1a91f0] transition"
               />
             </div>
 
@@ -264,7 +264,7 @@ export const HoSoCaNhan: React.FC<HoSoCaNhanProps> = ({ nguoiDung, onChuyenTrinh
                 value={website}
                 onChange={(e) => setWebsite(e.target.value)}
                 placeholder="VD: linkedin.com/in/ten-ban hoặc github.com/..."
-                className="w-full text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0a66c2]/20 focus:border-[#0a66c2] transition"
+                className="w-full text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1a91f0]/20 focus:border-[#1a91f0] transition"
               />
             </div>
           </div>
@@ -278,7 +278,7 @@ export const HoSoCaNhan: React.FC<HoSoCaNhanProps> = ({ nguoiDung, onChuyenTrinh
               onChange={(e) => setBio(e.target.value)}
               rows={3}
               placeholder="Mô tả ngắn gọn về bản thân, mục tiêu nghề nghiệp..."
-              className="w-full text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0a66c2]/20 focus:border-[#0a66c2] transition resize-none leading-relaxed"
+              className="w-full text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1a91f0]/20 focus:border-[#1a91f0] transition resize-none leading-relaxed"
             />
           </div>
         </div>
@@ -287,14 +287,14 @@ export const HoSoCaNhan: React.FC<HoSoCaNhanProps> = ({ nguoiDung, onChuyenTrinh
         <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-2xs">
           <div className="flex items-center justify-between pb-2 mb-4 border-b border-slate-100">
             <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-              <Briefcase size={16} className="text-[#0a66c2]" />
+              <Briefcase size={16} className="text-[#1a91f0]" />
               <span>Kinh Nghiệm Làm Việc</span>
             </h2>
 
             <button
               type="button"
               onClick={handleThemKinhNghiem}
-              className="flex items-center gap-1 text-xs font-bold text-[#0a66c2] hover:text-[#004182] bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition cursor-pointer"
+              className="flex items-center gap-1 text-xs font-bold text-[#1a91f0] hover:text-[#004182] bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition cursor-pointer"
             >
               <Plus size={14} />
               <span>Thêm Kinh Nghiệm</span>
@@ -308,7 +308,7 @@ export const HoSoCaNhan: React.FC<HoSoCaNhanProps> = ({ nguoiDung, onChuyenTrinh
                 <button
                   type="button"
                   onClick={handleThemKinhNghiem}
-                  className="text-xs font-bold text-[#0a66c2] hover:text-[#004182] bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition cursor-pointer"
+                  className="text-xs font-bold text-[#1a91f0] hover:text-[#004182] bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition cursor-pointer"
                 >
                   Thêm kinh nghiệm đầu tiên
                 </button>
@@ -343,7 +343,7 @@ export const HoSoCaNhan: React.FC<HoSoCaNhanProps> = ({ nguoiDung, onChuyenTrinh
                           );
                         }}
                         placeholder="VD: Nhân viên Kinh doanh, Lập trình viên..."
-                        className="w-full text-xs p-2 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-[#0a66c2]"
+                        className="w-full text-xs p-2 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-[#1a91f0]"
                       />
                     </div>
                     <div>
@@ -360,7 +360,7 @@ export const HoSoCaNhan: React.FC<HoSoCaNhanProps> = ({ nguoiDung, onChuyenTrinh
                           );
                         }}
                         placeholder="VD: Công ty TNHH ABC (2022 - Hiện tại)"
-                        className="w-full text-xs p-2 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-[#0a66c2]"
+                        className="w-full text-xs p-2 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-[#1a91f0]"
                       />
                     </div>
                   </div>
@@ -379,7 +379,7 @@ export const HoSoCaNhan: React.FC<HoSoCaNhanProps> = ({ nguoiDung, onChuyenTrinh
                       }}
                       placeholder="Mô tả tóm tắt nhiệm vụ và thành tựu nổi bật..."
                       rows={2}
-                      className="w-full text-xs p-2 bg-white border border-slate-200 rounded-lg resize-none focus:outline-none focus:border-[#0a66c2]"
+                      className="w-full text-xs p-2 bg-white border border-slate-200 rounded-lg resize-none focus:outline-none focus:border-[#1a91f0]"
                     />
                   </div>
                 </div>
@@ -391,7 +391,7 @@ export const HoSoCaNhan: React.FC<HoSoCaNhanProps> = ({ nguoiDung, onChuyenTrinh
         {/* Khối 3: Kỹ năng chuyên môn */}
         <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-2xs">
           <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2 mb-4 pb-2 border-b border-slate-100">
-            <Award size={16} className="text-[#0a66c2]" />
+            <Award size={16} className="text-[#1a91f0]" />
             <span>Kỹ Năng Nổi Bật</span>
           </h2>
 
@@ -402,7 +402,7 @@ export const HoSoCaNhan: React.FC<HoSoCaNhanProps> = ({ nguoiDung, onChuyenTrinh
               kyNang.map((k) => (
                 <span
                   key={k}
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 bg-blue-50 text-[#0a66c2] rounded-full text-xs font-semibold border border-blue-200"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 bg-blue-50 text-[#1a91f0] rounded-full text-xs font-semibold border border-blue-200"
                 >
                   <span>{k}</span>
                   <button
@@ -423,11 +423,11 @@ export const HoSoCaNhan: React.FC<HoSoCaNhanProps> = ({ nguoiDung, onChuyenTrinh
               value={kyNangMoi}
               onChange={(e) => setKyNangMoi(e.target.value)}
               placeholder="VD: Giao tiếp, Tiếng Anh, React, Photoshop..."
-              className="flex-1 text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-[#0a66c2]"
+              className="flex-1 text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-[#1a91f0]"
             />
             <button
               type="submit"
-              className="px-4 py-2.5 bg-[#0a66c2] hover:bg-[#004182] text-white text-xs font-bold rounded-xl transition cursor-pointer"
+              className="px-4 py-2.5 bg-[#1a91f0] hover:bg-[#004182] text-white text-xs font-bold rounded-xl transition cursor-pointer"
             >
               Thêm
             </button>

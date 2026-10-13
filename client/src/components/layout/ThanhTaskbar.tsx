@@ -91,7 +91,7 @@ export const ThanhTaskbar: React.FC<ThanhTaskbarProps> = ({
         width: dangMoRong ? '240px' : '70px',
         transition: 'width 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
       }}
-      className="fixed left-0 top-0 h-screen bg-white border-r border-slate-200 z-50 overflow-hidden shadow-sm hover:shadow-2xl flex flex-col justify-between py-4 select-none"
+      className="fixed left-0 top-0 h-screen bg-white border-r border-[#d9deeb] z-50 overflow-hidden shadow-xs hover:shadow-xl flex flex-col justify-between py-4 select-none"
     >
       {/* ============================================================== */}
       {/* 1. PHẦN TRÊN: LOGO & CÁC NÚT ĐIỀU HƯỚNG                        */}
@@ -103,15 +103,15 @@ export const ThanhTaskbar: React.FC<ThanhTaskbarProps> = ({
           className="flex items-center gap-3 px-3 cursor-pointer"
           title="Về Trang Chủ"
         >
-          <div className="w-11 h-11 rounded-xl bg-[#0a66c2] text-white flex items-center justify-center font-black text-sm shadow-sm shrink-0">
+          <div className="w-11 h-11 rounded-xl bg-[#1a91f0] text-white flex items-center justify-center font-bold text-sm shadow-xs shrink-0">
             CV
           </div>
           {dangMoRong && (
             <div className="whitespace-nowrap overflow-hidden transition-all duration-200">
-              <span className="font-extrabold text-base tracking-tight text-slate-900">
-                CVify <span className="text-[#0a66c2]">Pro</span>
+              <span className="font-extrabold text-base tracking-tight text-[#0f141e]">
+                CVify <span className="text-[#1a91f0]">Pro</span>
               </span>
-              <p className="text-[10px] text-slate-400 font-medium leading-none mt-0.5">
+              <p className="text-[10px] text-[#828ba2] font-medium leading-none mt-0.5">
                 Hệ thống tạo CV
               </p>
             </div>
@@ -132,8 +132,8 @@ export const ThanhTaskbar: React.FC<ThanhTaskbarProps> = ({
                 title={!dangMoRong ? nut.ten : undefined}
                 className={`w-full rounded-xl py-3 px-3 transition-colors flex items-center gap-3.5 cursor-pointer ${
                   dangChon
-                    ? 'bg-blue-50 text-[#0a66c2] font-bold'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium'
+                    ? 'bg-[#f1f2ff] text-[#1a91f0] font-semibold'
+                    : 'text-[#656e83] hover:text-[#1e2532] hover:bg-[#f7f9fc] font-medium'
                 }`}
               >
                 {/* Icon căn giữa */}
@@ -141,7 +141,7 @@ export const ThanhTaskbar: React.FC<ThanhTaskbarProps> = ({
                   <Icon
                     size={20}
                     className={`shrink-0 transition-colors ${
-                      dangChon ? 'text-[#0a66c2]' : 'text-slate-500'
+                      dangChon ? 'text-[#1a91f0]' : 'text-[#828ba2]'
                     }`}
                   />
                 </div>
@@ -174,7 +174,7 @@ export const ThanhTaskbar: React.FC<ThanhTaskbarProps> = ({
                 className="w-10 h-10 rounded-full object-cover border border-slate-200"
               />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-blue-50 text-[#0a66c2] flex items-center justify-center font-bold text-xs border border-blue-200">
+              <div className="w-10 h-10 rounded-full bg-[#f1f2ff] text-[#1a91f0] flex items-center justify-center font-bold text-xs border border-[#d9deeb]">
                 {chuCaiDau}
               </div>
             )}

@@ -136,7 +136,7 @@ const userMacDinh = layThongTinNguoiDungMacDinh();
 
 const DU_LIEU_MAC_DINH: ThongTinCV = {
   dinhDang: {
-    mauChuDao: '#0a66c2', // LinkedIn Primary Blue
+    mauChuDao: '#1a91f0', // Resume.io Signal Blue
     coChu: '14px',
     fontChu: 'Inter',
     matDo: 'normal',
@@ -149,7 +149,7 @@ const DU_LIEU_MAC_DINH: ThongTinCV = {
     diaChi: '',
     website: '',
     avatarUrl: '',
-    coverColor: '#0a66c2',
+    coverColor: '#1a91f0',
   },
   gioiThieu: '',
   kinhNghiem: [],

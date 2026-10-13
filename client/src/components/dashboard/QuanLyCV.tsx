@@ -167,7 +167,7 @@ export const QuanLyCV: React.FC<QuanLyCVProps> = ({
       <div className="flex items-center justify-between gap-4 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/90 shadow-2xs mb-8">
         <div>
           <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2.5">
-            <span className="p-2 rounded-xl bg-blue-50 text-[#0a66c2]">
+            <span className="p-2 rounded-xl bg-blue-50 text-[#1a91f0]">
               <FileText size={22} />
             </span>
             <span>Danh Sách CV Của Bạn</span>
@@ -180,7 +180,7 @@ export const QuanLyCV: React.FC<QuanLyCVProps> = ({
         <button
           type="button"
           onClick={onTaoCVMoi}
-          className="flex items-center justify-center gap-2 bg-[#0a66c2] hover:bg-[#004182] text-white text-xs sm:text-sm font-bold px-4 sm:px-5 py-2.5 rounded-xl shadow-xs hover:shadow transition active:scale-95 cursor-pointer shrink-0"
+          className="flex items-center justify-center gap-2 bg-[#1a91f0] hover:bg-[#004182] text-white text-xs sm:text-sm font-bold px-4 sm:px-5 py-2.5 rounded-xl shadow-xs hover:shadow transition active:scale-95 cursor-pointer shrink-0"
         >
           <Plus size={18} />
           <span>Tạo CV Mới</span>
@@ -190,7 +190,7 @@ export const QuanLyCV: React.FC<QuanLyCVProps> = ({
       {/* Trạng thái Đang tải */}
       {dangTai && (
         <div className="flex flex-col items-center justify-center py-24 bg-white rounded-2xl border border-slate-200 shadow-2xs">
-          <Loader2 size={36} className="animate-spin text-[#0a66c2] mb-3" />
+          <Loader2 size={36} className="animate-spin text-[#1a91f0] mb-3" />
           <p className="text-xs font-semibold text-slate-500">Đang đồng bộ danh sách CV từ máy chủ...</p>
         </div>
       )}
@@ -209,7 +209,7 @@ export const QuanLyCV: React.FC<QuanLyCVProps> = ({
       {!dangTai && !thongBaoLoi && danhSachCV.length === 0 && (
         <div className="w-full flex flex-col items-center justify-center py-20 px-6 bg-white rounded-2xl border border-slate-200/90 text-center shadow-xs">
           {/* Icon tờ giấy lớn FileText */}
-          <div className="w-20 h-20 rounded-3xl bg-blue-50 text-[#0a66c2] flex items-center justify-center mb-5 shadow-xs border border-blue-100">
+          <div className="w-20 h-20 rounded-3xl bg-blue-50 text-[#1a91f0] flex items-center justify-center mb-5 shadow-xs border border-blue-100">
             <FileText size={42} />
           </div>
 
@@ -225,7 +225,7 @@ export const QuanLyCV: React.FC<QuanLyCVProps> = ({
           <button
             type="button"
             onClick={onTaoCVMoi}
-            className="mt-6 flex items-center gap-2.5 px-6 py-3.5 bg-[#0a66c2] hover:bg-[#004182] text-white text-sm font-bold rounded-xl shadow-md hover:shadow-lg transition active:scale-95 cursor-pointer"
+            className="mt-6 flex items-center gap-2.5 px-6 py-3.5 bg-[#1a91f0] hover:bg-[#004182] text-white text-sm font-bold rounded-xl shadow-md hover:shadow-lg transition active:scale-95 cursor-pointer"
           >
             <Plus size={20} />
             <span>Tạo Bản CV Đầu Tiên</span>
@@ -239,7 +239,7 @@ export const QuanLyCV: React.FC<QuanLyCVProps> = ({
       {!dangTai && !thongBaoLoi && danhSachCV.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {danhSachCV.map((cv) => {
-            const mauChuDao = cv.dinh_dang_cv?.mauChuDao || '#0a66c2';
+            const mauChuDao = cv.dinh_dang_cv?.mauChuDao || '#1a91f0';
             const viTri = cv.noi_dung_cv?.thongTinCaNhan?.viTriUngTuyen || 'Chuyên viên ứng tuyển';
 
             return (
@@ -273,7 +273,7 @@ export const QuanLyCV: React.FC<QuanLyCVProps> = ({
                   <div>
                     <h3
                       onClick={() => handleSuaCV(cv.id)}
-                      className="text-sm font-bold text-slate-900 hover:text-[#0a66c2] transition cursor-pointer truncate"
+                      className="text-sm font-bold text-slate-900 hover:text-[#1a91f0] transition cursor-pointer truncate"
                       title={cv.tieu_de_cv}
                     >
                       {cv.tieu_de_cv}
@@ -291,7 +291,7 @@ export const QuanLyCV: React.FC<QuanLyCVProps> = ({
                     <button
                       type="button"
                       onClick={() => handleSuaCV(cv.id)}
-                      className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-blue-50 hover:bg-[#0a66c2] text-[#0a66c2] hover:text-white rounded-xl text-xs font-bold transition cursor-pointer"
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-blue-50 hover:bg-[#1a91f0] text-[#1a91f0] hover:text-white rounded-xl text-xs font-bold transition cursor-pointer"
                     >
                       <Edit3 size={14} />
                       <span>Sửa</span>

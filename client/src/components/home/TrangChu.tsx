@@ -49,7 +49,7 @@ const DANH_SACH_SLIDES = [
     tieuDe3: "Bằng Kéo & Thả",
     moTa:
       "Kéo từng khối CV — Thông tin cá nhân, Kinh nghiệm, Học vấn, Kỹ năng — vào đúng vị trí bạn muốn. Hệ thống tự căn chỉnh chuẩn tỷ lệ A4 không lệch điểm nào.",
-    accent: "#0a66c2",
+    accent: "#1a91f0",
     gradientFrom: "from-blue-600",
     gradientTo: "to-indigo-600",
     huyHieu1: { icon: "🎯", tieu: "Kéo thả mượt", phu: "@dnd-kit" },
@@ -134,14 +134,14 @@ export const TrangChu = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#f4f2ee] text-slate-800 font-sans">
-      {/* ================= 1. HEADER PREMIUM ================= */}
+    <div className="min-h-screen bg-white text-[#1e2532] font-sans">
+      {/* ================= 1. HEADER PREMIUM (Resume.io Style) ================= */}
       {!anHeader && (
         <header
           className={`sticky top-0 z-50 transition-all duration-300 ${
             daScroll
-              ? "glass border-b border-white/40 shadow-md"
-              : "bg-white/95 border-b border-slate-200/80"
+              ? "glass border-b border-[#d9deeb] shadow-xs"
+              : "bg-white border-b border-[#d9deeb]"
           }`}
         >
           <div className="max-w-6xl mx-auto px-4 sm:px-6 h-[60px] flex items-center justify-between gap-4">
@@ -151,20 +151,14 @@ export const TrangChu = ({
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               className="flex items-center gap-2.5 cursor-pointer group shrink-0"
             >
-              <div
-                className="w-8 h-8 rounded-lg text-white flex items-center justify-center font-black text-sm shadow-md transition-transform group-hover:scale-105"
-                style={{ background: "linear-gradient(135deg, #0a66c2, #7c3aed)" }}
-              >
+              <div className="w-8 h-8 rounded-lg bg-[#1a91f0] text-white flex items-center justify-center font-bold text-sm shadow-xs transition-transform group-hover:scale-105">
                 CV
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="text-[15px] font-black text-slate-900 tracking-tight">
+                <span className="text-[15px] font-extrabold text-[#0f141e] tracking-tight">
                   CVify
                 </span>
-                <span
-                  className="text-[10px] font-bold text-white px-1.5 py-0.5 rounded-md leading-none"
-                  style={{ background: "linear-gradient(135deg, #0a66c2, #7c3aed)" }}
-                >
+                <span className="text-[10px] font-bold text-white px-1.5 py-0.5 rounded bg-[#1a91f0] leading-none">
                   PRO
                 </span>
               </div>
@@ -186,27 +180,26 @@ export const TrangChu = ({
                       ? cuonDenPhan(link.id)
                       : window.scrollTo({ top: 0, behavior: "smooth" })
                   }
-                  className="relative px-3.5 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-50 transition-all duration-200 cursor-pointer group/nav"
+                  className="relative px-3.5 py-2 text-sm font-medium text-[#656e83] hover:text-[#0f141e] rounded-lg hover:bg-[#f7f9fc] transition-all duration-200 cursor-pointer group/nav"
                 >
                   {link.label}
-                  <span className="absolute bottom-1 left-3.5 right-3.5 h-0.5 rounded-full opacity-0 group-hover/nav:opacity-100 transition-all duration-300" style={{ background: "linear-gradient(90deg,#0a66c2,#7c3aed)" }} />
+                  <span className="absolute bottom-1 left-3.5 right-3.5 h-0.5 rounded-full opacity-0 group-hover/nav:opacity-100 transition-all duration-300 bg-[#1a91f0]" />
                 </button>
               ))}
             </nav>
 
             {/* === AUTH & CTA === */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               {daDangNhap ? (
                 <>
                   <div className="hidden sm:flex items-center gap-2.5">
                     <div
-                      className="w-8 h-8 rounded-full text-white font-bold text-xs flex items-center justify-center shadow-md cursor-pointer hover:scale-105 transition-transform"
-                      style={{ background: "linear-gradient(135deg, #0a66c2, #7c3aed)" }}
+                      className="w-8 h-8 rounded-full bg-[#1a91f0] text-white font-bold text-xs flex items-center justify-center shadow-xs cursor-pointer hover:scale-105 transition-transform"
                       title={tenNguoiDung}
                     >
                       {tenNguoiDung ? tenNguoiDung.charAt(0).toUpperCase() : "U"}
                     </div>
-                    <span className="text-sm font-semibold text-slate-700 max-w-[110px] truncate">
+                    <span className="text-sm font-semibold text-[#0f141e] max-w-[110px] truncate">
                       {tenNguoiDung}
                     </span>
                   </div>
@@ -214,7 +207,7 @@ export const TrangChu = ({
                     <button
                       type="button"
                       onClick={onDangXuat}
-                      className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition cursor-pointer"
+                      className="p-2 text-[#828ba2] hover:text-rose-500 hover:bg-rose-50 rounded-lg transition cursor-pointer"
                       title="Đăng xuất"
                     >
                       <LogOut size={16} />
@@ -226,31 +219,29 @@ export const TrangChu = ({
                   <button
                     type="button"
                     onClick={onMoDangNhap}
-                    className="hidden sm:block text-sm font-medium text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition cursor-pointer"
+                    className="hidden sm:block text-sm font-medium text-[#1e2532] hover:text-[#1a91f0] px-3.5 py-1.5 rounded-full hover:bg-[#f7f9fc] transition cursor-pointer"
                   >
                     Đăng Nhập
                   </button>
                   <button
                     type="button"
                     onClick={onMoDangKy}
-                    className="text-sm font-semibold text-slate-700 border border-slate-300 hover:border-slate-400 px-3.5 py-1.5 rounded-full transition cursor-pointer hover:bg-slate-50"
+                    className="text-xs font-medium text-white bg-[#1a91f0] hover:bg-[#016fd0] px-4 py-2 rounded-[36px] transition cursor-pointer shadow-xs"
                   >
                     Đăng Ký
                   </button>
                 </>
               )}
 
-              {/* CTA Button với shimmer */}
+              {/* CTA Button với 36px border radius */}
               <button
                 type="button"
                 onClick={onChuyenTrinhThietKe}
-                className="relative hidden md:flex items-center gap-1.5 text-sm font-bold text-white px-4 py-2 rounded-full overflow-hidden shadow-md cursor-pointer active:scale-95 transition-transform"
-                style={{ background: "linear-gradient(135deg, #0a66c2, #7c3aed)" }}
+                className="hidden md:flex items-center gap-1.5 text-xs font-medium text-white bg-[#1a91f0] hover:bg-[#016fd0] px-5 py-2.5 rounded-[36px] shadow-xs cursor-pointer active:scale-95 transition-all"
               >
-                <span className="shimmer absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-300" />
                 <Sparkles size={14} className="shrink-0" />
-                <span className="relative">Tạo CV Ngay</span>
-                <ArrowRight size={13} className="relative shrink-0" />
+                <span>Tạo CV Ngay</span>
+                <ArrowRight size={13} className="shrink-0" />
               </button>
             </div>
           </div>
@@ -296,41 +287,26 @@ export const TrangChu = ({
       `}</style>
 
       <section
-        className="group relative overflow-hidden select-none"
-        style={{ background: "linear-gradient(135deg, #0f172a 0%, #1e1b4b 40%, #0f172a 100%)" }}
+        className="group relative overflow-hidden select-none bg-[#f7f9fc] border-b border-[#d9deeb]"
         onMouseEnter={() => setDangTamDung(true)}
         onMouseLeave={() => setDangTamDung(false)}
       >
-        {/* === ANIMATED BACKGROUND BLOBS === */}
+        {/* Subtle dot pattern wash */}
         <div
-          className="anim-blob pointer-events-none absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full opacity-20"
-          style={{ background: "radial-gradient(circle, #3b82f6, transparent 70%)" }}
-        />
-        <div
-          className="anim-blob-2 pointer-events-none absolute top-20 right-0 w-[420px] h-[420px] rounded-full opacity-15"
-          style={{ background: "radial-gradient(circle, #8b5cf6, transparent 70%)" }}
-        />
-        <div
-          className="anim-blob-3 pointer-events-none absolute -bottom-24 left-1/3 w-[380px] h-[380px] rounded-full opacity-15"
-          style={{ background: "radial-gradient(circle, #06b6d4, transparent 70%)" }}
-        />
-
-        {/* Subtle grid overlay */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.04]"
+          className="pointer-events-none absolute inset-0 opacity-[0.03]"
           style={{
             backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
-            backgroundSize: "40px 40px",
+              "radial-gradient(#1e2532 1px, transparent 1px)",
+            backgroundSize: "24px 24px",
           }}
         />
 
-        {/* === MŨI TÊN TRÁI (ẩn mặc định, hiện khi hover section) === */}
+        {/* === MŨI TÊN TRÁI === */}
         <button
           type="button"
           onClick={slideTruocDo}
           aria-label="Slide trước"
-          className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 z-30 p-2.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 hover:scale-110 active:scale-95 transition-all duration-300 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 cursor-pointer"
+          className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 z-30 p-2.5 rounded-full bg-white border border-[#d9deeb] text-[#1e2532] hover:bg-[#f7f9fc] hover:scale-110 active:scale-95 transition-all duration-300 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 cursor-pointer shadow-xs"
         >
           <ChevronLeft size={20} className="stroke-[2.5]" />
         </button>
@@ -340,7 +316,7 @@ export const TrangChu = ({
           type="button"
           onClick={slideTiepTheo}
           aria-label="Slide tiếp theo"
-          className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 z-30 p-2.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 hover:scale-110 active:scale-95 transition-all duration-300 opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 cursor-pointer"
+          className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 z-30 p-2.5 rounded-full bg-white border border-[#d9deeb] text-[#1e2532] hover:bg-[#f7f9fc] hover:scale-110 active:scale-95 transition-all duration-300 opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 cursor-pointer shadow-xs"
         >
           <ChevronRight size={20} className="stroke-[2.5]" />
         </button>
@@ -349,158 +325,130 @@ export const TrangChu = ({
         <div className="relative z-10 max-w-6xl mx-auto px-6 py-16 lg:py-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
-            {/* ---- CỘT TRÁI: TEXT ---- */}
+            {/* ---- CỘT TRÁI: TEXT (Resume.io Style) ---- */}
             <div
               key={`slide-left-${slideHienTai}`}
               className="text-center lg:text-left anim-slide-up"
             >
-              {/* Tag badge phát sáng */}
-              <div
-                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold mb-6 border"
-                style={{
-                  background: `linear-gradient(135deg, ${DANH_SACH_SLIDES[slideHienTai].accent}22, ${DANH_SACH_SLIDES[slideHienTai].accent}11)`,
-                  borderColor: `${DANH_SACH_SLIDES[slideHienTai].accent}55`,
-                  color: DANH_SACH_SLIDES[slideHienTai].accent === "#059669" ? "#34d399" : DANH_SACH_SLIDES[slideHienTai].accent === "#7c3aed" ? "#a78bfa" : "#60a5fa",
-                  boxShadow: `0 0 20px ${DANH_SACH_SLIDES[slideHienTai].accent}30`,
-                }}
-              >
+              {/* Tag badge */}
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold mb-6 border border-[#d9deeb] bg-[#f1f2ff] text-[#1a91f0]">
                 <Sparkles size={13} />
                 <span>{DANH_SACH_SLIDES[slideHienTai].tag}</span>
               </div>
 
-              {/* Tiêu đề H1 3 dòng */}
-              <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-black tracking-tight leading-[1.1] mb-6">
-                <span className="text-white block">{DANH_SACH_SLIDES[slideHienTai].tieuDe1}</span>
-                <span
-                  className="block"
-                  style={{
-                    background: `linear-gradient(90deg, ${DANH_SACH_SLIDES[slideHienTai].accent}, #c084fc)`,
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                  }}
-                >
+              {/* Tiêu đề H1 chuẩn Resume.io: Ink / Carbon với từ khóa Signal Blue */}
+              <h1 className="text-4xl sm:text-5xl lg:text-[54px] font-extrabold tracking-tight leading-[1.12] mb-6 text-[#0f141e]">
+                <span className="block">{DANH_SACH_SLIDES[slideHienTai].tieuDe1}</span>
+                <span className="text-[#1a91f0] block">
                   {DANH_SACH_SLIDES[slideHienTai].tieuDe2}
                 </span>
-                <span className="text-white/80 block">{DANH_SACH_SLIDES[slideHienTai].tieuDe3}</span>
+                <span className="text-[#1e2532] block font-bold">{DANH_SACH_SLIDES[slideHienTai].tieuDe3}</span>
               </h1>
 
-              {/* Mô tả */}
-              <p className="text-slate-300 text-base sm:text-lg leading-relaxed max-w-lg mx-auto lg:mx-0">
+              {/* Mô tả: Pencil #656e83 */}
+              <p className="text-[#656e83] text-base sm:text-lg leading-relaxed max-w-lg mx-auto lg:mx-0">
                 {DANH_SACH_SLIDES[slideHienTai].moTa}
               </p>
 
+              {/* Nút bấm hành động CTA Resume.io (Pill 36px) */}
+              <div className="mt-8 flex flex-wrap items-center gap-4 justify-center lg:justify-start">
+                <button
+                  type="button"
+                  onClick={onChuyenTrinhThietKe}
+                  className="bg-[#1a91f0] hover:bg-[#016fd0] text-white text-base font-medium px-8 py-3.5 rounded-[36px] shadow-xs hover:shadow transition active:scale-95 cursor-pointer flex items-center gap-2"
+                >
+                  <span>Tạo CV Của Bạn</span>
+                  <ArrowRight size={18} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => cuonDenPhan('kho-mau')}
+                  className="text-[#1a91f0] hover:text-[#016fd0] hover:underline font-medium text-base px-4 py-3.5 transition cursor-pointer flex items-center gap-1.5"
+                >
+                  <span>Khám phá mẫu CV →</span>
+                </button>
+              </div>
+
               {/* 3 điểm nổi bật */}
-              <div className="mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-5 text-sm text-slate-300 font-medium">
-                <span className="flex items-center gap-2">
-                  <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
+              <div className="mt-7 flex flex-wrap items-center justify-center lg:justify-start gap-5 text-xs text-[#656e83] font-medium">
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle2 size={15} className="text-[#10b981] shrink-0" />
                   Miễn phí 100%
                 </span>
-                <span className="flex items-center gap-2">
-                  <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
-                  Không cần cài đặt
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle2 size={15} className="text-[#10b981] shrink-0" />
+                  Chuẩn quét ATS 99%
                 </span>
-                <span className="flex items-center gap-2">
-                  <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle2 size={15} className="text-[#10b981] shrink-0" />
                   Xuất PDF tức thì
                 </span>
               </div>
 
               {/* Thống kê social proof */}
-              <div className="mt-10 pt-8 border-t border-white/10 grid grid-cols-3 gap-4 max-w-sm mx-auto lg:mx-0">
+              <div className="mt-9 pt-7 border-t border-[#d9deeb] grid grid-cols-3 gap-4 max-w-sm mx-auto lg:mx-0">
                 {[
-                  { so: "10K+", nhan: "CV đã tạo" },
+                  { so: "10,000+", nhan: "CV đã tạo" },
                   { so: "99%", nhan: "Điểm ATS" },
-                  { so: "4.9★", nhan: "Đánh giá" },
+                  { so: "4.9 / 5", nhan: "Đánh giá" },
                 ].map((item) => (
                   <div key={item.nhan} className="text-center lg:text-left">
-                    <div className="text-2xl font-black text-white">{item.so}</div>
-                    <div className="text-xs text-slate-400 mt-0.5">{item.nhan}</div>
+                    <div className="text-2xl font-bold text-[#1a91f0]">{item.so}</div>
+                    <div className="text-xs text-[#828ba2] mt-0.5">{item.nhan}</div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* ---- CỘT PHẢI: CV MOCKUP ĐỘNG ---- */}
+            {/* ---- CỘT PHẢI: CV MOCKUP ĐỘNG (Resume.io Preview Card) ---- */}
             <div
               key={`slide-right-${slideHienTai}`}
               className="flex justify-center relative"
             >
-              {/* Glow hào quang phía sau */}
+              {/* Tờ CV A4 thu nhỏ nghiêng -2° chuẩn Resume.io */}
               <div
-                className="absolute inset-0 rounded-3xl blur-3xl opacity-40 pointer-events-none"
-                style={{
-                  background: `radial-gradient(circle at center, ${DANH_SACH_SLIDES[slideHienTai].accent}, transparent 70%)`,
-                }}
-              />
-
-              {/* Tờ CV A4 thu nhỏ nghiêng 3D */}
-              <div
-                className="relative w-full max-w-[320px] rounded-2xl overflow-visible"
-                style={{ transform: "perspective(900px) rotateY(-8deg) rotateX(2deg)" }}
+                className="relative w-full max-w-[340px] rounded-2xl"
+                style={{ transform: "rotate(-2deg)" }}
               >
                 {/* Card CV */}
-                <div className="bg-white rounded-2xl shadow-2xl border border-white/20 p-5 overflow-hidden">
+                <div className="bg-white rounded-2xl shadow-sm border border-[#d9deeb] p-6 overflow-hidden">
                   {/* Header CV */}
-                  <div className="anim-block-top flex items-center gap-3 mb-4 pb-4 border-b border-slate-100">
-                    <div
-                      className={`w-11 h-11 rounded-full bg-gradient-to-tr ${DANH_SACH_SLIDES[slideHienTai].gradientFrom} ${DANH_SACH_SLIDES[slideHienTai].gradientTo} text-white flex items-center justify-center font-black text-sm shadow-lg shrink-0`}
-                    >
+                  <div className="anim-block-top flex items-center gap-3 mb-4 pb-4 border-b border-[#e7eaf4]">
+                    <div className="w-12 h-12 rounded-full bg-[#1a91f0] text-white flex items-center justify-center font-bold text-sm shadow-xs shrink-0">
                       NA
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-sm font-black text-slate-900 truncate">NGUYỄN VĂN AN</div>
-                      <div className="text-xs font-medium mt-0.5" style={{ color: DANH_SACH_SLIDES[slideHienTai].accent }}>
+                      <div className="text-sm font-bold text-[#0f141e] truncate">NGUYỄN VĂN AN</div>
+                      <div className="text-xs font-medium text-[#1a91f0] mt-0.5">
                         Senior Software Engineer
                       </div>
-                      <div className="text-[10px] text-slate-400 mt-0.5">an.nguyen@gmail.com · TP. HCM</div>
-                    </div>
-                    <div className="flex gap-1 shrink-0">
-                      <span className="w-2 h-2 rounded-full bg-rose-400" />
-                      <span className="w-2 h-2 rounded-full bg-amber-400" />
-                      <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                      <div className="text-[10px] text-[#828ba2] mt-0.5">an.nguyen@gmail.com · TP. HCM</div>
                     </div>
                   </div>
 
                   {/* Khối Kinh Nghiệm */}
                   <div className="anim-block-left mb-3">
-                    <div
-                      className="text-[9px] font-bold uppercase tracking-widest mb-1.5 px-2 py-0.5 rounded inline-block"
-                      style={{
-                        color: DANH_SACH_SLIDES[slideHienTai].accent,
-                        background: `${DANH_SACH_SLIDES[slideHienTai].accent}15`,
-                      }}
-                    >
-                      ● Kinh Nghiệm Làm Việc
+                    <div className="text-[10px] font-bold uppercase tracking-wider mb-1.5 px-2 py-0.5 rounded bg-[#f1f2ff] text-[#1a91f0] inline-block">
+                      Kinh Nghiệm Làm Việc
                     </div>
-                    <div className="text-[11px] font-bold text-slate-800 mb-1">Tech Group Vietnam · 2023 - Nay</div>
+                    <div className="text-[11px] font-bold text-[#1e2532] mb-1">Tech Group Vietnam · 2023 - Nay</div>
                     <div className="space-y-1">
-                      <div className="h-1.5 bg-slate-200 rounded-full w-full" />
-                      <div className="h-1.5 bg-slate-200 rounded-full w-5/6" />
-                      <div className="h-1.5 bg-slate-200 rounded-full w-4/5" />
+                      <div className="h-1.5 bg-[#f7f9fc] border border-[#d9deeb] rounded-full w-full" />
+                      <div className="h-1.5 bg-[#f7f9fc] border border-[#d9deeb] rounded-full w-5/6" />
+                      <div className="h-1.5 bg-[#f7f9fc] border border-[#d9deeb] rounded-full w-4/5" />
                     </div>
                   </div>
 
                   {/* Khối Kỹ Năng */}
                   <div className="anim-block-bottom">
-                    <div
-                      className="text-[9px] font-bold uppercase tracking-widest mb-2 px-2 py-0.5 rounded inline-block"
-                      style={{
-                        color: DANH_SACH_SLIDES[slideHienTai].accent,
-                        background: `${DANH_SACH_SLIDES[slideHienTai].accent}15`,
-                      }}
-                    >
-                      ● Kỹ Năng & Công Nghệ
+                    <div className="text-[10px] font-bold uppercase tracking-wider mb-2 px-2 py-0.5 rounded bg-[#f1f2ff] text-[#1a91f0] inline-block">
+                      Kỹ Năng Nổi Bật
                     </div>
                     <div className="flex flex-wrap gap-1.5">
-                      {["React.js", "TypeScript", "Node.js", "Tailwind"].map((tag) => (
+                      {["React", "TypeScript", "Node.js", "TailwindCSS"].map((tag) => (
                         <span
                           key={tag}
-                          className="px-2 py-0.5 rounded text-[9px] font-semibold border"
-                          style={{
-                            color: DANH_SACH_SLIDES[slideHienTai].accent,
-                            borderColor: `${DANH_SACH_SLIDES[slideHienTai].accent}40`,
-                            background: `${DANH_SACH_SLIDES[slideHienTai].accent}10`,
-                          }}
+                          className="text-[10px] font-medium px-2 py-0.5 rounded-full border border-[#d9deeb] bg-[#f7f9fc] text-[#1e2532]"
                         >
                           {tag}
                         </span>
@@ -509,25 +457,21 @@ export const TrangChu = ({
                   </div>
                 </div>
 
-                {/* Huy hiệu nổi 1 - trái dưới */}
-                <div
-                  className="anim-badge-1 absolute -bottom-4 -left-6 bg-white/95 backdrop-blur-md px-3.5 py-2 rounded-xl shadow-2xl border border-slate-200 flex items-center gap-2 pointer-events-none"
-                >
-                  <span className="text-xl">{DANH_SACH_SLIDES[slideHienTai].huyHieu1.icon}</span>
+                {/* Huy hiệu nổi 1: ATS Score badge (Mint Whisper #e7f4ed) */}
+                <div className="anim-badge-1 absolute -bottom-4 -left-4 bg-[#e7f4ed] px-3.5 py-2 rounded-xl shadow-xs border border-[#a3e635]/40 flex items-center gap-2 pointer-events-none">
+                  <span className="text-xl">✅</span>
                   <div>
-                    <div className="text-[11px] font-black text-slate-800">{DANH_SACH_SLIDES[slideHienTai].huyHieu1.tieu}</div>
-                    <div className="text-[9px] text-slate-400">{DANH_SACH_SLIDES[slideHienTai].huyHieu1.phu}</div>
+                    <div className="text-[11px] font-bold text-[#059669]">Điểm ATS: 99/100</div>
+                    <div className="text-[9px] text-[#059669]/80">Vượt qua mọi bộ lọc HR</div>
                   </div>
                 </div>
 
-                {/* Huy hiệu nổi 2 - phải trên */}
-                <div
-                  className="anim-badge-2 absolute -top-4 -right-6 bg-white/95 backdrop-blur-md px-3.5 py-2 rounded-xl shadow-2xl border border-slate-200 flex items-center gap-2 pointer-events-none"
-                >
-                  <span className="text-xl">{DANH_SACH_SLIDES[slideHienTai].huyHieu2.icon}</span>
+                {/* Huy hiệu nổi 2: Tốc độ xuất (Blush Whisper #ffebe4) */}
+                <div className="anim-badge-2 absolute -top-4 -right-4 bg-white px-3.5 py-2 rounded-xl shadow-xs border border-[#d9deeb] flex items-center gap-2 pointer-events-none">
+                  <span className="text-xl">⚡</span>
                   <div>
-                    <div className="text-[11px] font-black text-slate-800">{DANH_SACH_SLIDES[slideHienTai].huyHieu2.tieu}</div>
-                    <div className="text-[9px] text-slate-400">{DANH_SACH_SLIDES[slideHienTai].huyHieu2.phu}</div>
+                    <div className="text-[11px] font-bold text-[#0f141e]">Tải file trong 3s</div>
+                    <div className="text-[9px] text-[#656e83]">Chuẩn A4 300 DPI</div>
                   </div>
                 </div>
               </div>
@@ -547,8 +491,7 @@ export const TrangChu = ({
                   className="transition-all duration-300 cursor-pointer rounded-full h-2"
                   style={{
                     width: active ? "28px" : "8px",
-                    background: active ? DANH_SACH_SLIDES[slideHienTai].accent : "rgba(255,255,255,0.3)",
-                    boxShadow: active ? `0 0 10px ${DANH_SACH_SLIDES[slideHienTai].accent}80` : "none",
+                    background: active ? "#1a91f0" : "#d9deeb",
                   }}
                 />
               );
@@ -558,58 +501,42 @@ export const TrangChu = ({
       </section>
 
       {/* ================= 2.5. BENTO GRID TÍNH NĂNG ================= */}
-      <section className="py-20 px-6" style={{ background: "linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%)" }}>
+      {/* ================= 2.5. TINTED FEATURE CARDS (Resume.io Style) ================= */}
+      <section className="py-20 px-6 bg-white border-b border-[#d9deeb]">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-14">
-            <div
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold mb-5 border"
-              style={{
-                background: "rgba(10,102,194,0.15)",
-                borderColor: "rgba(10,102,194,0.4)",
-                color: "#60a5fa",
-                boxShadow: "0 0 20px rgba(10,102,194,0.2)"
-              }}
-            >
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold mb-4 border border-[#d9deeb] bg-[#f1f2ff] text-[#1a91f0]">
               <Sparkles size={13} />
-              <span>✦ TẠI SAO CHỌN CVIFY PRO? ✦</span>
+              <span>CÔNG CỤ TẠO CV TỐI ƯU</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-              Tất Cả Những Gì Bạn Cần
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0f141e] tracking-tight">
+              Tất Cả Những Gì Bạn Cần Để Có Một Bản CV Xuất Sắc
             </h2>
-            <p className="text-slate-400 mt-3 max-w-xl mx-auto">
-              Bộ công cụ mạnh mẽ giúp bạn tạo CV chuyên nghiệp trong vài phút
+            <p className="text-[#656e83] mt-3 max-w-xl mx-auto text-base">
+              Bộ công cụ thiết kế hồ sơ hiện đại giúp bạn nổi bật trong mắt mọi nhà tuyển dụng
             </p>
           </div>
 
-          {/* Bento Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 auto-rows-auto">
+          {/* Feature Cards Grid (Resume.io Tinted Feature Cards) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-auto">
 
-            {/* Card 1 LỚNNN — Kéo thả (md:col-span-2) */}
-            <div
-              className="md:col-span-2 rounded-2xl p-7 border border-white/10 relative overflow-hidden group cursor-default hover:-translate-y-1 transition-all duration-300"
-              style={{ background: "linear-gradient(135deg, rgba(10,102,194,0.2), rgba(10,102,194,0.05))" }}
-            >
-              <div className="absolute -top-20 -right-20 w-56 h-56 rounded-full blur-3xl opacity-20" style={{ background: "#0a66c2" }} />
+            {/* Card 1 LỚN — Kéo thả (Lavender Wash #f1f2ff) */}
+            <div className="md:col-span-2 rounded-2xl p-8 border border-[#d9deeb] bg-[#f1f2ff] relative overflow-hidden group transition-all duration-300">
               <div className="relative z-10">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ background: "rgba(10,102,194,0.3)" }}>
-                  <Move size={24} className="text-blue-400" />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 bg-white border border-[#d9deeb] text-[#1a91f0] shadow-xs">
+                  <Move size={24} />
                 </div>
-                <h3 className="text-xl font-black text-white mb-2">Kéo Thả Trực Quan</h3>
-                <p className="text-slate-400 text-sm leading-relaxed max-w-sm">
-                  Sắp xếp các khối thông tin bằng thao tác kéo thả mượt mà. Hệ thống tự động căn chỉnh theo tỷ lệ A4 chuẩn mực.
+                <h3 className="text-xl font-bold text-[#0f141e] mb-2">Kéo Thả Trực Quan (@dnd-kit)</h3>
+                <p className="text-[#656e83] text-sm leading-relaxed max-w-md">
+                  Tự do sắp xếp vị trí các khối thông tin bằng thao tác kéo thả mượt mà. Hệ thống tự động căn chỉnh lề theo tỷ lệ A4 chuẩn 210 × 297mm.
                 </p>
-                {/* Mini animation — các khối CV đang di chuyển */}
-                <div className="mt-6 flex gap-3">
-                  {["Header CV", "Kinh Nghiệm", "Kỹ Năng"].map((label, i) => (
+                {/* Mini blocks */}
+                <div className="mt-6 flex flex-wrap gap-2.5">
+                  {["Thông Tin Cá Nhân", "Kinh Nghiệm", "Học Vấn", "Kỹ Năng"].map((label) => (
                     <div
                       key={label}
-                      className="px-3 py-2 rounded-lg text-xs font-semibold text-blue-300 border border-blue-500/30"
-                      style={{
-                        background: "rgba(10,102,194,0.2)",
-                        animation: `badge-float ${3 + i * 0.8}s ease-in-out infinite`,
-                        animationDelay: `${i * 0.3}s`
-                      }}
+                      className="px-3.5 py-2 rounded-lg text-xs font-semibold text-[#1a91f0] bg-white border border-[#d9deeb] shadow-xs"
                     >
                       ⠿ {label}
                     </div>
@@ -618,89 +545,70 @@ export const TrangChu = ({
               </div>
             </div>
 
-            {/* Card 2 — PDF */}
-            <div
-              className="rounded-2xl p-7 border border-white/10 relative overflow-hidden group cursor-default hover:-translate-y-1 transition-all duration-300"
-              style={{ background: "linear-gradient(135deg, rgba(5,150,105,0.2), rgba(5,150,105,0.05))" }}
-            >
-              <div className="absolute -bottom-10 -right-10 w-40 h-40 rounded-full blur-3xl opacity-20" style={{ background: "#059669" }} />
+            {/* Card 2 — PDF (Mint Whisper #e7f4ed) */}
+            <div className="rounded-2xl p-8 border border-[#a3e635]/40 bg-[#e7f4ed] relative overflow-hidden group transition-all duration-300">
               <div className="relative z-10">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ background: "rgba(5,150,105,0.3)" }}>
-                  <Printer size={24} className="text-emerald-400" />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 bg-white border border-[#d9deeb] text-[#059669] shadow-xs">
+                  <Printer size={24} />
                 </div>
-                <h3 className="text-lg font-black text-white mb-2">Xuất PDF Sắc Nét</h3>
-                <p className="text-slate-400 text-sm">100% không lỗi font tiếng Việt. Chuẩn 210×297mm in ấn.</p>
-                {/* Progress bar giả lập */}
-                <div className="mt-5">
-                  <div className="flex justify-between text-[11px] text-slate-400 mb-1.5">
-                    <span>Đang xuất PDF...</span><span>100%</span>
-                  </div>
-                  <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
-                    <div className="h-full rounded-full shimmer" style={{ width: "100%", background: "linear-gradient(90deg, #059669, #34d399)" }} />
-                  </div>
+                <h3 className="text-lg font-bold text-[#0f141e] mb-2">Xuất PDF Sắc Nét</h3>
+                <p className="text-[#656e83] text-sm leading-relaxed">
+                  100% không lỗi font tiếng Việt. Độ phân giải chuẩn in 300 DPI sẵn sàng ứng tuyển.
+                </p>
+                <div className="mt-6 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-[#a3e635]/50 text-xs font-bold text-[#059669]">
+                  <span>⚡</span> Xuất trong 3 giây
                 </div>
               </div>
             </div>
 
-            {/* Card 3 — ATS */}
-            <div
-              className="rounded-2xl p-7 border border-white/10 relative overflow-hidden cursor-default hover:-translate-y-1 transition-all duration-300"
-              style={{ background: "linear-gradient(135deg, rgba(124,58,237,0.2), rgba(124,58,237,0.05))" }}
-            >
-              <div className="absolute -top-10 -left-10 w-40 h-40 rounded-full blur-3xl opacity-20" style={{ background: "#7c3aed" }} />
+            {/* Card 3 — ATS (Blush Whisper #ffebe4) */}
+            <div className="rounded-2xl p-8 border border-[#fecdd3] bg-[#ffebe4] relative overflow-hidden group transition-all duration-300">
               <div className="relative z-10">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ background: "rgba(124,58,237,0.3)" }}>
-                  <Award size={24} className="text-violet-400" />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 bg-white border border-[#fecdd3] text-[#e11d48] shadow-xs">
+                  <Award size={24} />
                 </div>
-                <h3 className="text-lg font-black text-white mb-2">Chuẩn ATS 99%</h3>
-                <p className="text-slate-400 text-sm">Vượt qua mọi hệ thống lọc CV tự động của nhà tuyển dụng.</p>
-                {/* Score badge */}
-                <div className="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-full" style={{ background: "rgba(124,58,237,0.3)", border: "1px solid rgba(167,139,250,0.4)" }}>
-                  <span className="text-xl font-black text-violet-300">99</span>
-                  <span className="text-xs text-violet-400">/100 ATS Score</span>
+                <h3 className="text-lg font-bold text-[#0f141e] mb-2">Chuẩn ATS Tuyển Dụng</h3>
+                <p className="text-[#656e83] text-sm leading-relaxed">
+                  Cấu trúc dữ liệu ngữ nghĩa giúp robot của nhà tuyển dụng đọc hiểu chính xác 100%.
+                </p>
+                <div className="mt-6 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#fecdd3] text-xs font-bold text-[#e11d48]">
+                  <span>🎯</span> Điểm ATS: 99/100
                 </div>
               </div>
             </div>
 
-            {/* Card 4 — Màu sắc */}
-            <div
-              className="rounded-2xl p-7 border border-white/10 relative overflow-hidden cursor-default hover:-translate-y-1 transition-all duration-300"
-              style={{ background: "linear-gradient(135deg, rgba(245,158,11,0.2), rgba(245,158,11,0.05))" }}
-            >
+            {/* Card 4 — Bảng màu (White Paper card) */}
+            <div className="rounded-2xl p-8 border border-[#d9deeb] bg-white relative overflow-hidden group transition-all duration-300 shadow-xs">
               <div className="relative z-10">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ background: "rgba(245,158,11,0.3)" }}>
-                  <Palette size={24} className="text-amber-400" />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 bg-[#f7f9fc] border border-[#d9deeb] text-[#1a91f0]">
+                  <Palette size={24} />
                 </div>
-                <h3 className="text-lg font-black text-white mb-2">Đổi Màu Tức Thì</h3>
-                <p className="text-slate-400 text-sm">6 bảng màu chuyên nghiệp, thay đổi toàn bộ phong cách chỉ 1 click.</p>
-                {/* Color swatches */}
-                <div className="mt-5 flex gap-2">
-                  {["#0a66c2","#7c3aed","#059669","#ef4444","#f59e0b","#0f172a"].map(c => (
-                    <div key={c} className="w-6 h-6 rounded-full border-2 border-white/20 cursor-pointer hover:scale-125 transition-transform" style={{ background: c }} />
+                <h3 className="text-lg font-bold text-[#0f141e] mb-2">Đổi Màu Tức Thì</h3>
+                <p className="text-[#656e83] text-sm leading-relaxed">
+                  6 bảng màu chuyên nghiệp chuẩn ATS, thay đổi phong cách chỉ với 1 click.
+                </p>
+                <div className="mt-6 flex gap-2">
+                  {["#1a91f0","#5660e8","#059669","#e11d48","#f59e0b","#1e2532"].map(c => (
+                    <div key={c} className="w-6 h-6 rounded-full border border-white shadow-xs" style={{ background: c }} />
                   ))}
                 </div>
               </div>
             </div>
 
-            {/* Card 5 LỚNNN — Chỉnh sửa trực tiếp (md:col-span-2) */}
-            <div
-              className="md:col-span-2 rounded-2xl p-7 border border-white/10 relative overflow-hidden cursor-default hover:-translate-y-1 transition-all duration-300"
-              style={{ background: "linear-gradient(135deg, rgba(239,68,68,0.15), rgba(239,68,68,0.03))" }}
-            >
-              <div className="absolute -bottom-20 -right-20 w-56 h-56 rounded-full blur-3xl opacity-15" style={{ background: "#ef4444" }} />
+            {/* Card 5 LỚN — Chỉnh sửa trực tiếp (md:col-span-2) */}
+            <div className="md:col-span-2 rounded-2xl p-8 border border-[#d9deeb] bg-[#f7f9fc] relative overflow-hidden group transition-all duration-300">
               <div className="relative z-10">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ background: "rgba(239,68,68,0.25)" }}>
-                  <FileText size={24} className="text-rose-400" />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 bg-white border border-[#d9deeb] text-[#1a91f0] shadow-xs">
+                  <FileText size={24} />
                 </div>
-                <h3 className="text-xl font-black text-white mb-2">Chỉnh Sửa Trực Tiếp</h3>
-                <p className="text-slate-400 text-sm leading-relaxed max-w-sm">
-                  Click vào bất kỳ đâu trên tờ CV để chỉnh sửa ngay. Xem kết quả thay đổi theo thời gian thực.
+                <h3 className="text-xl font-bold text-[#0f141e] mb-2">Chỉnh Sửa Trực Tiếp Trên Tờ CV</h3>
+                <p className="text-[#656e83] text-sm leading-relaxed max-w-md">
+                  Click trực tiếp vào bất kỳ mục nào trên tờ giấy A4 để nhập liệu và xem kết quả cập nhật theo thời gian thực.
                 </p>
-                {/* Keyboard animation */}
-                <div className="mt-5 font-mono text-sm text-rose-300 bg-black/30 rounded-lg px-4 py-3 inline-block">
-                  <span className="text-slate-400">Tên: </span>
-                  <span className="text-white">Nguyễn Văn An</span>
-                  <span className="inline-block w-0.5 h-4 bg-rose-400 ml-0.5" style={{ animation: "badge-float 1s step-end infinite" }}>|</span>
+                <div className="mt-6 font-mono text-xs text-[#1e2532] bg-white border border-[#d9deeb] rounded-lg px-4 py-2.5 inline-block shadow-xs">
+                  <span className="text-[#828ba2]">Họ tên: </span>
+                  <span className="font-bold text-[#0f141e]">Nguyễn Văn An</span>
+                  <span className="inline-block w-0.5 h-3.5 bg-[#1a91f0] ml-1 animate-pulse">|</span>
                 </div>
               </div>
             </div>
@@ -713,7 +621,7 @@ export const TrangChu = ({
       <section id="kho-mau" className="py-20 px-6 max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-10">
-          <span className="inline-flex items-center gap-2 text-xs font-bold text-[#0a66c2] uppercase tracking-wider bg-blue-50 px-4 py-1.5 rounded-full border border-blue-200 mb-4">
+          <span className="inline-flex items-center gap-2 text-xs font-bold text-[#1a91f0] uppercase tracking-wider bg-blue-50 px-4 py-1.5 rounded-full border border-blue-200 mb-4">
             <Layers size={13} /> Kho Template Chuyên Nghiệp
           </span>
           <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mt-2 tracking-tight">
@@ -733,7 +641,7 @@ export const TrangChu = ({
               className="px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 cursor-pointer"
               style={
                 i === 0
-                  ? { background: "linear-gradient(135deg,#0a66c2,#7c3aed)", color: "white", boxShadow: "0 4px 12px rgba(10,102,194,0.3)" }
+                  ? { background: "linear-gradient(135deg,#1a91f0,#7c3aed)", color: "white", boxShadow: "0 4px 12px rgba(10,102,194,0.3)" }
                   : { background: "white", color: "#475569", border: "1px solid #e2e8f0" }
               }
             >
@@ -750,12 +658,12 @@ export const TrangChu = ({
             {/* Preview */}
             <div className="relative h-72 bg-gradient-to-br from-blue-50 to-indigo-100/60 p-5 flex items-center justify-center overflow-hidden">
               {/* Badge hot */}
-              <span className="absolute top-3 left-3 z-10 text-[10px] font-bold text-white px-2.5 py-1 rounded-full" style={{ background: "linear-gradient(135deg,#0a66c2,#7c3aed)" }}>
+              <span className="absolute top-3 left-3 z-10 text-[10px] font-bold text-white px-2.5 py-1 rounded-full" style={{ background: "linear-gradient(135deg,#1a91f0,#7c3aed)" }}>
                 🔥 Phổ Biến Nhất
               </span>
               {/* CV mockup */}
               <div className="w-3/4 h-full bg-white rounded-t-xl shadow-md border border-slate-200/80 p-3 transform group-hover:scale-105 transition-transform duration-500">
-                <div className="h-5 rounded-lg mb-2" style={{ background: "linear-gradient(135deg,#0a66c2,#7c3aed)" }} />
+                <div className="h-5 rounded-lg mb-2" style={{ background: "linear-gradient(135deg,#1a91f0,#7c3aed)" }} />
                 <div className="h-1 bg-slate-200 rounded w-1/2 mb-3" />
                 <div className="grid grid-cols-3 gap-2">
                   <div className="col-span-1 space-y-1.5">
@@ -768,7 +676,7 @@ export const TrangChu = ({
               </div>
               {/* Hover overlay */}
               <div className="absolute inset-0 bg-slate-900/70 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <button type="button" onClick={onChuyenTrinhThietKe} className="px-4 py-2 text-xs font-bold text-white rounded-full cursor-pointer" style={{ background: "linear-gradient(135deg,#0a66c2,#7c3aed)" }}>
+                <button type="button" onClick={onChuyenTrinhThietKe} className="px-4 py-2 text-xs font-bold text-white rounded-full cursor-pointer" style={{ background: "linear-gradient(135deg,#1a91f0,#7c3aed)" }}>
                   Dùng Mẫu Này
                 </button>
                 <button type="button" className="px-4 py-2 text-xs font-bold text-white bg-white/20 backdrop-blur rounded-full border border-white/30 cursor-pointer">
@@ -783,7 +691,7 @@ export const TrangChu = ({
                   <h3 className="font-black text-slate-900 text-base">Mẫu Hiện Đại</h3>
                   <p className="text-xs text-slate-500 mt-0.5">IT · Lập trình viên · UI/UX</p>
                 </div>
-                <span className="text-[11px] font-semibold text-[#0a66c2] bg-blue-50 px-2 py-0.5 rounded-lg border border-blue-100">2 Cột</span>
+                <span className="text-[11px] font-semibold text-[#1a91f0] bg-blue-50 px-2 py-0.5 rounded-lg border border-blue-100">2 Cột</span>
               </div>
               <div className="mt-auto pt-4 flex items-center justify-between border-t border-slate-100">
                 <div className="flex items-center gap-1 text-amber-500 text-xs font-bold">
@@ -881,10 +789,10 @@ export const TrangChu = ({
           <button
             type="button"
             onClick={onChuyenTrinhThietKe}
-            className="flex items-center gap-2.5 text-sm font-bold px-7 py-3.5 rounded-full border-2 border-[#0a66c2] text-[#0a66c2] hover:text-white transition-all duration-300 cursor-pointer"
+            className="flex items-center gap-2.5 text-sm font-bold px-7 py-3.5 rounded-full border-2 border-[#1a91f0] text-[#1a91f0] hover:text-white transition-all duration-300 cursor-pointer"
             style={{ position: "relative", overflow: "hidden" }}
-            onMouseEnter={e => (e.currentTarget.style.background = "linear-gradient(135deg,#0a66c2,#7c3aed)", e.currentTarget.style.borderColor = "transparent", e.currentTarget.style.color = "white")}
-            onMouseLeave={e => (e.currentTarget.style.background = "transparent", e.currentTarget.style.borderColor = "#0a66c2", e.currentTarget.style.color = "#0a66c2")}
+            onMouseEnter={e => (e.currentTarget.style.background = "linear-gradient(135deg,#1a91f0,#7c3aed)", e.currentTarget.style.borderColor = "transparent", e.currentTarget.style.color = "white")}
+            onMouseLeave={e => (e.currentTarget.style.background = "transparent", e.currentTarget.style.borderColor = "#1a91f0", e.currentTarget.style.color = "#1a91f0")}
           >
             <Layers size={16} />
             <span>Xem Tất Cả 20+ Mẫu CV</span>
@@ -898,7 +806,7 @@ export const TrangChu = ({
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
             {[
-              { so: "12,847", donVi: "+", nhan: "CV đã tạo", mauNen: "#0a66c2" },
+              { so: "12,847", donVi: "+", nhan: "CV đã tạo", mauNen: "#1a91f0" },
               { so: "98.6", donVi: "%", nhan: "Điểm ATS TB", mauNen: "#7c3aed" },
               { so: "4.9", donVi: "★", nhan: "Đánh giá", mauNen: "#f59e0b" },
               { so: "< 3", donVi: "s", nhan: "Thời gian xuất PDF", mauNen: "#059669" },
@@ -953,7 +861,7 @@ export const TrangChu = ({
       >
         <div className="max-w-6xl mx-auto">
           <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="text-xs font-bold text-[#0a66c2] uppercase tracking-wider bg-blue-50 px-3.5 py-1 rounded-full border border-blue-200/60 shadow-2xs">
+            <span className="text-xs font-bold text-[#1a91f0] uppercase tracking-wider bg-blue-50 px-3.5 py-1 rounded-full border border-blue-200/60 shadow-2xs">
               Ưu Thế Vượt Trội
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-3">
@@ -966,8 +874,8 @@ export const TrangChu = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Tính năng 1 */}
-            <div className="bg-white p-6 rounded-xl border border-slate-200/90 shadow-xs hover:border-[#0a66c2]/40 hover:shadow-sm transition duration-200">
-              <div className="w-12 h-12 rounded-xl bg-blue-50 text-[#0a66c2] flex items-center justify-center mb-4">
+            <div className="bg-white p-6 rounded-xl border border-slate-200/90 shadow-xs hover:border-[#1a91f0]/40 hover:shadow-sm transition duration-200">
+              <div className="w-12 h-12 rounded-xl bg-blue-50 text-[#1a91f0] flex items-center justify-center mb-4">
                 <Move size={22} />
               </div>
               <h3 className="text-sm font-bold text-slate-800">
@@ -980,7 +888,7 @@ export const TrangChu = ({
             </div>
 
             {/* Tính năng 2 */}
-            <div className="bg-white p-6 rounded-xl border border-slate-200/90 shadow-xs hover:border-[#0a66c2]/40 hover:shadow-sm transition duration-200">
+            <div className="bg-white p-6 rounded-xl border border-slate-200/90 shadow-xs hover:border-[#1a91f0]/40 hover:shadow-sm transition duration-200">
               <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4">
                 <Printer size={22} />
               </div>
@@ -994,7 +902,7 @@ export const TrangChu = ({
             </div>
 
             {/* Tính năng 3 */}
-            <div className="bg-white p-6 rounded-xl border border-slate-200/90 shadow-xs hover:border-[#0a66c2]/40 hover:shadow-sm transition duration-200">
+            <div className="bg-white p-6 rounded-xl border border-slate-200/90 shadow-xs hover:border-[#1a91f0]/40 hover:shadow-sm transition duration-200">
               <div className="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-4">
                 <Palette size={22} />
               </div>
@@ -1008,7 +916,7 @@ export const TrangChu = ({
             </div>
 
             {/* Tính năng 4 */}
-            <div className="bg-white p-6 rounded-xl border border-slate-200/90 shadow-xs hover:border-[#0a66c2]/40 hover:shadow-sm transition duration-200">
+            <div className="bg-white p-6 rounded-xl border border-slate-200/90 shadow-xs hover:border-[#1a91f0]/40 hover:shadow-sm transition duration-200">
               <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-4">
                 <Save size={22} />
               </div>
@@ -1027,7 +935,7 @@ export const TrangChu = ({
       {/* ================= 5. QUY TRÌNH 3 BƯỚC ĐƠN GIẢN ================= */}
       <section id="quy-trinh" className="py-16 px-6 max-w-5xl mx-auto">
         <div className="text-center max-w-xl mx-auto mb-12">
-          <span className="text-xs font-bold text-[#0a66c2] uppercase tracking-wider bg-blue-50 px-3.5 py-1 rounded-full border border-blue-200/60 shadow-2xs">
+          <span className="text-xs font-bold text-[#1a91f0] uppercase tracking-wider bg-blue-50 px-3.5 py-1 rounded-full border border-blue-200/60 shadow-2xs">
             Dễ Dàng & Nhanh Chóng
           </span>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-3">
@@ -1041,7 +949,7 @@ export const TrangChu = ({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
           {/* Bước 1 */}
           <div className="relative text-center p-6 bg-white rounded-xl border border-slate-200/90 shadow-xs">
-            <div className="w-11 h-11 rounded-full bg-[#0a66c2] text-white font-extrabold text-sm flex items-center justify-center mx-auto mb-4 shadow-sm">
+            <div className="w-11 h-11 rounded-full bg-[#1a91f0] text-white font-extrabold text-sm flex items-center justify-center mx-auto mb-4 shadow-sm">
               1
             </div>
             <h3 className="text-sm font-bold text-slate-800">
@@ -1054,7 +962,7 @@ export const TrangChu = ({
 
           {/* Bước 2 */}
           <div className="relative text-center p-6 bg-white rounded-xl border border-slate-200/90 shadow-xs">
-            <div className="w-11 h-11 rounded-full bg-[#0a66c2] text-white font-extrabold text-sm flex items-center justify-center mx-auto mb-4 shadow-sm">
+            <div className="w-11 h-11 rounded-full bg-[#1a91f0] text-white font-extrabold text-sm flex items-center justify-center mx-auto mb-4 shadow-sm">
               2
             </div>
             <h3 className="text-sm font-bold text-slate-800">
@@ -1067,7 +975,7 @@ export const TrangChu = ({
 
           {/* Bước 3 */}
           <div className="relative text-center p-6 bg-white rounded-xl border border-slate-200/90 shadow-xs">
-            <div className="w-11 h-11 rounded-full bg-[#0a66c2] text-white font-extrabold text-sm flex items-center justify-center mx-auto mb-4 shadow-sm">
+            <div className="w-11 h-11 rounded-full bg-[#1a91f0] text-white font-extrabold text-sm flex items-center justify-center mx-auto mb-4 shadow-sm">
               3
             </div>
             <h3 className="text-sm font-bold text-slate-800">
@@ -1080,19 +988,19 @@ export const TrangChu = ({
         </div>
 
         {/* Banner CTA phụ giữa trang */}
-        <div className="mt-12 p-8 rounded-2xl bg-gradient-to-r from-[#004182] via-[#0a66c2] to-[#0073b1] text-white text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-6 shadow-md">
+        <div className="mt-12 p-8 rounded-2xl bg-[#1a91f0] text-white text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xs">
           <div>
-            <h3 className="text-lg font-bold">
+            <h3 className="text-xl font-bold">
               Bắt đầu tạo hồ sơ CV ngay bây giờ?
             </h3>
-            <p className="text-xs text-blue-100 mt-1">
-              Trải nghiệm hoàn toàn miễn phí, tối ưu hóa chuẩn ATS.
+            <p className="text-sm text-white/90 mt-1">
+              Trải nghiệm hoàn toàn miễn phí, tối ưu hóa chuẩn ATS trong 5 phút.
             </p>
           </div>
           <button
             type="button"
             onClick={onChuyenTrinhThietKe}
-            className="bg-white text-[#0a66c2] hover:bg-slate-50 font-extrabold text-xs px-6 py-3 rounded-full shadow-sm transition active:scale-95 cursor-pointer shrink-0"
+            className="bg-white text-[#1a91f0] hover:bg-[#f7f9fc] font-bold text-sm px-7 py-3.5 rounded-[36px] shadow-xs transition active:scale-95 cursor-pointer shrink-0"
           >
             Tạo CV Ngay
           </button>
@@ -1115,7 +1023,7 @@ export const TrangChu = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
 
             {/* Divider VS */}
-            <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full items-center justify-center text-sm font-black text-white shadow-xl" style={{ background: "linear-gradient(135deg,#0a66c2,#7c3aed)" }}>
+            <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full items-center justify-center text-sm font-black text-white shadow-xl" style={{ background: "linear-gradient(135deg,#1a91f0,#7c3aed)" }}>
               VS
             </div>
 
@@ -1158,16 +1066,16 @@ export const TrangChu = ({
             {/* === SAU === */}
             <div
               className="rounded-2xl border-2 p-6 relative"
-              style={{ borderColor: "#0a66c2", background: "linear-gradient(135deg,#f0f7ff,#fff)", boxShadow: "0 0 40px rgba(10,102,194,0.15)" }}
+              style={{ borderColor: "#1a91f0", background: "linear-gradient(135deg,#f0f7ff,#fff)", boxShadow: "0 0 40px rgba(10,102,194,0.15)" }}
             >
-              <div className="absolute top-4 right-4 text-xs font-bold text-white px-3 py-1 rounded-full flex items-center gap-1" style={{ background: "linear-gradient(135deg,#0a66c2,#059669)" }}>
+              <div className="absolute top-4 right-4 text-xs font-bold text-white px-3 py-1 rounded-full flex items-center gap-1" style={{ background: "linear-gradient(135deg,#1a91f0,#059669)" }}>
                 <span>✅</span> Đạt Chuẩn
               </div>
               <h3 className="font-black text-slate-800 text-base mb-4">CV tạo bằng CVify Pro</h3>
 
               {/* Giả lập CV đẹp */}
               <div className="bg-white rounded-lg overflow-hidden border border-blue-100 shadow-md">
-                <div className="px-5 py-4" style={{ background: "linear-gradient(135deg,#0a66c2,#7c3aed)" }}>
+                <div className="px-5 py-4" style={{ background: "linear-gradient(135deg,#1a91f0,#7c3aed)" }}>
                   <div className="text-white font-black text-sm">NGUYỄN VĂN AN</div>
                   <div className="text-blue-200 text-[11px]">Senior Software Engineer</div>
                   <div className="text-blue-200 text-[10px] mt-1">📧 an@gmail.com  📞 0123456789  📍 TP.HCM</div>
@@ -1200,9 +1108,9 @@ export const TrangChu = ({
 
               {/* ATS Score */}
               <div className="mt-4">
-                <div className="flex justify-between text-xs text-slate-500 mb-1"><span>Điểm ATS</span><span className="font-bold" style={{ color: "#0a66c2" }}>99%</span></div>
+                <div className="flex justify-between text-xs text-slate-500 mb-1"><span>Điểm ATS</span><span className="font-bold" style={{ color: "#1a91f0" }}>99%</span></div>
                 <div className="h-2 rounded-full bg-blue-100 overflow-hidden">
-                  <div className="h-full rounded-full shimmer" style={{ width: "99%", background: "linear-gradient(90deg,#0a66c2,#059669)" }} />
+                  <div className="h-full rounded-full shimmer" style={{ width: "99%", background: "linear-gradient(90deg,#1a91f0,#059669)" }} />
                 </div>
               </div>
             </div>
@@ -1219,11 +1127,11 @@ export const TrangChu = ({
           {/* Cột 1: Thông tin thương hiệu */}
           <div className="md:col-span-1">
             <div className="flex items-center gap-2 text-white mb-3">
-              <div className="w-7 h-7 rounded-md bg-[#0a66c2] text-white flex items-center justify-center font-bold text-xs">
+              <div className="w-7 h-7 rounded-md bg-[#1a91f0] text-white flex items-center justify-center font-bold text-xs">
                 CV
               </div>
               <span className="font-bold text-sm tracking-tight">
-                CVify <span className="text-[#0a66c2]">Pro</span>
+                CVify <span className="text-[#1a91f0]">Pro</span>
               </span>
             </div>
             <p className="text-slate-400 text-xs leading-relaxed mb-4">

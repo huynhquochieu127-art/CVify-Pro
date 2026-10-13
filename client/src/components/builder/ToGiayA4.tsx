@@ -68,8 +68,8 @@ export const ToGiayA4: React.FC<ToGiayA4Props> = () => {
         isA4Over ? 'ring-2 ring-blue-500/40 rounded-sm' : ''
       }`}
     >
-      {/* TỜ GIẤY A4 CHUẨN IN ẤN (210 x 297mm) */}
-      <div className="page-a4 w-full max-w-[800px] min-h-[1050px] p-8 sm:p-12 bg-white shadow-2xl rounded-sm text-slate-800 flex flex-col justify-between print:shadow-none print:m-0 print:p-8">
+      {/* TỜ GIẤY A4 CHUẨN IN ẤN (210 x 297mm) — Fresh Worksheet */}
+      <div className="page-a4 w-full max-w-[800px] min-h-[1050px] p-8 sm:p-12 bg-white border border-[#d9deeb] shadow-sm rounded-sm text-[#1e2532] flex flex-col justify-between print:border-none print:shadow-none print:m-0 print:p-8">
         <div>
           {/* HEADER THÔNG TIN CÁ NHÂN & AVATAR */}
           <KhoiThongTinCaNhan />

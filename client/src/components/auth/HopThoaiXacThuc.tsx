@@ -382,7 +382,7 @@ export const HopThoaiXacThuc: React.FC<HopThoaiXacThucProps> = ({
               onClick={() => chuyenCheDo('dang-nhap')}
               className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition cursor-pointer ${
                 cheDo === 'dang-nhap'
-                  ? 'bg-white text-[#0a66c2] shadow-2xs'
+                  ? 'bg-white text-[#1a91f0] shadow-2xs'
                   : 'text-slate-500 hover:text-slate-900'
               }`}
             >
@@ -393,7 +393,7 @@ export const HopThoaiXacThuc: React.FC<HopThoaiXacThucProps> = ({
               onClick={() => chuyenCheDo('dang-ky')}
               className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition cursor-pointer ${
                 cheDo === 'dang-ky'
-                  ? 'bg-white text-[#0a66c2] shadow-2xs'
+                  ? 'bg-white text-[#1a91f0] shadow-2xs'
                   : 'text-slate-500 hover:text-slate-900'
               }`}
             >
@@ -441,7 +441,7 @@ export const HopThoaiXacThuc: React.FC<HopThoaiXacThucProps> = ({
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="name@gmail.com"
-                      className="w-full pl-9 pr-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0a66c2]/30 focus:border-[#0a66c2] transition"
+                      className="w-full pl-9 pr-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1a91f0]/30 focus:border-[#1a91f0] transition"
                     />
                   </div>
                 </div>
@@ -457,7 +457,7 @@ export const HopThoaiXacThuc: React.FC<HopThoaiXacThucProps> = ({
                       value={matKhau}
                       onChange={(e) => setMatKhau(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-9 pr-9 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0a66c2]/30 focus:border-[#0a66c2] transition"
+                      className="w-full pl-9 pr-9 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1a91f0]/30 focus:border-[#1a91f0] transition"
                     />
                     <button
                       type="button"
@@ -472,7 +472,7 @@ export const HopThoaiXacThuc: React.FC<HopThoaiXacThucProps> = ({
                 <button
                   type="submit"
                   disabled={dangXuLy}
-                  className="w-full mt-2 py-2.5 bg-[#0a66c2] hover:bg-[#004182] disabled:bg-blue-300 text-white font-bold text-xs rounded-xl shadow-xs transition active:scale-98 cursor-pointer flex items-center justify-center gap-2"
+                  className="w-full mt-2 py-2.5 bg-[#1a91f0] hover:bg-[#004182] disabled:bg-blue-300 text-white font-bold text-xs rounded-xl shadow-xs transition active:scale-98 cursor-pointer flex items-center justify-center gap-2"
                 >
                   {dangXuLy ? (
                     <>
@@ -493,7 +493,7 @@ export const HopThoaiXacThuc: React.FC<HopThoaiXacThucProps> = ({
           {cheDo === 'dang-ky' && buocDangKy === 1 && (
             <div>
               <div className="text-center mb-4">
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-[#0a66c2] text-[11px] font-bold mb-1.5 border border-blue-100">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-[#1a91f0] text-[11px] font-bold mb-1.5 border border-blue-100">
                   <span>Bước 1/2</span>
                   <span>•</span>
                   <span>Xác thực Gmail</span>
@@ -518,7 +518,7 @@ export const HopThoaiXacThuc: React.FC<HopThoaiXacThucProps> = ({
                       value={hoTen}
                       onChange={(e) => setHoTen(e.target.value)}
                       placeholder="Ví dụ: Nguyễn Văn An"
-                      className="w-full pl-9 pr-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0a66c2]/30 focus:border-[#0a66c2] transition"
+                      className="w-full pl-9 pr-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1a91f0]/30 focus:border-[#1a91f0] transition"
                     />
                   </div>
                 </div>
@@ -536,7 +536,7 @@ export const HopThoaiXacThuc: React.FC<HopThoaiXacThucProps> = ({
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="ban@gmail.com"
-                      className="w-full pl-9 pr-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0a66c2]/30 focus:border-[#0a66c2] transition"
+                      className="w-full pl-9 pr-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1a91f0]/30 focus:border-[#1a91f0] transition"
                     />
                   </div>
                 </div>
@@ -554,7 +554,7 @@ export const HopThoaiXacThuc: React.FC<HopThoaiXacThucProps> = ({
                       value={matKhau}
                       onChange={(e) => setMatKhau(e.target.value)}
                       placeholder="Tối thiểu 6 ký tự"
-                      className="w-full pl-9 pr-9 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0a66c2]/30 focus:border-[#0a66c2] transition"
+                      className="w-full pl-9 pr-9 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1a91f0]/30 focus:border-[#1a91f0] transition"
                     />
                     <button
                       type="button"
@@ -569,7 +569,7 @@ export const HopThoaiXacThuc: React.FC<HopThoaiXacThucProps> = ({
                 <button
                   type="submit"
                   disabled={dangGuiOtp}
-                  className="w-full mt-2 py-2.5 bg-[#0a66c2] hover:bg-[#004182] disabled:bg-blue-300 text-white font-bold text-xs rounded-xl shadow-xs transition active:scale-98 cursor-pointer flex items-center justify-center gap-2"
+                  className="w-full mt-2 py-2.5 bg-[#1a91f0] hover:bg-[#004182] disabled:bg-blue-300 text-white font-bold text-xs rounded-xl shadow-xs transition active:scale-98 cursor-pointer flex items-center justify-center gap-2"
                 >
                   {dangGuiOtp ? (
                     <>
@@ -595,20 +595,20 @@ export const HopThoaiXacThuc: React.FC<HopThoaiXacThucProps> = ({
               <button
                 type="button"
                 onClick={() => setBuocDangKy(1)}
-                className="inline-flex items-center gap-1 text-xs text-slate-500 hover:text-[#0a66c2] mb-3 transition cursor-pointer"
+                className="inline-flex items-center gap-1 text-xs text-slate-500 hover:text-[#1a91f0] mb-3 transition cursor-pointer"
               >
                 <ArrowLeft size={14} />
                 <span>Quay lại đổi thông tin</span>
               </button>
 
               <div className="text-center mb-4">
-                <div className="w-12 h-12 bg-blue-50 text-[#0a66c2] rounded-full mx-auto flex items-center justify-center mb-2.5 shadow-2xs border border-blue-100">
+                <div className="w-12 h-12 bg-blue-50 text-[#1a91f0] rounded-full mx-auto flex items-center justify-center mb-2.5 shadow-2xs border border-blue-100">
                   <KeyRound size={22} />
                 </div>
                 <h2 className="text-base font-extrabold text-slate-900">Xác thực mã OTP</h2>
                 <p className="text-xs text-slate-600 mt-1 px-1 leading-relaxed">
                   Mã 6 chữ số đã được gửi đến{' '}
-                  <span className="font-bold text-[#0a66c2] underline decoration-blue-300">
+                  <span className="font-bold text-[#1a91f0] underline decoration-blue-300">
                     {email}
                   </span>
                   . Vui lòng mở Gmail kiểm tra hộp thư đến (hoặc thư Rác/Spam).
@@ -632,7 +632,7 @@ export const HopThoaiXacThuc: React.FC<HopThoaiXacThucProps> = ({
                       setMaOtp(val);
                     }}
                     placeholder="••••••"
-                    className="w-full text-center text-2xl font-mono font-black tracking-[0.4em] py-2.5 px-3 bg-slate-50 border-2 border-blue-200 focus:border-[#0a66c2] focus:bg-white rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 transition text-slate-800"
+                    className="w-full text-center text-2xl font-mono font-black tracking-[0.4em] py-2.5 px-3 bg-slate-50 border-2 border-blue-200 focus:border-[#1a91f0] focus:bg-white rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 transition text-slate-800"
                   />
                 </div>
 
@@ -647,7 +647,7 @@ export const HopThoaiXacThuc: React.FC<HopThoaiXacThucProps> = ({
                       type="button"
                       onClick={handleGuiLaiOtp}
                       disabled={dangGuiOtp}
-                      className="text-[#0a66c2] hover:underline font-bold flex items-center gap-1 cursor-pointer"
+                      className="text-[#1a91f0] hover:underline font-bold flex items-center gap-1 cursor-pointer"
                     >
                       <RotateCw size={12} className={dangGuiOtp ? 'animate-spin' : ''} />
                       <span>Gửi lại mã</span>
@@ -655,7 +655,7 @@ export const HopThoaiXacThuc: React.FC<HopThoaiXacThucProps> = ({
                   ) : (
                     <span className="text-slate-400">
                       Gửi lại sau:{' '}
-                      <strong className="text-[#0a66c2] font-mono">
+                      <strong className="text-[#1a91f0] font-mono">
                         {demNguoc < 10 ? `0${demNguoc}` : demNguoc}s
                       </strong>
                     </span>
@@ -763,7 +763,7 @@ export const HopThoaiXacThuc: React.FC<HopThoaiXacThucProps> = ({
                 <button
                   type="button"
                   onClick={() => chuyenCheDo('dang-ky')}
-                  className="font-bold text-[#0a66c2] hover:underline cursor-pointer"
+                  className="font-bold text-[#1a91f0] hover:underline cursor-pointer"
                 >
                   Đăng ký ngay
                 </button>
@@ -774,7 +774,7 @@ export const HopThoaiXacThuc: React.FC<HopThoaiXacThucProps> = ({
                 <button
                   type="button"
                   onClick={() => chuyenCheDo('dang-nhap')}
-                  className="font-bold text-[#0a66c2] hover:underline cursor-pointer"
+                  className="font-bold text-[#1a91f0] hover:underline cursor-pointer"
                 >
                   Đăng nhập
                 </button>
@@ -824,7 +824,7 @@ export const HopThoaiXacThuc: React.FC<HopThoaiXacThucProps> = ({
 
             <p className="text-xs text-slate-500 mb-3 leading-relaxed">
               Bạn có thể kiểm tra trực tiếp API{' '}
-              <code className="text-[#0a66c2] bg-blue-50 px-1 py-0.5 rounded font-mono">
+              <code className="text-[#1a91f0] bg-blue-50 px-1 py-0.5 rounded font-mono">
                 POST /api/auth/google-login
               </code>{' '}
               (tự động lưu tài khoản vào MySQL & tạo hồ sơ gốc):
@@ -840,7 +840,7 @@ export const HopThoaiXacThuc: React.FC<HopThoaiXacThucProps> = ({
                   value={tenTestGoogle}
                   onChange={(e) => setTenTestGoogle(e.target.value)}
                   placeholder="Ví dụ: Nguyễn Văn Google"
-                  className="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-[#0a66c2]"
+                  className="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-[#1a91f0]"
                 />
               </div>
 
@@ -853,7 +853,7 @@ export const HopThoaiXacThuc: React.FC<HopThoaiXacThucProps> = ({
                   value={emailTestGoogle}
                   onChange={(e) => setEmailTestGoogle(e.target.value)}
                   placeholder="nguyenvangoogle@gmail.com"
-                  className="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-[#0a66c2]"
+                  className="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-[#1a91f0]"
                 />
               </div>
             </div>
@@ -869,7 +869,7 @@ export const HopThoaiXacThuc: React.FC<HopThoaiXacThucProps> = ({
                   });
                 }}
                 disabled={dangXuLy}
-                className="flex-1 py-2 bg-[#0a66c2] hover:bg-[#004182] text-white font-bold text-xs rounded-xl shadow-xs transition cursor-pointer flex items-center justify-center gap-1.5"
+                className="flex-1 py-2 bg-[#1a91f0] hover:bg-[#004182] text-white font-bold text-xs rounded-xl shadow-xs transition cursor-pointer flex items-center justify-center gap-1.5"
               >
                 {dangXuLy ? (
                   <Loader2 size={13} className="animate-spin" />
