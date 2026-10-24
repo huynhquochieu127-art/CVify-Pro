@@ -2,10 +2,6 @@ import React, { useState } from 'react';
 import {
   UserCheck,
   User,
-  Mail,
-  Phone,
-  MapPin,
-  Globe,
   Briefcase,
   Award,
   Plus,

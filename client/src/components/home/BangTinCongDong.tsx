@@ -6,20 +6,13 @@ import {
   Share2,
   Send,
   Sparkles,
-  TrendingUp,
   Clock,
   Eye,
-  Hash,
-  Link2,
   CheckCircle2,
   X,
-  BookOpen,
-  ChevronRight,
   Flame,
   Award,
-  ThumbsUp,
   Briefcase,
-  Smile,
 } from 'lucide-react';
 
 export interface BaiDangType {

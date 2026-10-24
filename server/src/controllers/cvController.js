@@ -1,5 +1,6 @@
 // server/src/controllers/cvController.js
 import prisma from '../config/db.js';
+import { layGioVietNam } from './authController.js';
 
 // Dữ liệu mẫu khởi tạo cho một bản CV mới
 const DEFAULT_DINH_DANG = {
@@ -100,6 +101,8 @@ export const taoCVMoi = async (req, res) => {
         thu_tu_khoi: thu_tu_khoi || DEFAULT_THU_TU_KHOI,
         noi_dung_cv: noiDungKhoiTao,
         dinh_dang_cv: dinh_dang_cv || DEFAULT_DINH_DANG,
+        ngay_tao: layGioVietNam(),
+        ngay_sua: layGioVietNam(),
       },
     });
 
@@ -195,6 +198,7 @@ export const capNhatCV = async (req, res) => {
         ...(thu_tu_khoi !== undefined && { thu_tu_khoi }),
         ...(dinh_dang_cv !== undefined && { dinh_dang_cv }),
         ...(cong_khai !== undefined && { cong_khai }),
+        ngay_sua: layGioVietNam(),
       },
     });
 

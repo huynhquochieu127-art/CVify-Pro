@@ -3,8 +3,6 @@ import {
   LayoutTemplate,
   ChevronRight,
   Sparkles,
-  Check,
-  Eye,
 } from 'lucide-react';
 
 interface KhoCVMauProps {

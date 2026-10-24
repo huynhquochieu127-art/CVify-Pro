@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+
+# Antigravity / AI Skills lock
+skills-lock.json
+
+# Temporary files
+hutech_logo_cover.png
+*.log

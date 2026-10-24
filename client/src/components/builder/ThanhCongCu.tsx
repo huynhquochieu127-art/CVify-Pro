@@ -4,7 +4,6 @@ import axios from 'axios';
 import {
   Palette,
   Printer,
-  Sparkles,
   ArrowLeft,
   Save,
   Loader2,
@@ -77,7 +76,9 @@ export const ThanhCongCu: React.FC<ThanhCongCuProps> = ({
           kyNang: cv.kyNang,
           duAn: cv.duAn,
           chungChi: cv.chungChi,
+          khoiTuyChinh: cv.khoiTuyChinh || [],
           anHienKhoi: cv.anHienKhoi,
+          boCuc: cv.boCuc,
         },
         thu_tu_khoi: cv.thuTuKhoi,
         dinh_dang_cv: cv.dinhDang,

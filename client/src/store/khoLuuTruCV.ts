@@ -1,83 +1,186 @@
 import { create } from 'zustand';
+import type {
+  BoCucCV,
+  CheDoBoCuc,
+  ChungChiItem,
+  DuAnItem,
+  HocVanItem,
+  KhoiTuyChinhItem,
+  KinhNghiemItem,
+  KyNangItem,
+  ThongTinCV,
+  ViTriCot,
+} from '../types/cv';
 
-export interface KinhNghiemItem {
-  id: string;
-  congTy: string;
-  viTri: string;
-  thoiGian: string;
-  diaDiem?: string;
-  loaiHinh?: string;
-  moTa: string;
-}
+// Re-export type definitions để tương thích 100% với các component hiện có
+export type * from '../types/cv';
 
-export interface HocVanItem {
-  id: string;
-  truong: string;
-  chuyenNganh: string;
-  thoiGian: string;
-  thanhTich: string;
-  gpa?: string;
-  diemSo?: string;
-}
+/**
+ * Danh sách ID khối mặc định phân bổ vào Cột Trái (35%).
+ * Thích hợp cho các khối có nội dung ngắn gọn, dạng thẻ, danh sách kỹ năng, chứng chỉ.
+ */
+export const KHOI_COT_TRAI_MAC_DINH = new Set<string>([
+  'ky-nang',
+  'hoc-van',
+  'chung-chi',
+]);
 
-export interface KyNangItem {
-  id: string;
-  ten: string;
-  mucDo: string;
-  endorsements?: number;
-  nhom?: string;
-}
+/**
+ * Danh sách ID khối mặc định phân bổ vào Cột Phải (65%).
+ * Thích hợp cho các khối nội dung dài, dòng thời gian, mô tả dự án và khối tùy chỉnh.
+ */
+export const KHOI_COT_PHAI_MAC_DINH = new Set<string>([
+  'gioi-thieu',
+  'kinh-nghiem',
+  'du-an',
+]);
 
-export interface DuAnItem {
-  id: string;
-  ten: string;
-  vaiTro: string;
-  thoiGian: string;
-  lienKet?: string;
-  congNghe?: string[];
-  moTa: string;
-}
+/**
+ * Chuẩn hóa cấu trúc bố cục BoCucCV, đảm bảo tương thích ngược 100% với dữ liệu cũ.
+ * Bất kỳ CV nào chưa có boCuc sẽ tự động được phân bổ thành:
+ * - Cột Trái (35%): kỹ năng, học vấn, chứng chỉ
+ * - Cột Phải (65%): giới thiệu, kinh nghiệm, dự án, tùy chỉnh
+ * Tuyệt đối không làm mất bất kỳ khối nào có trong thuTuKhoi (0 data loss).
+ *
+ * @param boCucDauVao Bố cục hiện có (nếu có, có thể partial hoặc null/undefined)
+ * @param thuTuKhoi Danh sách thứ tự khối phẳng (thuTuKhoi của CV cũ)
+ * @returns BoCucCV chuẩn hóa hợp lệ
+ */
+export function chuanHoaBoCuc(
+  boCucDauVao?: Partial<BoCucCV> | null,
+  thuTuKhoi?: string[]
+): BoCucCV {
+  const cheDo: CheDoBoCuc =
+    boCucDauVao?.cheDo === '1-cot' || boCucDauVao?.cheDo === '2-cot'
+      ? boCucDauVao.cheDo
+      : '2-cot';
 
-export interface ChungChiItem {
-  id: string;
-  ten: string;
-  toChuc: string;
-  nam: string;
-  maChungChi?: string;
-}
+  const tiLe = boCucDauVao?.tiLe || '35-65';
 
-export interface KhoiTuyChinhItem {
-  id: string;
-  tieuDe: string;
-  noiDung: string;
-}
+  const danhSachKhoi =
+    Array.isArray(thuTuKhoi) && thuTuKhoi.length > 0
+      ? [...thuTuKhoi]
+      : ['gioi-thieu', 'kinh-nghiem', 'hoc-van', 'ky-nang'];
 
-export interface ThongTinCV {
-  dinhDang: {
-    mauChuDao: string;
-    coChu: string;
-    fontChu: string;
-    matDo: 'compact' | 'normal' | 'relaxed';
+  let cotTrai: string[] = Array.isArray(boCucDauVao?.cotTrai)
+    ? [...boCucDauVao.cotTrai]
+    : [];
+  let cotPhai: string[] = Array.isArray(boCucDauVao?.cotPhai)
+    ? [...boCucDauVao.cotPhai]
+    : [];
+
+  // Nếu cả 2 cột đều rỗng (CV cũ hoàn toàn chưa có cấu trúc 2 cột)
+  if (cotTrai.length === 0 && cotPhai.length === 0) {
+    for (const id of danhSachKhoi) {
+      if (typeof id !== 'string' || !id.trim()) continue;
+      if (KHOI_COT_TRAI_MAC_DINH.has(id)) {
+        cotTrai.push(id);
+      } else {
+        cotPhai.push(id);
+      }
+    }
+  } else {
+    // Đã có một phần hoặc toàn bộ boCuc:
+    // Kiểm tra và bổ sung bất kỳ khối nào có trong thuTuKhoi nhưng bị thiếu trong cả 2 cột
+    const daCo = new Set([...cotTrai, ...cotPhai]);
+    for (const id of danhSachKhoi) {
+      if (typeof id !== 'string' || !id.trim()) continue;
+      if (!daCo.has(id)) {
+        if (KHOI_COT_TRAI_MAC_DINH.has(id)) {
+          cotTrai.push(id);
+        } else {
+          cotPhai.push(id);
+        }
+        daCo.add(id);
+      }
+    }
+  }
+
+  // Deduplicate để đảm bảo không trùng lặp khối trong cùng một cột hoặc giữa hai cột
+  const cotTraiSet = new Set<string>();
+  const cotTraiKetQua: string[] = [];
+  for (const id of cotTrai) {
+    if (!cotTraiSet.has(id)) {
+      cotTraiSet.add(id);
+      cotTraiKetQua.push(id);
+    }
+  }
+
+  const cotPhaiKetQua: string[] = [];
+  for (const id of cotPhai) {
+    if (!cotTraiSet.has(id) && !cotPhaiKetQua.includes(id)) {
+      cotPhaiKetQua.push(id);
+    }
+  }
+
+  return {
+    cheDo,
+    cotTrai: cotTraiKetQua,
+    cotPhai: cotPhaiKetQua,
+    tiLe,
   };
-  thongTinCaNhan: {
-    hoTen: string;
-    viTriUngTuyen: string;
-    email: string;
-    soDienThoai: string;
-    diaChi: string;
-    website: string;
-    avatarUrl?: string;
-    coverColor?: string;
-  };
-  gioiThieu: string;
-  kinhNghiem: KinhNghiemItem[];
-  hocVan: HocVanItem[];
-  kyNang: KyNangItem[];
-  duAn: DuAnItem[];
-  chungChi: ChungChiItem[];
-  khoiTuyChinh?: KhoiTuyChinhItem[];
-  thuTuKhoi: string[];
-  anHienKhoi: Record<string, boolean>;
+}
+
+/**
+ * Sắp xếp lại danh sách mục con dựa trên mảng đối tượng hoặc mảng ID mới.
+ * - Bảo toàn 100% các mục con hiện có (nếu caller truyền mảng thiếu).
+ * - Lọc bỏ ID không tồn tại hoặc ID null/undefined.
+ * - Loại bỏ các mục trùng lặp (duplicate IDs) để bảo vệ React key.
+ */
+export function sapXepDanhSachMuc<T extends { id: string }>(
+  danhSachHienTai: T[],
+  itemsOrIds: T[] | string[]
+): T[] {
+  if (!Array.isArray(itemsOrIds) || itemsOrIds.length === 0) {
+    return [];
+  }
+
+  // Trường hợp 1: itemsOrIds là mảng ID chuỗi (string[])
+  if (typeof itemsOrIds[0] === 'string') {
+    const ids = itemsOrIds as string[];
+    const mapHienTai = new Map<string, T>(
+      (danhSachHienTai || []).map((item) => [item.id, item])
+    );
+    const ketQua: T[] = [];
+    const daThem = new Set<string>();
+
+    for (const id of ids) {
+      if (typeof id === 'string' && mapHienTai.has(id) && !daThem.has(id)) {
+        ketQua.push(mapHienTai.get(id)!);
+        daThem.add(id);
+        mapHienTai.delete(id);
+      }
+    }
+
+    // Bảo tồn các mục chưa xuất hiện trong danh sách ID (phòng ngừa mất dữ liệu)
+    for (const itemConLai of mapHienTai.values()) {
+      ketQua.push(itemConLai);
+    }
+
+    return ketQua;
+  }
+
+  // Trường hợp 2: itemsOrIds là mảng các đối tượng (T[])
+  const items = itemsOrIds as T[];
+  const daThem = new Set<string>();
+  const ketQua: T[] = [];
+
+  for (const item of items) {
+    if (item && item.id && !daThem.has(item.id)) {
+      ketQua.push(item);
+      daThem.add(item.id);
+    }
+  }
+
+  // Bảo tồn các mục hiện tại chưa xuất hiện trong items mới (phòng ngừa mất dữ liệu)
+  for (const itemHienTai of danhSachHienTai || []) {
+    if (itemHienTai && itemHienTai.id && !daThem.has(itemHienTai.id)) {
+      ketQua.push(itemHienTai);
+      daThem.add(itemHienTai.id);
+    }
+  }
+
+  return ketQua;
 }
 
 export interface KhoLuuTruCVState {
@@ -88,8 +191,30 @@ export interface KhoLuuTruCVState {
   setThongTinCaNhan: (duLieu: Partial<ThongTinCV['thongTinCaNhan']>) => void;
   capNhatGioiThieu: (noiDung: string) => void;
   setGioiThieu: (noiDung: string) => void;
+
+  // Layout & Column Actions (R1)
+  chuyenCheDoBoCuc: (cheDo: CheDoBoCuc) => void;
+  sapXepKhoiCot: (cot: ViTriCot | 'trai' | 'phai', thuTuMoi: string[]) => void;
+  chuyenKhoiSangCot: (
+    khoiId: string,
+    cotDich: ViTriCot | 'trai' | 'phai',
+    viTriIndex?: number
+  ) => void;
+  doiCotKhoi: (khoiId: string) => void;
+  diChuyenKhoiLenXuong: (khoiId: string, huong: 'len' | 'xuong') => void;
+
+  // Block ordering & visibility
   sapXepKhoi: (thuTuMoi: string[]) => void;
   batTatKhoi: (khoiId: string, trangThai?: boolean) => void;
+
+  // Nested Section Items Sorting (R2)
+  sapXepKinhNghiem: (itemsOrIds: KinhNghiemItem[] | string[]) => void;
+  sapXepHocVan: (itemsOrIds: HocVanItem[] | string[]) => void;
+  sapXepKyNang: (itemsOrIds: KyNangItem[] | string[]) => void;
+  sapXepDuAn: (itemsOrIds: DuAnItem[] | string[]) => void;
+  sapXepChungChi: (itemsOrIds: ChungChiItem[] | string[]) => void;
+
+  // Section item CRUD
   themKinhNghiem: (item?: Partial<Omit<KinhNghiemItem, 'id'>>) => void;
   suaKinhNghiem: (id: string, item: Partial<KinhNghiemItem>) => void;
   xoaKinhNghiem: (id: string) => void;
@@ -108,6 +233,7 @@ export interface KhoLuuTruCVState {
   themKhoiTuyChinh: (tieuDe: string, noiDung?: string) => string;
   suaKhoiTuyChinh: (id: string, item: Partial<KhoiTuyChinhItem>) => void;
   xoaKhoiTuyChinh: (id: string) => void;
+
   khoiPhucMacDinh: () => void;
   idCVHienTai: number | null;
   tieuDeCVHienTai: string;
@@ -134,12 +260,13 @@ const layThongTinNguoiDungMacDinh = () => {
 
 const userMacDinh = layThongTinNguoiDungMacDinh();
 
-const DU_LIEU_MAC_DINH: ThongTinCV = {
+export const DU_LIEU_MAC_DINH: ThongTinCV = {
   dinhDang: {
     mauChuDao: '#1a91f0', // Resume.io Signal Blue
     coChu: '14px',
     fontChu: 'Inter',
     matDo: 'normal',
+    cheDoBoCuc: '2-cot',
   },
   thongTinCaNhan: {
     hoTen: userMacDinh.hoTen || '',
@@ -166,6 +293,12 @@ const DU_LIEU_MAC_DINH: ThongTinCV = {
     'ky-nang': true,
     'du-an': false,
     'chung-chi': false,
+  },
+  boCuc: {
+    cheDo: '2-cot',
+    cotTrai: ['hoc-van', 'ky-nang'],
+    cotPhai: ['gioi-thieu', 'kinh-nghiem'],
+    tiLe: '35-65',
   },
 };
 
@@ -232,22 +365,316 @@ export const useKhoLuuTruCV = create<KhoLuuTruCVState>()((set) => ({
       },
     })),
 
+  // ==========================================
+  // BỐ CỤC & ĐIỀU KHIỂN CỘT (R1)
+  // ==========================================
+
+  chuyenCheDoBoCuc: (cheDo) =>
+    set((state) => {
+      const boCucHienTai = state.cv.boCuc
+        ? { ...state.cv.boCuc }
+        : chuanHoaBoCuc(undefined, state.cv.thuTuKhoi);
+
+      let cotTrai = Array.isArray(boCucHienTai.cotTrai) ? [...boCucHienTai.cotTrai] : [];
+      let cotPhai = Array.isArray(boCucHienTai.cotPhai) ? [...boCucHienTai.cotPhai] : [];
+      const thuTuKhoiHienTai = state.cv.thuTuKhoi || [];
+
+      // Đảm bảo mọi khối có trong thuTuKhoi đều được phân bổ vào ít nhất một cột
+      for (const id of thuTuKhoiHienTai) {
+        if (!cotTrai.includes(id) && !cotPhai.includes(id)) {
+          if (KHOI_COT_TRAI_MAC_DINH.has(id)) {
+            cotTrai.push(id);
+          } else {
+            cotPhai.push(id);
+          }
+        }
+      }
+
+      // Loại bỏ trùng lặp nếu có giữa 2 cột (ưu tiên cột trái giữ trước)
+      const cotTraiSet = new Set(cotTrai);
+      cotPhai = cotPhai.filter((id) => !cotTraiSet.has(id));
+
+      // Đồng bộ mảng phẳng thuTuKhoi: Nội dung chính (cột phải) + Nội dung phụ (cột trái)
+      const thuTuKhoiDongBo = Array.from(
+        new Set([...cotPhai, ...cotTrai, ...thuTuKhoiHienTai])
+      );
+
+      return {
+        cv: {
+          ...state.cv,
+          dinhDang: {
+            ...state.cv.dinhDang,
+            cheDoBoCuc: cheDo,
+          },
+          boCuc: {
+            ...boCucHienTai,
+            cheDo,
+            cotTrai,
+            cotPhai,
+          },
+          thuTuKhoi: thuTuKhoiDongBo,
+        },
+      };
+    }),
+
+  sapXepKhoiCot: (cot, thuTuMoi) =>
+    set((state) => {
+      const boCucHienTai = state.cv.boCuc
+        ? { ...state.cv.boCuc }
+        : chuanHoaBoCuc(undefined, state.cv.thuTuKhoi);
+
+      const isCotTrai = cot === 'cot-trai' || (cot as string) === 'trai';
+      const existingItems = isCotTrai
+        ? (boCucHienTai.cotTrai || [])
+        : (boCucHienTai.cotPhai || []);
+
+      // Giữ lại các khối ẩn hoặc khối không nằm trong mảng hiển thị thuTuMoi
+      const missingItems = existingItems.filter((id) => !thuTuMoi.includes(id));
+      const danhSachMoi = [...thuTuMoi, ...missingItems];
+
+      const cotTraiMoi = isCotTrai ? danhSachMoi : boCucHienTai.cotTrai;
+      const cotPhaiMoi = isCotTrai ? boCucHienTai.cotPhai : danhSachMoi;
+
+      // Đồng bộ thuTuKhoi phẳng
+      const thuTuKhoiDongBo = Array.from(
+        new Set([...cotPhaiMoi, ...cotTraiMoi, ...(state.cv.thuTuKhoi || [])])
+      );
+
+      return {
+        cv: {
+          ...state.cv,
+          boCuc: {
+            ...boCucHienTai,
+            cotTrai: cotTraiMoi,
+            cotPhai: cotPhaiMoi,
+          },
+          thuTuKhoi: thuTuKhoiDongBo,
+        },
+      };
+    }),
+
+  chuyenKhoiSangCot: (khoiId, cotDich, viTriIndex) =>
+    set((state) => {
+      if (!khoiId) return state;
+
+      const boCucHienTai = state.cv.boCuc
+        ? { ...state.cv.boCuc }
+        : chuanHoaBoCuc(undefined, state.cv.thuTuKhoi);
+
+      const isDichTrai = cotDich === 'cot-trai' || (cotDich as string) === 'trai';
+
+      // Loại bỏ khối khỏi cả hai cột trước khi chèn để chống trùng lặp
+      const danhSachTrai = (boCucHienTai.cotTrai || []).filter((id) => id !== khoiId);
+      const danhSachPhai = (boCucHienTai.cotPhai || []).filter((id) => id !== khoiId);
+
+      const danhSachDich = isDichTrai ? danhSachTrai : danhSachPhai;
+
+      // Chèn vào vị trí chỉ định hoặc thêm vào cuối
+      if (
+        typeof viTriIndex === 'number' &&
+        viTriIndex >= 0 &&
+        viTriIndex <= danhSachDich.length
+      ) {
+        danhSachDich.splice(viTriIndex, 0, khoiId);
+      } else {
+        danhSachDich.push(khoiId);
+      }
+
+      const cotTraiMoi = isDichTrai ? danhSachDich : danhSachTrai;
+      const cotPhaiMoi = isDichTrai ? danhSachPhai : danhSachDich;
+
+      // Đồng bộ thuTuKhoi
+      const thuTuKhoiDongBo = Array.from(
+        new Set([...cotPhaiMoi, ...cotTraiMoi, ...(state.cv.thuTuKhoi || [])])
+      );
+
+      return {
+        cv: {
+          ...state.cv,
+          boCuc: {
+            ...boCucHienTai,
+            cotTrai: cotTraiMoi,
+            cotPhai: cotPhaiMoi,
+          },
+          thuTuKhoi: thuTuKhoiDongBo,
+        },
+      };
+    }),
+
+  doiCotKhoi: (khoiId) =>
+    set((state) => {
+      if (!khoiId) return state;
+
+      const boCucHienTai = state.cv.boCuc
+        ? { ...state.cv.boCuc }
+        : chuanHoaBoCuc(undefined, state.cv.thuTuKhoi);
+
+      let cotTraiMoi = Array.isArray(boCucHienTai.cotTrai) ? [...boCucHienTai.cotTrai] : [];
+      let cotPhaiMoi = Array.isArray(boCucHienTai.cotPhai) ? [...boCucHienTai.cotPhai] : [];
+
+      const dangOCotTrai = cotTraiMoi.includes(khoiId);
+      const dangOCotPhai = cotPhaiMoi.includes(khoiId);
+
+      if (dangOCotTrai) {
+        cotTraiMoi = cotTraiMoi.filter((id) => id !== khoiId);
+        if (!cotPhaiMoi.includes(khoiId)) {
+          cotPhaiMoi.push(khoiId);
+        }
+      } else if (dangOCotPhai) {
+        cotPhaiMoi = cotPhaiMoi.filter((id) => id !== khoiId);
+        if (!cotTraiMoi.includes(khoiId)) {
+          cotTraiMoi.push(khoiId);
+        }
+      } else {
+        // Nếu khối chưa thuộc cột nào, lấy theo quy tắc mặc định và đảo
+        if (KHOI_COT_TRAI_MAC_DINH.has(khoiId)) {
+          cotPhaiMoi.push(khoiId);
+        } else {
+          cotTraiMoi.push(khoiId);
+        }
+      }
+
+      // Đồng bộ thuTuKhoi
+      const thuTuKhoiDongBo = Array.from(
+        new Set([...cotPhaiMoi, ...cotTraiMoi, ...(state.cv.thuTuKhoi || [])])
+      );
+
+      return {
+        cv: {
+          ...state.cv,
+          boCuc: {
+            ...boCucHienTai,
+            cotTrai: cotTraiMoi,
+            cotPhai: cotPhaiMoi,
+          },
+          thuTuKhoi: thuTuKhoiDongBo,
+        },
+      };
+    }),
+
+  diChuyenKhoiLenXuong: (khoiId, huong) =>
+    set((state) => {
+      if (!khoiId) return state;
+
+      const boCucHienTai = state.cv.boCuc
+        ? { ...state.cv.boCuc }
+        : chuanHoaBoCuc(undefined, state.cv.thuTuKhoi);
+      const la2Cot = boCucHienTai.cheDo === '2-cot';
+
+      if (la2Cot) {
+        const laCotTrai = boCucHienTai.cotTrai.includes(khoiId);
+        const laCotPhai = boCucHienTai.cotPhai.includes(khoiId);
+        if (!laCotTrai && !laCotPhai) return state;
+
+        const danhSach = laCotTrai
+          ? [...boCucHienTai.cotTrai]
+          : [...boCucHienTai.cotPhai];
+        const index = danhSach.indexOf(khoiId);
+        if (index === -1) return state;
+
+        const targetIndex = huong === 'len' ? index - 1 : index + 1;
+        if (targetIndex < 0 || targetIndex >= danhSach.length) return state;
+
+        [danhSach[index], danhSach[targetIndex]] = [
+          danhSach[targetIndex],
+          danhSach[index],
+        ];
+
+        const cotTraiMoi = laCotTrai ? danhSach : boCucHienTai.cotTrai;
+        const cotPhaiMoi = !laCotTrai ? danhSach : boCucHienTai.cotPhai;
+        const thuTuKhoiDongBo = Array.from(
+          new Set([...cotPhaiMoi, ...cotTraiMoi, ...(state.cv.thuTuKhoi || [])])
+        );
+
+        return {
+          cv: {
+            ...state.cv,
+            thuTuKhoi: thuTuKhoiDongBo,
+            boCuc: {
+              ...boCucHienTai,
+              cotTrai: cotTraiMoi,
+              cotPhai: cotPhaiMoi,
+            },
+          },
+        };
+      } else {
+        // Chế độ 1 cột
+        const danhSach = [...(state.cv.thuTuKhoi || [])];
+        const index = danhSach.indexOf(khoiId);
+        if (index === -1) return state;
+
+        const targetIndex = huong === 'len' ? index - 1 : index + 1;
+        if (targetIndex < 0 || targetIndex >= danhSach.length) return state;
+
+        [danhSach[index], danhSach[targetIndex]] = [
+          danhSach[targetIndex],
+          danhSach[index],
+        ];
+
+        return {
+          cv: {
+            ...state.cv,
+            thuTuKhoi: danhSach,
+          },
+        };
+      }
+    }),
+
   sapXepKhoi: (thuTuMoi) =>
-    set((state) => ({
-      cv: {
-        ...state.cv,
-        thuTuKhoi: thuTuMoi,
-      },
-    })),
+    set((state) => {
+      const boCucHienTai = state.cv.boCuc
+        ? { ...state.cv.boCuc }
+        : chuanHoaBoCuc(undefined, state.cv.thuTuKhoi);
+      const thuTuIndex = new Map(thuTuMoi.map((id, idx) => [id, idx]));
+      const cotTraiMoi = [...boCucHienTai.cotTrai].sort((a, b) => {
+        const idxA = thuTuIndex.has(a) ? thuTuIndex.get(a)! : 999;
+        const idxB = thuTuIndex.has(b) ? thuTuIndex.get(b)! : 999;
+        return idxA - idxB;
+      });
+      const cotPhaiMoi = [...boCucHienTai.cotPhai].sort((a, b) => {
+        const idxA = thuTuIndex.has(a) ? thuTuIndex.get(a)! : 999;
+        const idxB = thuTuIndex.has(b) ? thuTuIndex.get(b)! : 999;
+        return idxA - idxB;
+      });
+
+      return {
+        cv: {
+          ...state.cv,
+          thuTuKhoi: thuTuMoi,
+          boCuc: {
+            ...boCucHienTai,
+            cotTrai: cotTraiMoi,
+            cotPhai: cotPhaiMoi,
+          },
+        },
+      };
+    }),
 
   batTatKhoi: (khoiId, trangThai) =>
     set((state) => {
       const isHien =
         trangThai !== undefined ? trangThai : !state.cv.anHienKhoi[khoiId];
-      let newThuTu = [...(state.cv.thuTuKhoi || [])];
+      const newThuTu = [...(state.cv.thuTuKhoi || [])];
       if (isHien && !newThuTu.includes(khoiId)) {
         newThuTu.push(khoiId);
       }
+
+      const boCucHienTai = state.cv.boCuc
+        ? { ...state.cv.boCuc }
+        : chuanHoaBoCuc(undefined, state.cv.thuTuKhoi);
+      const cotTraiMoi = [...boCucHienTai.cotTrai];
+      const cotPhaiMoi = [...boCucHienTai.cotPhai];
+
+      if (isHien) {
+        if (!cotTraiMoi.includes(khoiId) && !cotPhaiMoi.includes(khoiId)) {
+          if (KHOI_COT_TRAI_MAC_DINH.has(khoiId)) {
+            cotTraiMoi.push(khoiId);
+          } else {
+            cotPhaiMoi.push(khoiId);
+          }
+        }
+      }
+
       return {
         cv: {
           ...state.cv,
@@ -256,9 +683,62 @@ export const useKhoLuuTruCV = create<KhoLuuTruCVState>()((set) => ({
             ...state.cv.anHienKhoi,
             [khoiId]: isHien,
           },
+          boCuc: {
+            ...boCucHienTai,
+            cotTrai: cotTraiMoi,
+            cotPhai: cotPhaiMoi,
+          },
         },
       };
     }),
+
+  // ==========================================
+  // SẮP XẾP MỤC CON LỒNG NHAU (R2 - NESTED SORTABLE)
+  // ==========================================
+
+  sapXepKinhNghiem: (itemsOrIds) =>
+    set((state) => ({
+      cv: {
+        ...state.cv,
+        kinhNghiem: sapXepDanhSachMuc(state.cv.kinhNghiem, itemsOrIds),
+      },
+    })),
+
+  sapXepHocVan: (itemsOrIds) =>
+    set((state) => ({
+      cv: {
+        ...state.cv,
+        hocVan: sapXepDanhSachMuc(state.cv.hocVan, itemsOrIds),
+      },
+    })),
+
+  sapXepKyNang: (itemsOrIds) =>
+    set((state) => ({
+      cv: {
+        ...state.cv,
+        kyNang: sapXepDanhSachMuc(state.cv.kyNang, itemsOrIds),
+      },
+    })),
+
+  sapXepDuAn: (itemsOrIds) =>
+    set((state) => ({
+      cv: {
+        ...state.cv,
+        duAn: sapXepDanhSachMuc(state.cv.duAn, itemsOrIds),
+      },
+    })),
+
+  sapXepChungChi: (itemsOrIds) =>
+    set((state) => ({
+      cv: {
+        ...state.cv,
+        chungChi: sapXepDanhSachMuc(state.cv.chungChi, itemsOrIds),
+      },
+    })),
+
+  // ==========================================
+  // QUẢN LÝ DỮ LIỆU TỪNG KHỐI (CRUD)
+  // ==========================================
 
   themKinhNghiem: (item = {}) =>
     set((state) => ({
@@ -282,7 +762,9 @@ export const useKhoLuuTruCV = create<KhoLuuTruCVState>()((set) => ({
     set((state) => ({
       cv: {
         ...state.cv,
-        kinhNghiem: state.cv.kinhNghiem.map((kn) => (kn.id === id ? { ...kn, ...item } : kn)),
+        kinhNghiem: state.cv.kinhNghiem.map((kn) =>
+          kn.id === id ? { ...kn, ...item } : kn
+        ),
       },
     })),
 
@@ -316,7 +798,9 @@ export const useKhoLuuTruCV = create<KhoLuuTruCVState>()((set) => ({
     set((state) => ({
       cv: {
         ...state.cv,
-        hocVan: state.cv.hocVan.map((hv) => (hv.id === id ? { ...hv, ...item } : hv)),
+        hocVan: state.cv.hocVan.map((hv) =>
+          hv.id === id ? { ...hv, ...item } : hv
+        ),
       },
     })),
 
@@ -335,10 +819,9 @@ export const useKhoLuuTruCV = create<KhoLuuTruCVState>()((set) => ({
         kyNang: [
           ...state.cv.kyNang,
           {
-            id: `sk-${Date.now()}`,
+            id: `knang-${Date.now()}`,
             ten,
             mucDo,
-            endorsements: Math.floor(Math.random() * 20) + 10,
           },
         ],
       },
@@ -348,7 +831,9 @@ export const useKhoLuuTruCV = create<KhoLuuTruCVState>()((set) => ({
     set((state) => ({
       cv: {
         ...state.cv,
-        kyNang: state.cv.kyNang.map((sk) => (sk.id === id ? { ...sk, ...item } : sk)),
+        kyNang: state.cv.kyNang.map((kn) =>
+          kn.id === id ? { ...kn, ...item } : kn
+        ),
       },
     })),
 
@@ -356,7 +841,7 @@ export const useKhoLuuTruCV = create<KhoLuuTruCVState>()((set) => ({
     set((state) => ({
       cv: {
         ...state.cv,
-        kyNang: state.cv.kyNang.filter((sk) => sk.id !== id),
+        kyNang: state.cv.kyNang.filter((kn) => kn.id !== id),
       },
     })),
 
@@ -370,8 +855,6 @@ export const useKhoLuuTruCV = create<KhoLuuTruCVState>()((set) => ({
             ten: '',
             vaiTro: '',
             thoiGian: '',
-            lienKet: '',
-            congNghe: [],
             moTa: '',
             ...item,
             id: `da-${Date.now()}`,
@@ -384,7 +867,9 @@ export const useKhoLuuTruCV = create<KhoLuuTruCVState>()((set) => ({
     set((state) => ({
       cv: {
         ...state.cv,
-        duAn: state.cv.duAn.map((da) => (da.id === id ? { ...da, ...item } : da)),
+        duAn: state.cv.duAn.map((da) =>
+          da.id === id ? { ...da, ...item } : da
+        ),
       },
     })),
 
@@ -417,7 +902,9 @@ export const useKhoLuuTruCV = create<KhoLuuTruCVState>()((set) => ({
     set((state) => ({
       cv: {
         ...state.cv,
-        chungChi: state.cv.chungChi.map((cc) => (cc.id === id ? { ...cc, ...item } : cc)),
+        chungChi: state.cv.chungChi.map((cc) =>
+          cc.id === id ? { ...cc, ...item } : cc
+        ),
       },
     })),
 
@@ -431,20 +918,33 @@ export const useKhoLuuTruCV = create<KhoLuuTruCVState>()((set) => ({
 
   themKhoiTuyChinh: (tieuDe, noiDung = '') => {
     const idMoi = `tc-${Date.now()}`;
-    set((state) => ({
-      cv: {
-        ...state.cv,
-        khoiTuyChinh: [
-          ...(state.cv.khoiTuyChinh || []),
-          { id: idMoi, tieuDe: tieuDe.trim() || 'Mục Tùy Chỉnh', noiDung },
-        ],
-        thuTuKhoi: [...(state.cv.thuTuKhoi || []), idMoi],
-        anHienKhoi: {
-          ...state.cv.anHienKhoi,
-          [idMoi]: true,
+    set((state) => {
+      const boCucHienTai = state.cv.boCuc
+        ? { ...state.cv.boCuc }
+        : chuanHoaBoCuc(undefined, state.cv.thuTuKhoi);
+      const cotPhaiMoi = boCucHienTai.cotPhai.includes(idMoi)
+        ? boCucHienTai.cotPhai
+        : [...boCucHienTai.cotPhai, idMoi];
+
+      return {
+        cv: {
+          ...state.cv,
+          khoiTuyChinh: [
+            ...(state.cv.khoiTuyChinh || []),
+            { id: idMoi, tieuDe: tieuDe.trim() || 'Mục Tùy Chỉnh', noiDung },
+          ],
+          thuTuKhoi: [...(state.cv.thuTuKhoi || []), idMoi],
+          anHienKhoi: {
+            ...state.cv.anHienKhoi,
+            [idMoi]: true,
+          },
+          boCuc: {
+            ...boCucHienTai,
+            cotPhai: cotPhaiMoi,
+          },
         },
-      },
-    }));
+      };
+    });
     return idMoi;
   },
 
@@ -459,13 +959,27 @@ export const useKhoLuuTruCV = create<KhoLuuTruCVState>()((set) => ({
     })),
 
   xoaKhoiTuyChinh: (id) =>
-    set((state) => ({
-      cv: {
-        ...state.cv,
-        khoiTuyChinh: (state.cv.khoiTuyChinh || []).filter((k) => k.id !== id),
-        thuTuKhoi: (state.cv.thuTuKhoi || []).filter((k) => k !== id),
-      },
-    })),
+    set((state) => {
+      const boCucHienTai = state.cv.boCuc
+        ? { ...state.cv.boCuc }
+        : chuanHoaBoCuc(undefined, state.cv.thuTuKhoi);
+      const conLaiAnHienKhoi = { ...state.cv.anHienKhoi };
+      delete conLaiAnHienKhoi[id];
+
+      return {
+        cv: {
+          ...state.cv,
+          khoiTuyChinh: (state.cv.khoiTuyChinh || []).filter((k) => k.id !== id),
+          thuTuKhoi: (state.cv.thuTuKhoi || []).filter((k) => k !== id),
+          anHienKhoi: conLaiAnHienKhoi,
+          boCuc: {
+            ...boCucHienTai,
+            cotTrai: boCucHienTai.cotTrai.filter((k) => k !== id),
+            cotPhai: boCucHienTai.cotPhai.filter((k) => k !== id),
+          },
+        },
+      };
+    }),
 
   khoiPhucMacDinh: () =>
     set(() => ({
@@ -486,30 +1000,67 @@ export const useKhoLuuTruCV = create<KhoLuuTruCVState>()((set) => ({
 
   napDuLieuCVTuServer: (cvBackend) =>
     set(() => {
+      if (!cvBackend) return {};
+
       const noiDung = cvBackend.noi_dung_cv || {};
       const dinhDang = cvBackend.dinh_dang_cv || DU_LIEU_MAC_DINH.dinhDang;
-      const thuTuKhoi = cvBackend.thu_tu_khoi || DU_LIEU_MAC_DINH.thuTuKhoi;
+      const thuTuKhoiRaw =
+        cvBackend.thu_tu_khoi || noiDung.thuTuKhoi || DU_LIEU_MAC_DINH.thuTuKhoi;
+      const thuTuKhoi = Array.isArray(thuTuKhoiRaw)
+        ? [...thuTuKhoiRaw]
+        : [...DU_LIEU_MAC_DINH.thuTuKhoi];
+
+      // Khôi phục khối tùy chỉnh
+      const khoiTuyChinh = Array.isArray(noiDung.khoiTuyChinh)
+        ? noiDung.khoiTuyChinh
+        : [];
+      for (const ktc of khoiTuyChinh) {
+        if (ktc?.id && !thuTuKhoi.includes(ktc.id)) {
+          thuTuKhoi.push(ktc.id);
+        }
+      }
+
+      // Chuẩn hóa cấu trúc bố cục (từ noiDung.boCuc hoặc cvBackend.bo_cuc hoặc auto-generated)
+      const boCucRaw = noiDung.boCuc || cvBackend.bo_cuc || null;
+      const boCucChuan = chuanHoaBoCuc(boCucRaw, thuTuKhoi);
+
+      // Đồng bộ trạng thái ẩn/hiện
+      const anHienKhoi = {
+        ...DU_LIEU_MAC_DINH.anHienKhoi,
+        ...(noiDung.anHienKhoi || {}),
+      };
+      for (const ktc of khoiTuyChinh) {
+        if (ktc?.id && anHienKhoi[ktc.id] === undefined) {
+          anHienKhoi[ktc.id] = true;
+        }
+      }
+
       return {
-        idCVHienTai: cvBackend.id,
+        idCVHienTai: cvBackend.id ?? null,
         tieuDeCVHienTai: cvBackend.tieu_de_cv || 'CV Chưa Đặt Tên',
         cv: {
           dinhDang: {
             ...DU_LIEU_MAC_DINH.dinhDang,
             ...dinhDang,
+            cheDoBoCuc: boCucChuan.cheDo,
           },
           thongTinCaNhan: {
             ...DU_LIEU_MAC_DINH.thongTinCaNhan,
             ...(noiDung.thongTinCaNhan || {}),
           },
-          gioiThieu: noiDung.gioiThieu !== undefined ? noiDung.gioiThieu : DU_LIEU_MAC_DINH.gioiThieu,
-          kinhNghiem: noiDung.kinhNghiem || [],
-          hocVan: noiDung.hocVan || [],
-          kyNang: noiDung.kyNang || [],
-          duAn: noiDung.duAn || [],
-          chungChi: noiDung.chungChi || [],
-          khoiTuyChinh: noiDung.khoiTuyChinh || [],
-          thuTuKhoi: Array.isArray(thuTuKhoi) ? thuTuKhoi : DU_LIEU_MAC_DINH.thuTuKhoi,
-          anHienKhoi: noiDung.anHienKhoi || DU_LIEU_MAC_DINH.anHienKhoi,
+          gioiThieu:
+            typeof noiDung.gioiThieu === 'string'
+              ? noiDung.gioiThieu
+              : DU_LIEU_MAC_DINH.gioiThieu,
+          kinhNghiem: Array.isArray(noiDung.kinhNghiem) ? noiDung.kinhNghiem : [],
+          hocVan: Array.isArray(noiDung.hocVan) ? noiDung.hocVan : [],
+          kyNang: Array.isArray(noiDung.kyNang) ? noiDung.kyNang : [],
+          duAn: Array.isArray(noiDung.duAn) ? noiDung.duAn : [],
+          chungChi: Array.isArray(noiDung.chungChi) ? noiDung.chungChi : [],
+          khoiTuyChinh,
+          thuTuKhoi,
+          anHienKhoi,
+          boCuc: boCucChuan,
         },
       };
     }),

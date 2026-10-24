@@ -4,6 +4,9 @@ import jwt from 'jsonwebtoken';
 import prisma from '../config/db.js';
 import { guiMailOTP } from '../config/mail.js';
 
+// Hàm lấy thời gian chuẩn múi giờ Việt Nam (GMT+7)
+export const layGioVietNam = () => new Date(Date.now() + 7 * 60 * 60 * 1000);
+
 // Bộ nhớ tạm lưu trữ mã OTP: Key là email (lowercase), Value là { otp, expiresAt }
 const otpStore = new Map();
 
@@ -143,6 +146,8 @@ export const xacThucVaDangKy = async (req, res) => {
         email: emailChuanHoa,
         mat_khau: matKhauMaHoa,
         vai_tro: 'nguoi_dung',
+        ngay_tao: layGioVietNam(),
+        ngay_cap_nhat: layGioVietNam(),
       },
     });
 
@@ -221,6 +226,8 @@ export const dangNhapGoogle = async (req, res) => {
           ho_ten: tenHienThi,
           mat_khau: matKhauNgauNhien,
           vai_tro: 'nguoi_dung',
+          ngay_tao: layGioVietNam(),
+          ngay_cap_nhat: layGioVietNam(),
         },
       });
 
@@ -335,6 +342,8 @@ export const dangKy = async (req, res) => {
         email: emailChuanHoa,
         mat_khau: matKhauMaHoa,
         vai_tro: 'nguoi_dung',
+        ngay_tao: layGioVietNam(),
+        ngay_cap_nhat: layGioVietNam(),
       },
     });
 

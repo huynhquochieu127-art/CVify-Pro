@@ -1,32 +1,5 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, type ReactNode } from "react";
 import { BangTinCongDong } from "./BangTinCongDong";
-import {
-  Sparkles,
-  FileText,
-  ArrowRight,
-  Palette,
-  Printer,
-  Move,
-  Save,
-  CheckCircle2,
-  LogIn,
-  UserPlus,
-  Phone,
-  Mail,
-  MapPin,
-  Globe,
-  Share2,
-  ChevronRight,
-  ChevronLeft,
-  Eye,
-  Check,
-  Send,
-  Layers,
-  Award,
-  LayoutDashboard,
-  LogOut,
-  User,
-} from "lucide-react";
 
 export interface TrangChuProps {
   onChuyenTrinhThietKe: () => void;
@@ -40,1265 +13,1140 @@ export interface TrangChuProps {
   anHeader?: boolean;
 }
 
-// Danh sách 3 Slide Hero Banner — thuần thị giác, không có nút bấm
-const DANH_SACH_SLIDES = [
+type IconName =
+  | "arrow"
+  | "check"
+  | "chevron"
+  | "download"
+  | "drag"
+  | "file"
+  | "layers"
+  | "menu"
+  | "shield"
+  | "spark"
+  | "users";
+
+function Icon({ name, size = 18 }: { name: IconName; size?: number }) {
+  const paths: Record<IconName, ReactNode> = {
+    arrow: (
+      <>
+        <path d="M5 12h14" />
+        <path d="m13 6 6 6-6 6" />
+      </>
+    ),
+    check: <path d="m5 12 4 4L19 6" />,
+    chevron: <path d="m6 9 6 6 6-6" />,
+    download: (
+      <>
+        <path d="M12 3v12" />
+        <path d="m7 10 5 5 5-5" />
+        <path d="M5 21h14" />
+      </>
+    ),
+    drag: (
+      <>
+        <circle cx="9" cy="6" r="1" />
+        <circle cx="15" cy="6" r="1" />
+        <circle cx="9" cy="12" r="1" />
+        <circle cx="15" cy="12" r="1" />
+        <circle cx="9" cy="18" r="1" />
+        <circle cx="15" cy="18" r="1" />
+      </>
+    ),
+    file: (
+      <>
+        <path d="M6 2h8l4 4v16H6z" />
+        <path d="M14 2v5h5" />
+        <path d="M9 13h6M9 17h6" />
+      </>
+    ),
+    layers: (
+      <>
+        <path d="m12 2 9 5-9 5-9-5z" />
+        <path d="m3 12 9 5 9-5" />
+        <path d="m3 17 9 5 9-5" />
+      </>
+    ),
+    menu: (
+      <>
+        <path d="M4 7h16M4 12h16M4 17h16" />
+      </>
+    ),
+    shield: (
+      <>
+        <path d="M12 22s8-3.5 8-10V5l-8-3-8 3v7c0 6.5 8 10 8 10Z" />
+        <path d="m8.5 12 2.2 2.2 4.8-5" />
+      </>
+    ),
+    spark: (
+      <>
+        <path d="m12 3 1.4 4.1L17.5 8.5l-4.1 1.4L12 14l-1.4-4.1-4.1-1.4 4.1-1.4z" />
+        <path d="m19 15 .8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z" />
+      </>
+    ),
+    users: (
+      <>
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+      </>
+    ),
+  };
+
+  return (
+    <svg
+      className="icon"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      {paths[name]}
+    </svg>
+  );
+}
+
+const Button = ({
+  children,
+  variant = "primary",
+  href,
+  onClick,
+}: {
+  children: ReactNode;
+  variant?: "primary" | "secondary" | "small";
+  href?: string;
+  onClick?: () => void;
+}) => {
+  if (onClick) {
+    return (
+      <button
+        type="button"
+        className={`button button-${variant}`}
+        onClick={onClick}
+      >
+        {children}
+      </button>
+    );
+  }
+  return (
+    <a className={`button button-${variant}`} href={href || "#templates"}>
+      {children}
+    </a>
+  );
+};
+
+function Logo() {
+  return (
+    <a className="logo" href="#top" aria-label="CVify Pro trang chủ">
+      <span className="logo-mark">
+        <span />
+      </span>
+      <span>
+        CVify <strong>Pro</strong>
+      </span>
+    </a>
+  );
+}
+
+function MiniResume({
+  accent = "#2563EB",
+  name = "Olivia Martin",
+  role = "Product Designer",
+  compact = false,
+}: {
+  accent?: string;
+  name?: string;
+  role?: string;
+  compact?: boolean;
+}) {
+  return (
+    <div
+      className={`mini-resume ${compact ? "compact" : ""}`}
+      style={{ "--accent": accent } as React.CSSProperties}
+    >
+      <div className="resume-top">
+        <div className="resume-avatar" />
+        <div>
+          <b>{name}</b>
+          <span>{role}</span>
+        </div>
+      </div>
+      <div className="resume-body">
+        <div className="resume-side">
+          <i className="line strong" />
+          <i className="line" />
+          <i className="line short" />
+          <small>KỸ NĂNG</small>
+          <div className="tag-lines">
+            <i />
+            <i />
+            <i />
+          </div>
+          <small>HỌC VẤN</small>
+          <i className="line" />
+          <i className="line short" />
+        </div>
+        <div className="resume-main">
+          <small>MỤC TIÊU</small>
+          <i className="line" />
+          <i className="line" />
+          <i className="line short" />
+          <small>KINH NGHIỆM</small>
+          <b className="job-line">Senior {role}</b>
+          <i className="line" />
+          <i className="line" />
+          <i className="line short" />
+          <b className="job-line">Lead {role}</b>
+          <i className="line" />
+          <i className="line short" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BuilderMockup({ onExport }: { onExport?: () => void }) {
+  const [columns, setColumns] = useState<1 | 2>(2);
+  const sections = [
+    "Thông tin liên hệ",
+    "Kinh nghiệm làm việc",
+    "Học vấn & Bằng cấp",
+    "Kỹ năng chuyên môn",
+  ];
+
+  return (
+    <div className="builder-shell">
+      <div className="builder-bar">
+        <div className="window-dots">
+          <i />
+          <i />
+          <i />
+        </div>
+        <div className="layout-toggle">
+          <button
+            className={columns === 1 ? "active" : ""}
+            onClick={() => setColumns(1)}
+          >
+            1 Cột
+          </button>
+          <button
+            className={columns === 2 ? "active" : ""}
+            onClick={() => setColumns(2)}
+          >
+            2 Cột
+          </button>
+        </div>
+        <button
+          className="export-button"
+          onClick={onExport}
+          title="Xuất file PDF chuẩn in ấn A4 300 DPI"
+        >
+          <Icon name="download" size={14} /> Xuất PDF <span>300 DPI</span>
+        </button>
+      </div>
+      <div className="builder-content">
+        <div className="section-panel">
+          <div className="panel-heading">
+            <span>CÁC MỤC HỒ SƠ</span>
+            <b>+</b>
+          </div>
+          {sections.map((item, i) => (
+            <div
+              className={`section-item ${i === 1 ? "selected" : ""}`}
+              key={item}
+            >
+              <Icon name="drag" size={16} />
+              <span className="section-icon">{["@", "B", "E", "S"][i]}</span>
+              <b>{item}</b>
+              {i === 1 && <span className="editing">Đang sửa</span>}
+            </div>
+          ))}
+          <div className="ats-score">
+            <div>
+              <Icon name="shield" size={18} />
+              <b>Điểm ATS</b>
+              <strong>96</strong>
+            </div>
+            <div className="score-track">
+              <i />
+            </div>
+            <span>Tương thích xuất sắc</span>
+          </div>
+        </div>
+        <div className="document-stage">
+          <div className={`document-preview columns-${columns}`}>
+            <div className="doc-header">
+              <img
+                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80"
+                alt="Chân dung ứng viên Maya Chen"
+              />
+              <div>
+                <h3>Maya Chen</h3>
+                <p>Senior Product Designer</p>
+                <span>maya.chen@email.com · TP. Hồ Chí Minh</span>
+              </div>
+            </div>
+            <div className="doc-grid">
+              <aside>
+                <DocSection title="KỸ NĂNG">
+                  <p>Product Strategy</p>
+                  <p>Design Systems</p>
+                  <p>Figma & Prototype</p>
+                  <p>User Research</p>
+                </DocSection>
+                <DocSection title="HỌC VẤN">
+                  <b>Cử nhân Thiết kế</b>
+                  <p>ĐH Mỹ Thuật · 2018</p>
+                </DocSection>
+              </aside>
+              <main>
+                <DocSection title="MỤC TIÊU">
+                  <p>
+                    Chuyên gia thiết kế sản phẩm tập trung kiến tạo trải nghiệm
+                    tinh gọn, đột phá cho các sản phẩm công nghệ tăng trưởng
+                    cao.
+                  </p>
+                </DocSection>
+                <DocSection title="KINH NGHIỆM">
+                  <b>Senior Product Designer</b>
+                  <em>Northstar Labs · 2022—Nay</em>
+                  <p>
+                    Dẫn dắt dự án tái cấu trúc UI giúp tăng 34% tỷ lệ kích hoạt
+                    và giảm 40% thời gian làm quen ứng dụng.
+                  </p>
+                  <b>Product Designer</b>
+                  <em>Nova Systems · 2019—2022</em>
+                  <p>
+                    Xây dựng và chuẩn hóa hệ thống Design System dùng chung cho
+                    4 đội ngũ sản phẩm.
+                  </p>
+                </DocSection>
+              </main>
+            </div>
+          </div>
+          <div className="zoom-pill">Khổ A4 · 84%</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DocSection({
+  title,
+  children,
+}: {
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <section className="doc-section">
+      <h4>{title}</h4>
+      {children}
+    </section>
+  );
+}
+
+const templateData = [
   {
-    tag: "✦ KÉO THẢ LINH HOẠT ✦",
-    tieuDe1: "Tự Do Sắp Xếp",
-    tieuDe2: "Mọi Khối Thông Tin",
-    tieuDe3: "Bằng Kéo & Thả",
-    moTa:
-      "Kéo từng khối CV — Thông tin cá nhân, Kinh nghiệm, Học vấn, Kỹ năng — vào đúng vị trí bạn muốn. Hệ thống tự căn chỉnh chuẩn tỷ lệ A4 không lệch điểm nào.",
-    accent: "#1a91f0",
-    gradientFrom: "from-blue-600",
-    gradientTo: "to-indigo-600",
-    huyHieu1: { icon: "🎯", tieu: "Kéo thả mượt", phu: "@dnd-kit" },
-    huyHieu2: { icon: "📐", tieu: "Tỷ lệ A4 chuẩn", phu: "210 × 297mm" },
+    name: "Nordic Tech",
+    role: "Kỹ Sư Phần Mềm",
+    category: "Công Nghệ (IT)",
+    accent: "#2563EB",
+    person: "Daniel Kim",
   },
   {
-    tag: "✦ CHUẨN ATS TUYỂN DỤNG ✦",
-    tieuDe1: "Vượt Qua Mọi",
-    tieuDe2: "Hệ Thống Quét CV",
-    tieuDe3: "Tự Động ATS",
-    moTa:
-      "Cấu trúc dữ liệu ngữ nghĩa chuẩn ATS, thứ tự từ khóa tối ưu cho từng ngành nghề. CV của bạn được robot HR đọc đúng 100% trước khi đến tay nhà tuyển dụng.",
-    accent: "#7c3aed",
-    gradientFrom: "from-violet-600",
-    gradientTo: "to-purple-600",
-    huyHieu1: { icon: "✅", tieu: "Điểm ATS: 99/100", phu: "Top 1%" },
-    huyHieu2: { icon: "🤖", tieu: "AI phân tích CV", phu: "Tức thì" },
+    name: "Strata Growth",
+    role: "Giám Đốc Sản Phẩm",
+    category: "Kinh Doanh",
+    accent: "#0F766E",
+    person: "Amelia Jones",
   },
   {
-    tag: "✦ XUẤT PDF SẮC NÉT ✦",
-    tieuDe1: "Xuất File PDF",
-    tieuDe2: "Không Lỗi Font",
-    tieuDe3: "Tiếng Việt Hoàn Hảo",
-    moTa:
-      "100% font tiếng Việt không vỡ dấu, màu sắc in ấn trung thực, độ phân giải 300dpi chuẩn in. Tải PDF trong 3 giây — sẵn sàng gửi nhà tuyển dụng ngay lập tức.",
-    accent: "#059669",
-    gradientFrom: "from-emerald-600",
-    gradientTo: "to-teal-600",
-    huyHieu1: { icon: "📄", tieu: "PDF Chuẩn A4", phu: "300 DPI" },
-    huyHieu2: { icon: "⚡", tieu: "Xuất trong 3s", phu: "Không lỗi font" },
+    name: "Atelier Art",
+    role: "Giám Đốc Sáng Tạo",
+    category: "Sáng Tạo",
+    accent: "#C2410C",
+    person: "Sofia Rossi",
+  },
+  {
+    name: "Mono AI",
+    role: "Chuyên Gia Dữ Liệu",
+    category: "Công Nghệ (IT)",
+    accent: "#4F46E5",
+    person: "Ethan Brooks",
+  },
+  {
+    name: "Ledger Finance",
+    role: "Quản Lý Tài Chính",
+    category: "Kinh Doanh",
+    accent: "#334155",
+    person: "Noah Williams",
+  },
+  {
+    name: "Studio Brand",
+    role: "Thiết Kế Thương Hiệu",
+    category: "Sáng Tạo",
+    accent: "#BE185D",
+    person: "Emma Laurent",
   },
 ];
+
+function Templates({ onSelectTemplate }: { onSelectTemplate: () => void }) {
+  const [filter, setFilter] = useState("Tất cả");
+  const categories = ["Tất cả", "Công Nghệ (IT)", "Kinh Doanh", "Sáng Tạo"];
+  const filtered =
+    filter === "Tất cả"
+      ? templateData
+      : templateData.filter((item) => item.category === filter);
+
+  return (
+    <section
+      className="section templates-section reveal-on-scroll"
+      id="templates"
+    >
+      <div className="section-heading split-heading">
+        <div>
+          <span className="eyebrow">THIẾT KẾ ĐỂ TỎA SÁNG</span>
+          <h2>Kho Mẫu CV Tuyển Dụng Chuyên Nghiệp</h2>
+        </div>
+        <p>
+          Bố cục được chuẩn hóa vượt qua mọi hệ thống lọc hồ sơ tự động ATS mà
+          vẫn giữ trọn vẻ đẹp thẩm mỹ cao cấp.
+        </p>
+      </div>
+      <div className="filter-row" role="group" aria-label="Bộ lọc mẫu CV">
+        {categories.map((item) => (
+          <button
+            key={item}
+            className={filter === item ? "active" : ""}
+            onClick={() => setFilter(item)}
+          >
+            {item}
+          </button>
+        ))}
+      </div>
+      <div className="template-grid">
+        {filtered.map((template, idx) => (
+          <article
+            className={`template-card reveal-on-scroll reveal-delay-${(idx % 3) + 1}`}
+            key={template.name}
+          >
+            <div className="template-paper-wrap">
+              <MiniResume
+                accent={template.accent}
+                name={template.person}
+                role={template.role}
+              />
+            </div>
+            <div className="template-meta">
+              <div>
+                <h3>{template.name}</h3>
+                <p>{template.category} · Chuẩn tối ưu ATS</p>
+              </div>
+              <Button variant="small" onClick={onSelectTemplate}>
+                Dùng Mẫu Này <Icon name="arrow" size={14} />
+              </Button>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function Showcase() {
+  const items = [
+    ["Daniel Kim", "Software Engineer", "#2563EB"],
+    ["Olivia Martin", "Product Designer", "#BE185D"],
+    ["Marcus Lee", "Growth Marketing", "#0F766E"],
+    ["Anika Patel", "AI Specialist", "#4F46E5"],
+  ];
+  return (
+    <section className="showcase reveal-on-scroll">
+      <div className="showcase-intro">
+        <span>ĐƯỢC TẠO VỚI CVIFY PRO</span>
+        <h2>
+          Hồ sơ thực tế.
+          <br />
+          Cơ hội thực tế.
+        </h2>
+        <p>
+          Gia nhập cộng đồng ứng viên đang tự tin mở ra chương mới cho sự nghiệp
+          của mình.
+        </p>
+      </div>
+      <div className="showcase-track">
+        {items.map(([name, role, accent], index) => (
+          <div
+            className={`showcase-card card-${index} reveal-on-scroll reveal-delay-${index + 1}`}
+            key={name}
+          >
+            <MiniResume compact name={name} role={role} accent={accent} />
+            <div>
+              <span>{role}</span>
+              <b>{name}</b>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function Features() {
+  return (
+    <section
+      className="section feature-section reveal-on-scroll"
+      id="features"
+    >
+      <div className="section-heading centered">
+        <span className="eyebrow">HOÀN THIỆN ĐẾN TỪNG CHI TIẾT</span>
+        <h2>Tạo CV chuyên nghiệp chưa bao giờ dễ dàng đến thế.</h2>
+        <p>
+          Công cụ thông minh tự động chuẩn hóa định dạng, để bạn tập trung trọn
+          vẹn vào câu chuyện sự nghiệp của mình.
+        </p>
+      </div>
+      <div className="bento-grid">
+        <article className="bento-card reorder-card reveal-on-scroll reveal-delay-1">
+          <div className="bento-copy">
+            <span className="feature-icon">
+              <Icon name="layers" />
+            </span>
+            <h3>Sắp xếp trong vài giây</h3>
+            <p>
+              Kéo thả bất kỳ mục nào vào vị trí mong muốn. Toàn bộ tài liệu tự
+              động căn chỉnh lại mượt mà.
+            </p>
+          </div>
+          <div className="reorder-demo">
+            {["Kinh nghiệm làm việc", "Dự án thực tế", "Học vấn & Bằng cấp"].map(
+              (item, i) => (
+                <div className={i === 1 ? "floating" : ""} key={item}>
+                  <Icon name="drag" />
+                  <span>{item}</span>
+                  <small>
+                    {i === 0
+                      ? "3 vị trí"
+                      : i === 1
+                      ? "4 dự án"
+                      : "2 bằng cấp"}
+                  </small>
+                </div>
+              )
+            )}
+          </div>
+        </article>
+
+        <article className="bento-card layout-card reveal-on-scroll reveal-delay-2">
+          <div className="bento-copy">
+            <span className="feature-icon">
+              <Icon name="file" />
+            </span>
+            <h3>1 Click đổi bố cục</h3>
+            <p>
+              Chuyển đổi linh hoạt giữa 1 cột và 2 cột mà không mất bất kỳ dòng
+              chữ hay định dạng nào.
+            </p>
+          </div>
+          <div className="layout-demo">
+            <div>
+              <i className="wide" />
+              <i />
+              <i />
+              <i className="short" />
+            </div>
+            <span>
+              <Icon name="arrow" />
+            </span>
+            <div className="two-col">
+              <aside>
+                <i />
+                <i />
+                <i />
+              </aside>
+              <main>
+                <i className="wide" />
+                <i />
+                <i />
+                <i className="short" />
+              </main>
+            </div>
+          </div>
+        </article>
+
+        <article className="bento-card ats-card reveal-on-scroll reveal-delay-3">
+          <div className="ats-visual">
+            <div className="score-ring">
+              <span>98</span>
+              <small>ĐIỂM ATS</small>
+            </div>
+            <div className="checks">
+              <span>
+                <Icon name="check" /> Định dạng chuẩn hóa
+              </span>
+              <span>
+                <Icon name="check" /> UTF-8 sạch dấu tiếng Việt
+              </span>
+              <span>
+                <Icon name="check" /> Nhúng font chữ đầy đủ
+              </span>
+            </div>
+          </div>
+          <div className="bento-copy">
+            <span className="feature-icon">
+              <Icon name="shield" />
+            </span>
+            <h3>Tương thích mọi hệ thống ATS</h3>
+            <p>
+              Cấu trúc ngữ nghĩa chuẩn xác, đảm bảo phần mềm tuyển dụng bóc tách
+              chính xác kỹ năng và học vấn.
+            </p>
+          </div>
+        </article>
+
+        <article className="bento-card pdf-card reveal-on-scroll reveal-delay-4">
+          <div className="pdf-visual">
+            <div className="a4-page">
+              <span>A4</span>
+              <i />
+              <i />
+              <i />
+            </div>
+            <div className="quality-badge">
+              <Icon name="spark" />
+              <b>300 DPI</b>
+              <span>CHẤT LƯỢNG VECTOR</span>
+            </div>
+          </div>
+          <div className="bento-copy">
+            <span className="feature-icon">
+              <Icon name="download" />
+            </span>
+            <h3>Xuất bản PDF Vector sắc nét</h3>
+            <p>
+              Sắc nét ở mọi mức độ thu phóng. Chuẩn kích thước in ấn ISO 216 A4
+              cho mọi lần xuất file.
+            </p>
+          </div>
+        </article>
+      </div>
+    </section>
+  );
+}
+
+function Comparison() {
+  return (
+    <section
+      className="comparison-section reveal-on-scroll"
+      id="comparison"
+    >
+      <div className="section section-heading centered">
+        <span className="eyebrow">KHÁC BIỆT RÕ RÀNG</span>
+        <h2>Đừng để định dạng làm rào cản sự nghiệp.</h2>
+        <p>
+          Bản CV nên là chìa khóa mở ra cánh cửa phỏng vấn, không phải gánh nặng
+          căn chỉnh lề thủ công.
+        </p>
+      </div>
+      <div className="section comparison-grid">
+        <article className="comparison-card traditional reveal-on-scroll reveal-delay-1">
+          <div className="comparison-title">
+            <div>
+              <span>TRƯỚC ĐÂY</span>
+              <h3>CV Làm Bằng Word Thủ Công</h3>
+            </div>
+            <small>Phát hiện lỗi định dạng</small>
+          </div>
+          <div className="broken-page">
+            <div className="broken-heading">
+              <i />
+              <div>
+                <b>JASON MORRIS</b>
+                <span>Marketing Manager</span>
+              </div>
+            </div>
+            <div className="broken-content">
+              <i />
+              <i />
+              <i className="too-long" />
+              <h4>KINH NGHIỆM</h4>
+              <b>Marketing Director</b>
+              <i />
+              <i />
+              <div className="page-break">LỖI NHẢY TRANG NGOÀI Ý MUỐN</div>
+              <i />
+              <i />
+            </div>
+            <div className="error-note note-one">Chữ bị tràn lề</div>
+            <div className="error-note note-two">Mục bị chia cắt</div>
+          </div>
+          <ul>
+            <li>Font chữ bị thay đổi giữa các máy</li>
+            <li>Nội dung tự tràn sang trang trắng thừa</li>
+            <li>Máy quét ATS đọc sai cấu trúc bảng biểu</li>
+          </ul>
+        </article>
+
+        <article className="comparison-card cvify reveal-on-scroll reveal-delay-2">
+          <div className="comparison-title">
+            <div>
+              <span>HIỆN TẠI</span>
+              <h3>CVify Pro</h3>
+            </div>
+            <small>
+              <Icon name="check" size={14} /> Đã kiểm định chuẩn ATS
+            </small>
+          </div>
+          <div className="perfect-page">
+            <div className="perfect-header">
+              <div>
+                <b>JASON MORRIS</b>
+                <span>Marketing Manager</span>
+              </div>
+              <div className="initials">JM</div>
+            </div>
+            <div className="perfect-grid">
+              <aside>
+                <h4>LIÊN HỆ</h4>
+                <i />
+                <i />
+                <h4>KỸ NĂNG</h4>
+                <i />
+                <i />
+                <i />
+              </aside>
+              <main>
+                <h4>MỤC TIÊU</h4>
+                <i />
+                <i />
+                <i />
+                <h4>KINH NGHIỆM</h4>
+                <b>Marketing Director</b>
+                <i />
+                <i />
+                <i />
+                <b>Brand Manager</b>
+                <i />
+                <i />
+              </main>
+            </div>
+          </div>
+          <ul>
+            <li>Nhúng font chữ vector 300 DPI sắc nét</li>
+            <li>Căn lề chuẩn A4 cố định 1:1 hoàn hảo</li>
+            <li>Cấu trúc dữ liệu chuẩn cho máy quét ATS</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  );
+}
+
+const faqs = [
+  [
+    "CVify Pro có thực sự vượt qua được hệ thống lọc hồ sơ ATS không?",
+    "Có! Mọi mẫu thiết kế đều sử dụng mã chuẩn ngữ nghĩa, tiêu đề mục tiêu chuẩn quốc tế, font chữ vector nhúng sâu và văn bản có thể bóc tách chính xác bởi mọi phần mềm ATS hiện đại.",
+  ],
+  [
+    "Tôi có thể tạo và tải CV hoàn toàn miễn phí không?",
+    "Hoàn toàn có thể! Bạn có thể tự do xây dựng, tùy chỉnh màu sắc, sắp xếp các khối và xuất file PDF chuẩn in ấn A4 miễn phí mà không bị chèn hình mờ (watermark).",
+  ],
+  [
+    "Hệ thống có hỗ trợ đầy đủ tiếng Việt có dấu không?",
+    "Có! CVify Pro sử dụng bảng mã chuẩn Unicode UTF-8 sạch, tương thích hoàn hảo với mọi ký tự tiếng Việt có dấu, đảm bảo không bao giờ bị lỗi font chữ khi nộp hồ sơ.",
+  ],
+  [
+    "Tôi có thể đổi qua lại giữa bố cục 1 cột và 2 cột được không?",
+    "Có! Bạn chỉ cần nhấn chọn chế độ 1 Cột hoặc 2 Cột trong trình thiết kế. Toàn bộ nội dung Kinh nghiệm, Học vấn và Kỹ năng sẽ tự động được sắp xếp lại một cách hài hòa.",
+  ],
+  [
+    "Dữ liệu cá nhân và hồ sơ của tôi có được bảo mật an toàn không?",
+    "Tuyệt đối an toàn. Dữ liệu của bạn được mã hóa an toàn và chỉ bạn mới có quyền chỉnh sửa, tải về hoặc chia sẻ liên kết CV của mình.",
+  ],
+];
+
+function FAQ() {
+  const [open, setOpen] = useState(0);
+  return (
+    <section className="section faq-section reveal-on-scroll" id="faq">
+      <div className="faq-aside">
+        <span className="eyebrow">GIẢI ĐÁP THẮC MẮC</span>
+        <h2>Chúng tôi luôn sẵn sàng hỗ trợ bạn.</h2>
+        <p>
+          Tìm câu trả lời nhanh chóng cho thắc mắc của bạn, hoặc trò chuyện với
+          cố vấn tuyển dụng chuyên nghiệp.
+        </p>
+        <div className="mentor-card">
+          <div className="mentor-avatars">
+            <span>AM</span>
+            <span>JK</span>
+            <span>+</span>
+          </div>
+          <div>
+            <b>Cần cố vấn góp ý CV?</b>
+            <p>Đội ngũ chuyên gia HR sẵn sàng hỗ trợ phản hồi trong 24 giờ.</p>
+            <a href="mailto:hotro@cvify.pro">
+              Hỏi chuyên gia <Icon name="arrow" size={14} />
+            </a>
+          </div>
+        </div>
+      </div>
+      <div className="accordion">
+        {faqs.map(([question, answer], index) => (
+          <div
+            className={`faq-item ${open === index ? "open" : ""}`}
+            key={question}
+          >
+            <button
+              onClick={() => setOpen(open === index ? -1 : index)}
+              aria-expanded={open === index}
+            >
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <b>{question}</b>
+              <i>
+                <Icon name="chevron" />
+              </i>
+            </button>
+            <div className="faq-answer">
+              <p>{answer}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function Footer() {
+  const columns = [
+    [
+      "Mẫu CV Theo Ngành",
+      "Kỹ Sư Phần Mềm IT",
+      "Kinh Doanh & B2B",
+      "Thiết Kế Sáng Tạo",
+      "Marketing & Tăng Trưởng",
+    ],
+    [
+      "Tính Năng Nổi Bật",
+      "Trình Tạo Bố Cục",
+      "Bộ Quét Điểm ATS",
+      "Xuất PDF Vector",
+      "Thư Xin Việc (Cover Letter)",
+    ],
+    [
+      "Tài Nguyên Tuyển Dụng",
+      "Cẩm Nang Viết CV",
+      "Nhật Ký Sự Nghiệp",
+      "Mẹo Phỏng Vấn",
+      "Cộng Đồng Nghề Nghiệp",
+    ],
+    ["Pháp Lý & Hỗ Trợ", "Chính Sách Bảo Mật", "Điều Khoản Dịch Vụ", "Liên Hệ", "hotro@cvify.pro"],
+  ];
+  return (
+    <footer className="figma-footer reveal-on-scroll">
+      <div className="footer-top">
+        <div className="footer-brand">
+          <Logo />
+          <p>
+            Xây dựng bản CV thể hiện trọn vẹn năng lực tốt nhất của bạn—và được
+            đọc bởi đúng nhà tuyển dụng.
+          </p>
+          <div className="footer-badge">
+            <Icon name="shield" size={16} /> Bảo mật dữ liệu hàng đầu
+          </div>
+        </div>
+        {columns.map(([title, ...items]) => (
+          <div className="footer-column" key={title}>
+            <h3>{title}</h3>
+            {items.map((item) => (
+              <a href="#templates" key={item}>
+                {item}
+              </a>
+            ))}
+          </div>
+        ))}
+      </div>
+      <div className="footer-bottom">
+        <span>© 2026 CVify Pro. Phát triển phục vụ Đồ án Chuyên ngành CNTT.</span>
+        <span>Tiếng Việt (VN) · Chuẩn ISO 216 A4</span>
+      </div>
+    </footer>
+  );
+}
 
 export const TrangChu = ({
   onChuyenTrinhThietKe,
   onMoDangNhap,
   onMoDangKy,
   daDangNhap = false,
-  onChuyenBangDieuKhien,
   onDangXuat,
   tenNguoiDung = "Người Dùng",
-  avatarNguoiDung = "",
+  avatarNguoiDung,
   anHeader = false,
 }: TrangChuProps) => {
-  // Scroll state cho header blur effect
-  const [daScroll, setDaScroll] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  // Hiệu ứng cuộn tới đâu xuất hiện tới đó (Scroll-Triggered Reveal)
   useEffect(() => {
-    const xuLyScroll = () => setDaScroll(window.scrollY > 20);
-    window.addEventListener('scroll', xuLyScroll, { passive: true });
-    return () => window.removeEventListener('scroll', xuLyScroll);
+    const elements = document.querySelectorAll(".reveal-on-scroll");
+    if (!elements.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-revealed");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.08, rootMargin: "0px 0px -40px 0px" }
+    );
+
+    elements.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
   }, []);
 
-  // Quản lý slide Carousel
-  const [slideHienTai, setSlideHienTai] = useState(0);
-  const [dangTamDung, setDangTamDung] = useState(false);
-
-  // Tự động chuyển slide sau mỗi 5 giây (tự tạm dừng khi rê chuột)
-  useEffect(() => {
-    if (dangTamDung) return;
-    const boDem = setInterval(() => {
-      setSlideHienTai((prev) => (prev + 1) % DANH_SACH_SLIDES.length);
-    }, 5000);
-    return () => clearInterval(boDem);
-  }, [dangTamDung]);
-
-  const slideTiepTheo = () => {
-    setSlideHienTai((prev) => (prev + 1) % DANH_SACH_SLIDES.length);
-  };
-
-  const slideTruocDo = () => {
-    setSlideHienTai(
-      (prev) => (prev - 1 + DANH_SACH_SLIDES.length) % DANH_SACH_SLIDES.length,
-    );
-  };
-
-  // Cuộn mượt đến section
-  const cuonDenPhan = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-white text-[#1e2532] font-sans">
-      {/* ================= 1. HEADER PREMIUM (Resume.io Style) ================= */}
+    <div id="top" className="min-h-screen bg-white font-sans antialiased selection:bg-[#2563eb] selection:text-white">
+      {/* 1. Header Navigation */}
       {!anHeader && (
-        <header
-          className={`sticky top-0 z-50 transition-all duration-300 ${
-            daScroll
-              ? "glass border-b border-[#d9deeb] shadow-xs"
-              : "bg-white border-b border-[#d9deeb]"
-          }`}
-        >
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 h-[60px] flex items-center justify-between gap-4">
-
-            {/* === LOGO === */}
-            <div
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              className="flex items-center gap-2.5 cursor-pointer group shrink-0"
-            >
-              <div className="w-8 h-8 rounded-lg bg-[#1a91f0] text-white flex items-center justify-center font-bold text-sm shadow-xs transition-transform group-hover:scale-105">
-                CV
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-[15px] font-extrabold text-[#0f141e] tracking-tight">
-                  CVify
-                </span>
-                <span className="text-[10px] font-bold text-white px-1.5 py-0.5 rounded bg-[#1a91f0] leading-none">
-                  PRO
-                </span>
-              </div>
+        <header className="figma-header">
+          <nav className="figma-nav">
+            <Logo />
+            <div className={`nav-links ${menuOpen ? "open" : ""}`}>
+              <a href="#templates" onClick={() => setMenuOpen(false)}>
+                Mẫu CV
+              </a>
+              <a href="#features" onClick={() => setMenuOpen(false)}>
+                Tính Năng
+              </a>
+              <a href="#comparison" onClick={() => setMenuOpen(false)}>
+                So Sánh
+              </a>
+              <a href="#community" onClick={() => setMenuOpen(false)}>
+                Cộng Đồng
+              </a>
+              <a href="#faq" onClick={() => setMenuOpen(false)}>
+                Hỏi Đáp
+              </a>
             </div>
 
-            {/* === NAV LINKS (Desktop) === */}
-            <nav className="hidden lg:flex items-center gap-1">
-              {[
-                { label: "Trang Chủ", id: "" },
-                { label: "Tính Năng", id: "tinh-nang" },
-                { label: "Mẫu CV", id: "kho-mau" },
-                { label: "Liên Hệ", id: "lien-he" },
-              ].map((link) => (
-                <button
-                  key={link.label}
-                  type="button"
-                  onClick={() =>
-                    link.id
-                      ? cuonDenPhan(link.id)
-                      : window.scrollTo({ top: 0, behavior: "smooth" })
-                  }
-                  className="relative px-3.5 py-2 text-sm font-medium text-[#656e83] hover:text-[#0f141e] rounded-lg hover:bg-[#f7f9fc] transition-all duration-200 cursor-pointer group/nav"
-                >
-                  {link.label}
-                  <span className="absolute bottom-1 left-3.5 right-3.5 h-0.5 rounded-full opacity-0 group-hover/nav:opacity-100 transition-all duration-300 bg-[#1a91f0]" />
-                </button>
-              ))}
-            </nav>
-
-            {/* === AUTH & CTA === */}
             <div className="flex items-center gap-3">
               {daDangNhap ? (
-                <>
-                  <div className="hidden sm:flex items-center gap-2.5">
-                    <div
-                      className="w-8 h-8 rounded-full bg-[#1a91f0] text-white font-bold text-xs flex items-center justify-center shadow-xs cursor-pointer hover:scale-105 transition-transform"
-                      title={tenNguoiDung}
-                    >
-                      {tenNguoiDung ? tenNguoiDung.charAt(0).toUpperCase() : "U"}
-                    </div>
-                    <span className="text-sm font-semibold text-[#0f141e] max-w-[110px] truncate">
-                      {tenNguoiDung}
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 text-xs font-semibold text-slate-800">
+                    <span className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px]">
+                      {tenNguoiDung ? tenNguoiDung[0].toUpperCase() : "U"}
                     </span>
+                    <span>{tenNguoiDung}</span>
                   </div>
                   {onDangXuat && (
                     <button
                       type="button"
                       onClick={onDangXuat}
-                      className="p-2 text-[#828ba2] hover:text-rose-500 hover:bg-rose-50 rounded-lg transition cursor-pointer"
+                      className="text-xs text-slate-400 hover:text-rose-600 transition p-1"
                       title="Đăng xuất"
                     >
-                      <LogOut size={16} />
+                      Đăng xuất
                     </button>
                   )}
-                </>
+                </div>
               ) : (
-                <>
+                <div className="hidden sm:flex items-center gap-2">
                   <button
                     type="button"
                     onClick={onMoDangNhap}
-                    className="hidden sm:block text-sm font-medium text-[#1e2532] hover:text-[#1a91f0] px-3.5 py-1.5 rounded-full hover:bg-[#f7f9fc] transition cursor-pointer"
+                    className="text-[13px] font-medium text-slate-600 hover:text-slate-900 px-2.5 py-1 transition"
                   >
-                    Đăng Nhập
+                    Đăng nhập
                   </button>
                   <button
                     type="button"
                     onClick={onMoDangKy}
-                    className="text-xs font-medium text-white bg-[#1a91f0] hover:bg-[#016fd0] px-4 py-2 rounded-[36px] transition cursor-pointer shadow-xs"
+                    className="text-[13px] font-medium text-slate-600 hover:text-slate-900 px-2.5 py-1 transition"
                   >
-                    Đăng Ký
+                    Đăng ký
                   </button>
-                </>
+                </div>
               )}
 
-              {/* CTA Button với 36px border radius */}
-              <button
-                type="button"
-                onClick={onChuyenTrinhThietKe}
-                className="hidden md:flex items-center gap-1.5 text-xs font-medium text-white bg-[#1a91f0] hover:bg-[#016fd0] px-5 py-2.5 rounded-[36px] shadow-xs cursor-pointer active:scale-95 transition-all"
-              >
-                <Sparkles size={14} className="shrink-0" />
-                <span>Tạo CV Ngay</span>
-                <ArrowRight size={13} className="shrink-0" />
-              </button>
+              <Button variant="small" onClick={onChuyenTrinhThietKe}>
+                Tạo CV Miễn Phí <Icon name="arrow" size={15} />
+              </Button>
             </div>
-          </div>
+
+            <button
+              className="menu-button"
+              aria-label="Mở menu"
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              <Icon name="menu" />
+            </button>
+          </nav>
         </header>
       )}
 
-      {/* ================= 2. HERO BANNER SLIDER CAROUSEL ================= */}
-      <style>{`
-        @keyframes blob-float {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          33% { transform: translate(30px, -30px) scale(1.08); }
-          66% { transform: translate(-20px, 20px) scale(0.94); }
-        }
-        @keyframes badge-float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-8px); }
-        }
-        @keyframes slide-up-in {
-          from { opacity: 0; transform: translateY(24px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes block-in-top {
-          from { opacity: 0; transform: translateY(-20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes block-in-left {
-          from { opacity: 0; transform: translateX(-20px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes block-in-bottom {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .anim-blob { animation: blob-float 8s ease-in-out infinite; }
-        .anim-blob-2 { animation: blob-float 11s ease-in-out infinite reverse; }
-        .anim-blob-3 { animation: blob-float 14s ease-in-out infinite; }
-        .anim-badge-1 { animation: badge-float 3s ease-in-out infinite; }
-        .anim-badge-2 { animation: badge-float 3.8s ease-in-out infinite 0.6s; }
-        .anim-slide-up { animation: slide-up-in 0.55s cubic-bezier(.22,1,.36,1) both; }
-        .anim-block-top { animation: block-in-top 0.5s ease-out both; }
-        .anim-block-left { animation: block-in-left 0.5s ease-out 0.2s both; }
-        .anim-block-bottom { animation: block-in-bottom 0.5s ease-out 0.4s both; }
-      `}</style>
-
-      <section
-        className="group relative overflow-hidden select-none bg-[#f7f9fc] border-b border-[#d9deeb]"
-        onMouseEnter={() => setDangTamDung(true)}
-        onMouseLeave={() => setDangTamDung(false)}
-      >
-        {/* Subtle dot pattern wash */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage:
-              "radial-gradient(#1e2532 1px, transparent 1px)",
-            backgroundSize: "24px 24px",
-          }}
-        />
-
-        {/* === MŨI TÊN TRÁI === */}
-        <button
-          type="button"
-          onClick={slideTruocDo}
-          aria-label="Slide trước"
-          className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 z-30 p-2.5 rounded-full bg-white border border-[#d9deeb] text-[#1e2532] hover:bg-[#f7f9fc] hover:scale-110 active:scale-95 transition-all duration-300 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 cursor-pointer shadow-xs"
-        >
-          <ChevronLeft size={20} className="stroke-[2.5]" />
-        </button>
-
-        {/* === MŨI TÊN PHẢI === */}
-        <button
-          type="button"
-          onClick={slideTiepTheo}
-          aria-label="Slide tiếp theo"
-          className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 z-30 p-2.5 rounded-full bg-white border border-[#d9deeb] text-[#1e2532] hover:bg-[#f7f9fc] hover:scale-110 active:scale-95 transition-all duration-300 opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 cursor-pointer shadow-xs"
-        >
-          <ChevronRight size={20} className="stroke-[2.5]" />
-        </button>
-
-        {/* === NỘI DUNG CHÍNH === */}
-        <div className="relative z-10 max-w-6xl mx-auto px-6 py-16 lg:py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-
-            {/* ---- CỘT TRÁI: TEXT (Resume.io Style) ---- */}
-            <div
-              key={`slide-left-${slideHienTai}`}
-              className="text-center lg:text-left anim-slide-up"
-            >
-              {/* Tag badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold mb-6 border border-[#d9deeb] bg-[#f1f2ff] text-[#1a91f0]">
-                <Sparkles size={13} />
-                <span>{DANH_SACH_SLIDES[slideHienTai].tag}</span>
-              </div>
-
-              {/* Tiêu đề H1 chuẩn Resume.io: Ink / Carbon với từ khóa Signal Blue */}
-              <h1 className="text-4xl sm:text-5xl lg:text-[54px] font-extrabold tracking-tight leading-[1.12] mb-6 text-[#0f141e]">
-                <span className="block">{DANH_SACH_SLIDES[slideHienTai].tieuDe1}</span>
-                <span className="text-[#1a91f0] block">
-                  {DANH_SACH_SLIDES[slideHienTai].tieuDe2}
-                </span>
-                <span className="text-[#1e2532] block font-bold">{DANH_SACH_SLIDES[slideHienTai].tieuDe3}</span>
-              </h1>
-
-              {/* Mô tả: Pencil #656e83 */}
-              <p className="text-[#656e83] text-base sm:text-lg leading-relaxed max-w-lg mx-auto lg:mx-0">
-                {DANH_SACH_SLIDES[slideHienTai].moTa}
-              </p>
-
-              {/* Nút bấm hành động CTA Resume.io (Pill 36px) */}
-              <div className="mt-8 flex flex-wrap items-center gap-4 justify-center lg:justify-start">
-                <button
-                  type="button"
-                  onClick={onChuyenTrinhThietKe}
-                  className="bg-[#1a91f0] hover:bg-[#016fd0] text-white text-base font-medium px-8 py-3.5 rounded-[36px] shadow-xs hover:shadow transition active:scale-95 cursor-pointer flex items-center gap-2"
-                >
-                  <span>Tạo CV Của Bạn</span>
-                  <ArrowRight size={18} />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => cuonDenPhan('kho-mau')}
-                  className="text-[#1a91f0] hover:text-[#016fd0] hover:underline font-medium text-base px-4 py-3.5 transition cursor-pointer flex items-center gap-1.5"
-                >
-                  <span>Khám phá mẫu CV →</span>
-                </button>
-              </div>
-
-              {/* 3 điểm nổi bật */}
-              <div className="mt-7 flex flex-wrap items-center justify-center lg:justify-start gap-5 text-xs text-[#656e83] font-medium">
-                <span className="flex items-center gap-1.5">
-                  <CheckCircle2 size={15} className="text-[#10b981] shrink-0" />
-                  Miễn phí 100%
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <CheckCircle2 size={15} className="text-[#10b981] shrink-0" />
-                  Chuẩn quét ATS 99%
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <CheckCircle2 size={15} className="text-[#10b981] shrink-0" />
-                  Xuất PDF tức thì
-                </span>
-              </div>
-
-              {/* Thống kê social proof */}
-              <div className="mt-9 pt-7 border-t border-[#d9deeb] grid grid-cols-3 gap-4 max-w-sm mx-auto lg:mx-0">
-                {[
-                  { so: "10,000+", nhan: "CV đã tạo" },
-                  { so: "99%", nhan: "Điểm ATS" },
-                  { so: "4.9 / 5", nhan: "Đánh giá" },
-                ].map((item) => (
-                  <div key={item.nhan} className="text-center lg:text-left">
-                    <div className="text-2xl font-bold text-[#1a91f0]">{item.so}</div>
-                    <div className="text-xs text-[#828ba2] mt-0.5">{item.nhan}</div>
-                  </div>
-                ))}
-              </div>
+      <main>
+        {/* 2. Hero Section — Nổi bật màu sắc chuyển sắc, tương phản với phần thân */}
+        <section className="hero section">
+          <div className="hero-copy">
+            <div className="announcement">
+              <span>MỚI</span> Hệ thống chấm điểm ATS thông minh hơn{" "}
+              <Icon name="arrow" size={14} />
             </div>
-
-            {/* ---- CỘT PHẢI: CV MOCKUP ĐỘNG (Resume.io Preview Card) ---- */}
-            <div
-              key={`slide-right-${slideHienTai}`}
-              className="flex justify-center relative"
-            >
-              {/* Tờ CV A4 thu nhỏ nghiêng -2° chuẩn Resume.io */}
-              <div
-                className="relative w-full max-w-[340px] rounded-2xl"
-                style={{ transform: "rotate(-2deg)" }}
-              >
-                {/* Card CV */}
-                <div className="bg-white rounded-2xl shadow-sm border border-[#d9deeb] p-6 overflow-hidden">
-                  {/* Header CV */}
-                  <div className="anim-block-top flex items-center gap-3 mb-4 pb-4 border-b border-[#e7eaf4]">
-                    <div className="w-12 h-12 rounded-full bg-[#1a91f0] text-white flex items-center justify-center font-bold text-sm shadow-xs shrink-0">
-                      NA
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-bold text-[#0f141e] truncate">NGUYỄN VĂN AN</div>
-                      <div className="text-xs font-medium text-[#1a91f0] mt-0.5">
-                        Senior Software Engineer
-                      </div>
-                      <div className="text-[10px] text-[#828ba2] mt-0.5">an.nguyen@gmail.com · TP. HCM</div>
-                    </div>
-                  </div>
-
-                  {/* Khối Kinh Nghiệm */}
-                  <div className="anim-block-left mb-3">
-                    <div className="text-[10px] font-bold uppercase tracking-wider mb-1.5 px-2 py-0.5 rounded bg-[#f1f2ff] text-[#1a91f0] inline-block">
-                      Kinh Nghiệm Làm Việc
-                    </div>
-                    <div className="text-[11px] font-bold text-[#1e2532] mb-1">Tech Group Vietnam · 2023 - Nay</div>
-                    <div className="space-y-1">
-                      <div className="h-1.5 bg-[#f7f9fc] border border-[#d9deeb] rounded-full w-full" />
-                      <div className="h-1.5 bg-[#f7f9fc] border border-[#d9deeb] rounded-full w-5/6" />
-                      <div className="h-1.5 bg-[#f7f9fc] border border-[#d9deeb] rounded-full w-4/5" />
-                    </div>
-                  </div>
-
-                  {/* Khối Kỹ Năng */}
-                  <div className="anim-block-bottom">
-                    <div className="text-[10px] font-bold uppercase tracking-wider mb-2 px-2 py-0.5 rounded bg-[#f1f2ff] text-[#1a91f0] inline-block">
-                      Kỹ Năng Nổi Bật
-                    </div>
-                    <div className="flex flex-wrap gap-1.5">
-                      {["React", "TypeScript", "Node.js", "TailwindCSS"].map((tag) => (
-                        <span
-                          key={tag}
-                          className="text-[10px] font-medium px-2 py-0.5 rounded-full border border-[#d9deeb] bg-[#f7f9fc] text-[#1e2532]"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Huy hiệu nổi 1: ATS Score badge (Mint Whisper #e7f4ed) */}
-                <div className="anim-badge-1 absolute -bottom-4 -left-4 bg-[#e7f4ed] px-3.5 py-2 rounded-xl shadow-xs border border-[#a3e635]/40 flex items-center gap-2 pointer-events-none">
-                  <span className="text-xl">✅</span>
-                  <div>
-                    <div className="text-[11px] font-bold text-[#059669]">Điểm ATS: 99/100</div>
-                    <div className="text-[9px] text-[#059669]/80">Vượt qua mọi bộ lọc HR</div>
-                  </div>
-                </div>
-
-                {/* Huy hiệu nổi 2: Tốc độ xuất (Blush Whisper #ffebe4) */}
-                <div className="anim-badge-2 absolute -top-4 -right-4 bg-white px-3.5 py-2 rounded-xl shadow-xs border border-[#d9deeb] flex items-center gap-2 pointer-events-none">
-                  <span className="text-xl">⚡</span>
-                  <div>
-                    <div className="text-[11px] font-bold text-[#0f141e]">Tải file trong 3s</div>
-                    <div className="text-[9px] text-[#656e83]">Chuẩn A4 300 DPI</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* === DOTS PAGINATION === */}
-          <div className="flex items-center justify-center gap-3 mt-12">
-            {DANH_SACH_SLIDES.map((_, index) => {
-              const active = slideHienTai === index;
-              return (
-                <button
-                  key={index}
-                  type="button"
-                  onClick={() => setSlideHienTai(index)}
-                  aria-label={`Slide ${index + 1}`}
-                  className="transition-all duration-300 cursor-pointer rounded-full h-2"
-                  style={{
-                    width: active ? "28px" : "8px",
-                    background: active ? "#1a91f0" : "#d9deeb",
-                  }}
-                />
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ================= 2.5. BENTO GRID TÍNH NĂNG ================= */}
-      {/* ================= 2.5. TINTED FEATURE CARDS (Resume.io Style) ================= */}
-      <section className="py-20 px-6 bg-white border-b border-[#d9deeb]">
-        <div className="max-w-6xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-14">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold mb-4 border border-[#d9deeb] bg-[#f1f2ff] text-[#1a91f0]">
-              <Sparkles size={13} />
-              <span>CÔNG CỤ TẠO CV TỐI ƯU</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0f141e] tracking-tight">
-              Tất Cả Những Gì Bạn Cần Để Có Một Bản CV Xuất Sắc
-            </h2>
-            <p className="text-[#656e83] mt-3 max-w-xl mx-auto text-base">
-              Bộ công cụ thiết kế hồ sơ hiện đại giúp bạn nổi bật trong mắt mọi nhà tuyển dụng
+            <h1>
+              Tạo bản CV chuẩn ATS giúp bạn <em>trúng tuyển.</em>
+            </h1>
+            <p className="hero-sub">
+              Thiết kế hồ sơ chuyên nghiệp chuẩn ATS trong vài phút với định dạng
+              thông minh, bố cục được nhà tuyển dụng chứng nhận và xuất bản in A4
+              sắc nét.
             </p>
+            <div className="hero-actions">
+              <Button onClick={onChuyenTrinhThietKe}>
+                Bắt đầu tạo CV miễn phí <Icon name="arrow" />
+              </Button>
+              <Button variant="secondary" href="#templates">
+                Xem mẫu CV
+              </Button>
+            </div>
+            <div className="social-proof">
+              <div className="avatar-stack">
+                <span>MC</span>
+                <span>DL</span>
+                <span>AR</span>
+                <span>+15K</span>
+              </div>
+              <div>
+                <div className="stars">
+                  ★★★★★ <b>4.9/5</b>
+                </div>
+                <p>Hơn 15,000+ ứng viên tin dùng</p>
+              </div>
+            </div>
+            <div className="hero-trust">
+              <span>Được tin dùng bởi ứng viên tại các tập đoàn hàng đầu</span>
+              <div className="hero-logos">
+                <b>Google</b>
+                <b>Meta</b>
+                <b>TikTok</b>
+                <b>VNG Corp</b>
+                <b>MoMo</b>
+              </div>
+            </div>
           </div>
 
-          {/* Feature Cards Grid (Resume.io Tinted Feature Cards) */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-auto">
-
-            {/* Card 1 LỚN — Kéo thả (Lavender Wash #f1f2ff) */}
-            <div className="md:col-span-2 rounded-2xl p-8 border border-[#d9deeb] bg-[#f1f2ff] relative overflow-hidden group transition-all duration-300">
-              <div className="relative z-10">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 bg-white border border-[#d9deeb] text-[#1a91f0] shadow-xs">
-                  <Move size={24} />
-                </div>
-                <h3 className="text-xl font-bold text-[#0f141e] mb-2">Kéo Thả Trực Quan (@dnd-kit)</h3>
-                <p className="text-[#656e83] text-sm leading-relaxed max-w-md">
-                  Tự do sắp xếp vị trí các khối thông tin bằng thao tác kéo thả mượt mà. Hệ thống tự động căn chỉnh lề theo tỷ lệ A4 chuẩn 210 × 297mm.
-                </p>
-                {/* Mini blocks */}
-                <div className="mt-6 flex flex-wrap gap-2.5">
-                  {["Thông Tin Cá Nhân", "Kinh Nghiệm", "Học Vấn", "Kỹ Năng"].map((label) => (
-                    <div
-                      key={label}
-                      className="px-3.5 py-2 rounded-lg text-xs font-semibold text-[#1a91f0] bg-white border border-[#d9deeb] shadow-xs"
-                    >
-                      ⠿ {label}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Card 2 — PDF (Mint Whisper #e7f4ed) */}
-            <div className="rounded-2xl p-8 border border-[#a3e635]/40 bg-[#e7f4ed] relative overflow-hidden group transition-all duration-300">
-              <div className="relative z-10">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 bg-white border border-[#d9deeb] text-[#059669] shadow-xs">
-                  <Printer size={24} />
-                </div>
-                <h3 className="text-lg font-bold text-[#0f141e] mb-2">Xuất PDF Sắc Nét</h3>
-                <p className="text-[#656e83] text-sm leading-relaxed">
-                  100% không lỗi font tiếng Việt. Độ phân giải chuẩn in 300 DPI sẵn sàng ứng tuyển.
-                </p>
-                <div className="mt-6 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-[#a3e635]/50 text-xs font-bold text-[#059669]">
-                  <span>⚡</span> Xuất trong 3 giây
-                </div>
-              </div>
-            </div>
-
-            {/* Card 3 — ATS (Blush Whisper #ffebe4) */}
-            <div className="rounded-2xl p-8 border border-[#fecdd3] bg-[#ffebe4] relative overflow-hidden group transition-all duration-300">
-              <div className="relative z-10">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 bg-white border border-[#fecdd3] text-[#e11d48] shadow-xs">
-                  <Award size={24} />
-                </div>
-                <h3 className="text-lg font-bold text-[#0f141e] mb-2">Chuẩn ATS Tuyển Dụng</h3>
-                <p className="text-[#656e83] text-sm leading-relaxed">
-                  Cấu trúc dữ liệu ngữ nghĩa giúp robot của nhà tuyển dụng đọc hiểu chính xác 100%.
-                </p>
-                <div className="mt-6 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#fecdd3] text-xs font-bold text-[#e11d48]">
-                  <span>🎯</span> Điểm ATS: 99/100
-                </div>
-              </div>
-            </div>
-
-            {/* Card 4 — Bảng màu (White Paper card) */}
-            <div className="rounded-2xl p-8 border border-[#d9deeb] bg-white relative overflow-hidden group transition-all duration-300 shadow-xs">
-              <div className="relative z-10">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 bg-[#f7f9fc] border border-[#d9deeb] text-[#1a91f0]">
-                  <Palette size={24} />
-                </div>
-                <h3 className="text-lg font-bold text-[#0f141e] mb-2">Đổi Màu Tức Thì</h3>
-                <p className="text-[#656e83] text-sm leading-relaxed">
-                  6 bảng màu chuyên nghiệp chuẩn ATS, thay đổi phong cách chỉ với 1 click.
-                </p>
-                <div className="mt-6 flex gap-2">
-                  {["#1a91f0","#5660e8","#059669","#e11d48","#f59e0b","#1e2532"].map(c => (
-                    <div key={c} className="w-6 h-6 rounded-full border border-white shadow-xs" style={{ background: c }} />
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Card 5 LỚN — Chỉnh sửa trực tiếp (md:col-span-2) */}
-            <div className="md:col-span-2 rounded-2xl p-8 border border-[#d9deeb] bg-[#f7f9fc] relative overflow-hidden group transition-all duration-300">
-              <div className="relative z-10">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 bg-white border border-[#d9deeb] text-[#1a91f0] shadow-xs">
-                  <FileText size={24} />
-                </div>
-                <h3 className="text-xl font-bold text-[#0f141e] mb-2">Chỉnh Sửa Trực Tiếp Trên Tờ CV</h3>
-                <p className="text-[#656e83] text-sm leading-relaxed max-w-md">
-                  Click trực tiếp vào bất kỳ mục nào trên tờ giấy A4 để nhập liệu và xem kết quả cập nhật theo thời gian thực.
-                </p>
-                <div className="mt-6 font-mono text-xs text-[#1e2532] bg-white border border-[#d9deeb] rounded-lg px-4 py-2.5 inline-block shadow-xs">
-                  <span className="text-[#828ba2]">Họ tên: </span>
-                  <span className="font-bold text-[#0f141e]">Nguyễn Văn An</span>
-                  <span className="inline-block w-0.5 h-3.5 bg-[#1a91f0] ml-1 animate-pulse">|</span>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* ================= 3. KHO MẪU CV THỊNH HÀNH ================= */}
-      <section id="kho-mau" className="py-20 px-6 max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-10">
-          <span className="inline-flex items-center gap-2 text-xs font-bold text-[#1a91f0] uppercase tracking-wider bg-blue-50 px-4 py-1.5 rounded-full border border-blue-200 mb-4">
-            <Layers size={13} /> Kho Template Chuyên Nghiệp
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mt-2 tracking-tight">
-            Kho Mẫu CV Thịnh Hành 2026
-          </h2>
-          <p className="text-slate-500 mt-3 text-sm leading-relaxed">
-            Được nghiên cứu bởi chuyên gia tuyển dụng — giúp hồ sơ nổi bật giữa hàng trăm ứng viên.
-          </p>
-        </div>
-
-        {/* Tab Filter */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
-          {["Tất Cả","IT & Công Nghệ","Marketing","Kinh Doanh","Thiết Kế"].map((tab, i) => (
-            <button
-              key={tab}
-              type="button"
-              className="px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 cursor-pointer"
-              style={
-                i === 0
-                  ? { background: "linear-gradient(135deg,#1a91f0,#7c3aed)", color: "white", boxShadow: "0 4px 12px rgba(10,102,194,0.3)" }
-                  : { background: "white", color: "#475569", border: "1px solid #e2e8f0" }
-              }
+          <div className="hero-visual">
+            <div className="blue-orbit" />
+            <div className="mockup-layer mockup-layer-one" />
+            <div className="mockup-layer mockup-layer-two" />
+            <BuilderMockup onExport={onChuyenTrinhThietKe} />
+            <svg
+              className="motion-path path-top"
+              viewBox="0 0 180 90"
+              aria-hidden="true"
             >
-              {tab}
-            </button>
-          ))}
-        </div>
-
-        {/* 3 Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-7">
-
-          {/* Card 1: Modern */}
-          <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col group">
-            {/* Preview */}
-            <div className="relative h-72 bg-gradient-to-br from-blue-50 to-indigo-100/60 p-5 flex items-center justify-center overflow-hidden">
-              {/* Badge hot */}
-              <span className="absolute top-3 left-3 z-10 text-[10px] font-bold text-white px-2.5 py-1 rounded-full" style={{ background: "linear-gradient(135deg,#1a91f0,#7c3aed)" }}>
-                🔥 Phổ Biến Nhất
+              <path d="M8 76C52 9 106 10 169 43" />
+              <path className="motion-arrow" d="m159 35 11 8-13 4" />
+            </svg>
+            <svg
+              className="motion-path path-bottom"
+              viewBox="0 0 190 100"
+              aria-hidden="true"
+            >
+              <path d="M8 17c29 69 96 82 173 39" />
+              <path className="motion-arrow" d="m172 50 10 6-11 7" />
+            </svg>
+            <div className="drag-cursor cursor-one">
+              <Icon name="drag" size={13} />
+            </div>
+            <div className="floating-stat stat-top">
+              <span className="stat-icon stat-icon-blue">
+                <Icon name="spark" size={16} />
               </span>
-              {/* CV mockup */}
-              <div className="w-3/4 h-full bg-white rounded-t-xl shadow-md border border-slate-200/80 p-3 transform group-hover:scale-105 transition-transform duration-500">
-                <div className="h-5 rounded-lg mb-2" style={{ background: "linear-gradient(135deg,#1a91f0,#7c3aed)" }} />
-                <div className="h-1 bg-slate-200 rounded w-1/2 mb-3" />
-                <div className="grid grid-cols-3 gap-2">
-                  <div className="col-span-1 space-y-1.5">
-                    <div className="h-1 bg-blue-200 rounded" /><div className="h-1 bg-blue-100 rounded" /><div className="h-1 bg-blue-100 rounded" />
-                  </div>
-                  <div className="col-span-2 space-y-1.5">
-                    <div className="h-1.5 bg-slate-300 rounded w-4/5" /><div className="h-1 bg-slate-100 rounded" /><div className="h-1 bg-slate-100 rounded" />
-                  </div>
-                </div>
-              </div>
-              {/* Hover overlay */}
-              <div className="absolute inset-0 bg-slate-900/70 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <button type="button" onClick={onChuyenTrinhThietKe} className="px-4 py-2 text-xs font-bold text-white rounded-full cursor-pointer" style={{ background: "linear-gradient(135deg,#1a91f0,#7c3aed)" }}>
-                  Dùng Mẫu Này
-                </button>
-                <button type="button" className="px-4 py-2 text-xs font-bold text-white bg-white/20 backdrop-blur rounded-full border border-white/30 cursor-pointer">
-                  Xem Trước
-                </button>
-              </div>
-            </div>
-            {/* Info */}
-            <div className="p-5 flex-1 flex flex-col">
-              <div className="flex items-start justify-between mb-2">
-                <div>
-                  <h3 className="font-black text-slate-900 text-base">Mẫu Hiện Đại</h3>
-                  <p className="text-xs text-slate-500 mt-0.5">IT · Lập trình viên · UI/UX</p>
-                </div>
-                <span className="text-[11px] font-semibold text-[#1a91f0] bg-blue-50 px-2 py-0.5 rounded-lg border border-blue-100">2 Cột</span>
-              </div>
-              <div className="mt-auto pt-4 flex items-center justify-between border-t border-slate-100">
-                <div className="flex items-center gap-1 text-amber-500 text-xs font-bold">
-                  ★★★★★ <span className="text-slate-400 font-normal ml-1">4.9</span>
-                </div>
-                <span className="text-[11px] text-slate-400">2.3k lượt dùng</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 2: Minimalist */}
-          <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col group">
-            <div className="relative h-72 bg-gradient-to-br from-slate-100 to-slate-200/50 p-5 flex items-center justify-center overflow-hidden">
-              <span className="absolute top-3 left-3 z-10 text-[10px] font-bold text-white bg-slate-800 px-2.5 py-1 rounded-full">
-                ✦ ATS Friendly
-              </span>
-              <div className="w-3/4 h-full bg-white rounded-t-xl shadow-md border border-slate-200/80 p-3 transform group-hover:scale-105 transition-transform duration-500">
-                <div className="h-5 bg-slate-800 rounded-lg mb-2" />
-                <div className="h-1 bg-slate-400 rounded w-2/5 mb-4 mx-auto" />
-                <div className="space-y-2">
-                  <div className="h-1 bg-slate-300 rounded w-1/3" /><div className="h-1 bg-slate-100 rounded w-full" /><div className="h-1 bg-slate-100 rounded w-5/6" />
-                  <div className="h-1 bg-slate-300 rounded w-1/3 pt-1" /><div className="h-1 bg-slate-100 rounded w-full" />
-                </div>
-              </div>
-              <div className="absolute inset-0 bg-slate-900/70 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <button type="button" onClick={onChuyenTrinhThietKe} className="px-4 py-2 text-xs font-bold text-white bg-slate-800 rounded-full cursor-pointer">
-                  Dùng Mẫu Này
-                </button>
-                <button type="button" className="px-4 py-2 text-xs font-bold text-white bg-white/20 backdrop-blur rounded-full border border-white/30 cursor-pointer">
-                  Xem Trước
-                </button>
-              </div>
-            </div>
-            <div className="p-5 flex-1 flex flex-col">
-              <div className="flex items-start justify-between mb-2">
-                <div>
-                  <h3 className="font-black text-slate-900 text-base">Mẫu Tối Giản</h3>
-                  <p className="text-xs text-slate-500 mt-0.5">Kinh tế · Tài chính · Quản trị</p>
-                </div>
-                <span className="text-[11px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200">1 Cột</span>
-              </div>
-              <div className="mt-auto pt-4 flex items-center justify-between border-t border-slate-100">
-                <div className="flex items-center gap-1 text-amber-500 text-xs font-bold">
-                  ★★★★★ <span className="text-slate-400 font-normal ml-1">4.8</span>
-                </div>
-                <span className="text-[11px] text-slate-400">1.7k lượt dùng</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 3: Creative */}
-          <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col group">
-            <div className="relative h-72 bg-gradient-to-br from-purple-50 to-pink-50 p-5 flex items-center justify-center overflow-hidden">
-              <span className="absolute top-3 left-3 z-10 text-[10px] font-bold text-white bg-purple-600 px-2.5 py-1 rounded-full">
-                🎓 Sinh Viên & Fresher
-              </span>
-              <div className="w-3/4 h-full bg-white rounded-t-xl shadow-md border border-slate-200/80 p-3 transform group-hover:scale-105 transition-transform duration-500">
-                <div className="h-5 bg-purple-600 rounded-lg mb-2" />
-                <div className="h-1 bg-purple-400 rounded w-1/2 mb-3" />
-                <div className="flex gap-2">
-                  <div className="w-1/3 bg-purple-50 p-1 rounded space-y-1"><div className="h-1 bg-purple-200 rounded" /><div className="h-1 bg-purple-200 rounded" /></div>
-                  <div className="w-2/3 space-y-1"><div className="h-1.5 bg-slate-300 rounded w-3/4" /><div className="h-1 bg-slate-100 rounded" /><div className="h-1 bg-slate-100 rounded w-5/6" /></div>
-                </div>
-              </div>
-              <div className="absolute inset-0 bg-slate-900/70 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <button type="button" onClick={onChuyenTrinhThietKe} className="px-4 py-2 text-xs font-bold text-white bg-purple-600 rounded-full cursor-pointer">
-                  Dùng Mẫu Này
-                </button>
-                <button type="button" className="px-4 py-2 text-xs font-bold text-white bg-white/20 backdrop-blur rounded-full border border-white/30 cursor-pointer">
-                  Xem Trước
-                </button>
-              </div>
-            </div>
-            <div className="p-5 flex-1 flex flex-col">
-              <div className="flex items-start justify-between mb-2">
-                <div>
-                  <h3 className="font-black text-slate-900 text-base">Mẫu Sáng Tạo</h3>
-                  <p className="text-xs text-slate-500 mt-0.5">Sinh viên · Truyền thông · Creative</p>
-                </div>
-                <span className="text-[11px] font-semibold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-lg border border-purple-100">Trẻ Trung</span>
-              </div>
-              <div className="mt-auto pt-4 flex items-center justify-between border-t border-slate-100">
-                <div className="flex items-center gap-1 text-amber-500 text-xs font-bold">
-                  ★★★★½ <span className="text-slate-400 font-normal ml-1">4.7</span>
-                </div>
-                <span className="text-[11px] text-slate-400">980 lượt dùng</span>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        {/* CTA "Xem Tất Cả" */}
-        <div className="flex justify-center mt-10">
-          <button
-            type="button"
-            onClick={onChuyenTrinhThietKe}
-            className="flex items-center gap-2.5 text-sm font-bold px-7 py-3.5 rounded-full border-2 border-[#1a91f0] text-[#1a91f0] hover:text-white transition-all duration-300 cursor-pointer"
-            style={{ position: "relative", overflow: "hidden" }}
-            onMouseEnter={e => (e.currentTarget.style.background = "linear-gradient(135deg,#1a91f0,#7c3aed)", e.currentTarget.style.borderColor = "transparent", e.currentTarget.style.color = "white")}
-            onMouseLeave={e => (e.currentTarget.style.background = "transparent", e.currentTarget.style.borderColor = "#1a91f0", e.currentTarget.style.color = "#1a91f0")}
-          >
-            <Layers size={16} />
-            <span>Xem Tất Cả 20+ Mẫu CV</span>
-            <ChevronRight size={16} />
-          </button>
-        </div>
-      </section>
-
-      {/* ================= 3.7. SOCIAL PROOF STATS ================= */}
-      <section className="py-20 px-6 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-            {[
-              { so: "12,847", donVi: "+", nhan: "CV đã tạo", mauNen: "#1a91f0" },
-              { so: "98.6", donVi: "%", nhan: "Điểm ATS TB", mauNen: "#7c3aed" },
-              { so: "4.9", donVi: "★", nhan: "Đánh giá", mauNen: "#f59e0b" },
-              { so: "< 3", donVi: "s", nhan: "Thời gian xuất PDF", mauNen: "#059669" },
-            ].map((item, i) => (
-              <div key={item.nhan} className="group">
-                <div
-                  className="text-4xl sm:text-5xl font-black mb-2 font-['Plus_Jakarta_Sans',sans-serif]"
-                  style={{
-                    background: `linear-gradient(135deg, white, ${item.mauNen})`,
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                  }}
-                >
-                  {item.so}<span className="text-2xl">{item.donVi}</span>
-                </div>
-                <div className="text-slate-400 text-sm font-medium">{item.nhan}</div>
-                <div className="h-0.5 w-8 mx-auto mt-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: item.mauNen }} />
-              </div>
-            ))}
-          </div>
-
-          {/* Dải brand logos */}
-          <div className="mt-14 pt-10 border-t border-white/10">
-            <p className="text-center text-slate-500 text-xs uppercase tracking-widest mb-6">Tin dùng bởi nhân viên tại</p>
-            <div className="flex flex-wrap items-center justify-center gap-8">
-              {["FPT Software","VNG Corporation","Tiki","MoMo","Shopee Vietnam","Zalo"].map(brand => (
-                <span
-                  key={brand}
-                  className="text-slate-500 font-bold text-sm hover:text-white transition-colors duration-300 cursor-default"
-                >
-                  {brand}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= 3.5. BẢN TIN NGHỀ NGHIỆP & CỘNG ĐỒNG CHIA SẺ ================= */}
-      <BangTinCongDong
-        tenNguoiDung={tenNguoiDung}
-        avatarNguoiDung={avatarNguoiDung}
-        daDangNhap={daDangNhap}
-        onYeuCauDangNhap={onMoDangNhap}
-      />
-
-      {/* ================= 4. 4 TÍNH NĂNG NỔI BẬT ================= */}
-      <section
-        id="tinh-nang"
-        className="py-16 px-6 bg-[#f4f2ee] border-y border-[#e0dfdc]"
-      >
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="text-xs font-bold text-[#1a91f0] uppercase tracking-wider bg-blue-50 px-3.5 py-1 rounded-full border border-blue-200/60 shadow-2xs">
-              Ưu Thế Vượt Trội
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-3">
-              4 Tính Năng Giúp Bạn Tạo CV Hoàn Hảo
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-2">
-              Bộ công cụ mạnh mẽ được tối ưu hóa cho tốc độ và chất lượng hồ sơ.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Tính năng 1 */}
-            <div className="bg-white p-6 rounded-xl border border-slate-200/90 shadow-xs hover:border-[#1a91f0]/40 hover:shadow-sm transition duration-200">
-              <div className="w-12 h-12 rounded-xl bg-blue-50 text-[#1a91f0] flex items-center justify-center mb-4">
-                <Move size={22} />
-              </div>
-              <h3 className="text-sm font-bold text-slate-800">
-                Kéo Thả Mượt Mà
-              </h3>
-              <p className="text-xs text-slate-500 mt-2 leading-relaxed">
-                Ứng dụng thư viện <code>@dnd-kit</code> cao cấp, sắp xếp các
-                khối thông tin linh hoạt chỉ bằng thao tác kéo chuột.
-              </p>
-            </div>
-
-            {/* Tính năng 2 */}
-            <div className="bg-white p-6 rounded-xl border border-slate-200/90 shadow-xs hover:border-[#1a91f0]/40 hover:shadow-sm transition duration-200">
-              <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4">
-                <Printer size={22} />
-              </div>
-              <h3 className="text-sm font-bold text-slate-800">
-                Chuẩn In Ấn A4
-              </h3>
-              <p className="text-xs text-slate-500 mt-2 leading-relaxed">
-                Tỷ lệ chuẩn 210 x 297mm. Xuất file PDF sắc nét từng chi tiết,
-                không lo bị tràn lề hay vỡ font chữ khi in.
-              </p>
-            </div>
-
-            {/* Tính năng 3 */}
-            <div className="bg-white p-6 rounded-xl border border-slate-200/90 shadow-xs hover:border-[#1a91f0]/40 hover:shadow-sm transition duration-200">
-              <div className="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-4">
-                <Palette size={22} />
-              </div>
-              <h3 className="text-sm font-bold text-slate-800">
-                Đổi Màu Tức Thì
-              </h3>
-              <p className="text-xs text-slate-500 mt-2 leading-relaxed">
-                Bảng màu tuyển chọn (Xanh LinkedIn, Xám Slate, Ngọc lục bảo, Tím)
-                thay đổi toàn bộ phong cách chỉ trong 1 giây.
-              </p>
-            </div>
-
-            {/* Tính năng 4 */}
-            <div className="bg-white p-6 rounded-xl border border-slate-200/90 shadow-xs hover:border-[#1a91f0]/40 hover:shadow-sm transition duration-200">
-              <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-4">
-                <Save size={22} />
-              </div>
-              <h3 className="text-sm font-bold text-slate-800">
-                Tự Động Lưu An Toàn
-              </h3>
-              <p className="text-xs text-slate-500 mt-2 leading-relaxed">
-                Lưu trữ trạng thái tức thì vào kho dữ liệu Zustand, an tâm chỉnh
-                sửa không lo mất nội dung khi thao tác.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= 5. QUY TRÌNH 3 BƯỚC ĐƠN GIẢN ================= */}
-      <section id="quy-trinh" className="py-16 px-6 max-w-5xl mx-auto">
-        <div className="text-center max-w-xl mx-auto mb-12">
-          <span className="text-xs font-bold text-[#1a91f0] uppercase tracking-wider bg-blue-50 px-3.5 py-1 rounded-full border border-blue-200/60 shadow-2xs">
-            Dễ Dàng & Nhanh Chóng
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-3">
-            Quy Trình 3 Bước Đơn Giản
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-500 mt-2">
-            Không cần kỹ năng thiết kế đồ họa, ai cũng có thể tạo được chiếc CV chuẩn chỉ trong 5 phút.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
-          {/* Bước 1 */}
-          <div className="relative text-center p-6 bg-white rounded-xl border border-slate-200/90 shadow-xs">
-            <div className="w-11 h-11 rounded-full bg-[#1a91f0] text-white font-extrabold text-sm flex items-center justify-center mx-auto mb-4 shadow-sm">
-              1
-            </div>
-            <h3 className="text-sm font-bold text-slate-800">
-              Chọn Mẫu CV Phù Hợp
-            </h3>
-            <p className="text-xs text-slate-500 mt-2 leading-relaxed">
-              Lựa chọn mẫu CV tương thích với ngành nghề bạn đang ứng tuyển từ kho mẫu thịnh hành.
-            </p>
-          </div>
-
-          {/* Bước 2 */}
-          <div className="relative text-center p-6 bg-white rounded-xl border border-slate-200/90 shadow-xs">
-            <div className="w-11 h-11 rounded-full bg-[#1a91f0] text-white font-extrabold text-sm flex items-center justify-center mx-auto mb-4 shadow-sm">
-              2
-            </div>
-            <h3 className="text-sm font-bold text-slate-800">
-              Kéo Thả & Sửa Thông Tin
-            </h3>
-            <p className="text-xs text-slate-500 mt-2 leading-relaxed">
-              Điền thông tin cá nhân, kinh nghiệm làm việc, kỹ năng và kéo đổi vị trí các phần theo ý bạn.
-            </p>
-          </div>
-
-          {/* Bước 3 */}
-          <div className="relative text-center p-6 bg-white rounded-xl border border-slate-200/90 shadow-xs">
-            <div className="w-11 h-11 rounded-full bg-[#1a91f0] text-white font-extrabold text-sm flex items-center justify-center mx-auto mb-4 shadow-sm">
-              3
-            </div>
-            <h3 className="text-sm font-bold text-slate-800">
-              Tải File PDF & Ứng Tuyển
-            </h3>
-            <p className="text-xs text-slate-500 mt-2 leading-relaxed">
-              Xuất file PDF chất lượng cao chuẩn A4 và tự tin gửi đến nhà tuyển dụng mơ ước.
-            </p>
-          </div>
-        </div>
-
-        {/* Banner CTA phụ giữa trang */}
-        <div className="mt-12 p-8 rounded-2xl bg-[#1a91f0] text-white text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xs">
-          <div>
-            <h3 className="text-xl font-bold">
-              Bắt đầu tạo hồ sơ CV ngay bây giờ?
-            </h3>
-            <p className="text-sm text-white/90 mt-1">
-              Trải nghiệm hoàn toàn miễn phí, tối ưu hóa chuẩn ATS trong 5 phút.
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={onChuyenTrinhThietKe}
-            className="bg-white text-[#1a91f0] hover:bg-[#f7f9fc] font-bold text-sm px-7 py-3.5 rounded-[36px] shadow-xs transition active:scale-95 cursor-pointer shrink-0"
-          >
-            Tạo CV Ngay
-          </button>
-        </div>
-      </section>
-
-      {/* ================= 5.5. BEFORE / AFTER ================= */}
-      <section className="py-20 px-6 bg-slate-50 border-y border-slate-200">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-14">
-            <span className="inline-flex items-center gap-2 text-xs font-bold text-violet-600 bg-violet-50 px-4 py-1.5 rounded-full border border-violet-200 mb-4">
-              <Sparkles size={13} /> Sự Khác Biệt Rõ Ràng
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-black text-slate-900">
-              Trước Khi &amp; Sau Khi
-            </h2>
-            <p className="text-slate-500 mt-3">Dùng CVify Pro — nhà tuyển dụng thấy sự khác biệt ngay lập tức</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
-
-            {/* Divider VS */}
-            <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full items-center justify-center text-sm font-black text-white shadow-xl" style={{ background: "linear-gradient(135deg,#1a91f0,#7c3aed)" }}>
-              VS
-            </div>
-
-            {/* === TRƯỚC === */}
-            <div className="rounded-2xl border-2 border-red-200 bg-red-50/50 p-6 relative">
-              <div className="absolute top-4 right-4 text-xs font-bold text-white bg-red-500 px-3 py-1 rounded-full flex items-center gap-1">
-                <span>❌</span> Không Đạt
-              </div>
-              <h3 className="font-black text-slate-800 text-base mb-4">CV Word thông thường</h3>
-
-              {/* Giả lập Word CV xấu */}
-              <div className="bg-white rounded-lg p-5 border border-red-100 font-serif text-[12px] text-slate-700 space-y-2 shadow-sm">
-                <div className="font-bold text-sm text-center">NGUYỄN VĂN AN</div>
-                <div className="text-center text-[11px] text-slate-500">0123456789 | an@gmail.com</div>
-                <hr className="border-slate-300" />
-                <div className="font-bold text-[11px]">MỤC TIÊU NGHỀ NGHIỆP:</div>
-                <div className="text-[10px] text-slate-600 leading-loose">Tìm kiếm vị trí phù hợp để phát triển bản thân và cống hiến cho công ty.</div>
-                <div className="font-bold text-[11px]">KINH NGHIỆM:</div>
-                <div className="text-[10px] text-slate-600">- Công ty ABC: 2021-2022<br/>- Công ty XYZ: 2022-2023</div>
-              </div>
-
-              {/* Checklist đỏ */}
-              <div className="mt-4 space-y-2">
-                {["ATS không đọc được cấu trúc","Font lỗi khi in ra giấy","Layout vỡ trên màn hình khác"].map(item => (
-                  <div key={item} className="flex items-center gap-2 text-xs text-red-600">
-                    <span className="text-red-500 text-base">✗</span> {item}
-                  </div>
-                ))}
-              </div>
-
-              {/* ATS Score */}
-              <div className="mt-4">
-                <div className="flex justify-between text-xs text-slate-500 mb-1"><span>Điểm ATS</span><span className="text-red-600 font-bold">34%</span></div>
-                <div className="h-2 bg-red-100 rounded-full">
-                  <div className="h-full bg-red-400 rounded-full" style={{ width: "34%" }} />
-                </div>
-              </div>
-            </div>
-
-            {/* === SAU === */}
-            <div
-              className="rounded-2xl border-2 p-6 relative"
-              style={{ borderColor: "#1a91f0", background: "linear-gradient(135deg,#f0f7ff,#fff)", boxShadow: "0 0 40px rgba(10,102,194,0.15)" }}
-            >
-              <div className="absolute top-4 right-4 text-xs font-bold text-white px-3 py-1 rounded-full flex items-center gap-1" style={{ background: "linear-gradient(135deg,#1a91f0,#059669)" }}>
-                <span>✅</span> Đạt Chuẩn
-              </div>
-              <h3 className="font-black text-slate-800 text-base mb-4">CV tạo bằng CVify Pro</h3>
-
-              {/* Giả lập CV đẹp */}
-              <div className="bg-white rounded-lg overflow-hidden border border-blue-100 shadow-md">
-                <div className="px-5 py-4" style={{ background: "linear-gradient(135deg,#1a91f0,#7c3aed)" }}>
-                  <div className="text-white font-black text-sm">NGUYỄN VĂN AN</div>
-                  <div className="text-blue-200 text-[11px]">Senior Software Engineer</div>
-                  <div className="text-blue-200 text-[10px] mt-1">📧 an@gmail.com  📞 0123456789  📍 TP.HCM</div>
-                </div>
-                <div className="p-4 space-y-3">
-                  <div>
-                    <div className="text-[10px] font-bold text-blue-700 uppercase tracking-widest mb-1">Kinh Nghiệm</div>
-                    <div className="text-[11px] font-semibold text-slate-800">Tech Group Vietnam · 2023 - Nay</div>
-                    <div className="h-1 bg-slate-200 rounded mt-1.5 w-5/6" />
-                  </div>
-                  <div>
-                    <div className="text-[10px] font-bold text-blue-700 uppercase tracking-widest mb-1">Kỹ Năng</div>
-                    <div className="flex gap-1.5 flex-wrap">
-                      {["React","TypeScript","Node.js"].map(s => (
-                        <span key={s} className="text-[9px] font-medium px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">{s}</span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Checklist xanh */}
-              <div className="mt-4 space-y-2">
-                {["ATS đọc hoàn hảo 99/100","Font tiếng Việt chuẩn in A4","Layout pixel-perfect mọi màn hình"].map(item => (
-                  <div key={item} className="flex items-center gap-2 text-xs text-emerald-700">
-                    <span className="text-emerald-500 text-base">✓</span> {item}
-                  </div>
-                ))}
-              </div>
-
-              {/* ATS Score */}
-              <div className="mt-4">
-                <div className="flex justify-between text-xs text-slate-500 mb-1"><span>Điểm ATS</span><span className="font-bold" style={{ color: "#1a91f0" }}>99%</span></div>
-                <div className="h-2 rounded-full bg-blue-100 overflow-hidden">
-                  <div className="h-full rounded-full shimmer" style={{ width: "99%", background: "linear-gradient(90deg,#1a91f0,#059669)" }} />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= 6. FOOTER TOÀN DIỆN ================= */}
-      <footer
-        id="lien-he"
-        className="bg-slate-900 text-slate-400 text-xs border-t border-slate-800 pt-16 pb-12 px-6"
-      >
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-slate-800">
-          {/* Cột 1: Thông tin thương hiệu */}
-          <div className="md:col-span-1">
-            <div className="flex items-center gap-2 text-white mb-3">
-              <div className="w-7 h-7 rounded-md bg-[#1a91f0] text-white flex items-center justify-center font-bold text-xs">
-                CV
-              </div>
-              <span className="font-bold text-sm tracking-tight">
-                CVify <span className="text-[#1a91f0]">Pro</span>
+              <span>
+                <b>Từ khóa nổi bật</b>Đã nhận diện động từ hành động
               </span>
             </div>
-            <p className="text-slate-400 text-xs leading-relaxed mb-4">
-              Nền tảng thiết kế hồ sơ CV trực tuyến chuẩn mực, hiện đại và tối
-              ưu hóa cho người tìm việc tại Việt Nam.
-            </p>
-            <div className="flex items-center gap-3">
-              <a
-                href="https://facebook.com"
-                target="_blank"
-                rel="noreferrer"
-                className="w-8 h-8 rounded-lg bg-slate-800 hover:bg-blue-600 hover:text-white flex items-center justify-center transition"
-                title="Facebook"
-              >
-                <Share2 size={14} />
-              </a>
-              <a
-                href="https://zalo.me/0855521052"
-                target="_blank"
-                rel="noreferrer"
-                className="w-8 h-8 rounded-lg bg-slate-800 hover:bg-blue-500 hover:text-white flex items-center justify-center transition font-bold text-[11px]"
-                title="Zalo: 0855521052"
-              >
-                Zalo
-              </a>
-              <a
-                href="mailto:contact@cvify.pro"
-                className="w-8 h-8 rounded-lg bg-slate-800 hover:bg-emerald-600 hover:text-white flex items-center justify-center transition"
-                title="Email"
-              >
-                <Mail size={14} />
-              </a>
+            <div className="floating-stat stat-score">
+              <span className="stat-icon stat-icon-green">
+                <Icon name="shield" size={16} />
+              </span>
+              <span>
+                <b>
+                  Điểm ATS <strong>96</strong>
+                </b>
+                Tương thích xuất sắc
+              </span>
+            </div>
+            <div className="floating-stat stat-bottom">
+              <span className="stat-icon stat-icon-green">
+                <Icon name="check" size={16} />
+              </span>
+              <span>
+                <b>Sẵn sàng xuất file</b>Đạt mọi tiêu chuẩn A4
+              </span>
             </div>
           </div>
+        </section>
 
-          {/* Cột 2: Điều hướng nhanh */}
-          <div>
-            <h4 className="text-white font-semibold text-xs uppercase tracking-wider mb-3">
-              Liên Kết Nhanh
-            </h4>
-            <ul className="space-y-2">
-              <li>
-                <button
-                  type="button"
-                  onClick={() => cuonDenPhan("kho-mau")}
-                  className="hover:text-white transition cursor-pointer"
-                >
-                  Kho Mẫu CV Thịnh Hành
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => cuonDenPhan("tinh-nang")}
-                  className="hover:text-white transition cursor-pointer"
-                >
-                  Tính Năng Nổi Bật
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => cuonDenPhan("quy-trinh")}
-                  className="hover:text-white transition cursor-pointer"
-                >
-                  Quy Trình 3 Bước
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={onChuyenTrinhThietKe}
-                  className="text-blue-400 hover:text-blue-300 font-semibold transition cursor-pointer"
-                >
-                  Mở Trình Thiết Kế A4
-                </button>
-              </li>
-            </ul>
-          </div>
+        {/* 3. Showcase */}
+        <Showcase />
 
-          {/* Cột 3: Hỗ trợ & Tài khoản */}
-          <div>
-            <h4 className="text-white font-semibold text-xs uppercase tracking-wider mb-3">
-              Tài Khoản & Trợ Giúp
-            </h4>
-            <ul className="space-y-2">
-              <li>
-                <button
-                  type="button"
-                  onClick={onMoDangNhap}
-                  className="hover:text-white transition cursor-pointer"
-                >
-                  Đăng Nhập Thành Viên
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={onMoDangKy}
-                  className="hover:text-white transition cursor-pointer"
-                >
-                  Đăng Ký Tài Khoản Mới
-                </button>
-              </li>
-              <li>
-                <span className="text-slate-500">Hướng Dẫn Viết CV Hay</span>
-              </li>
-              <li>
-                <span className="text-slate-500">Chính Sách Bảo Mật</span>
-              </li>
-            </ul>
-          </div>
+        {/* 4. Kho mẫu CV tuyển chọn */}
+        <Templates onSelectTemplate={onChuyenTrinhThietKe} />
 
-          {/* Cột 4: Thông tin liên hệ & Kênh truyền thông */}
-          <div>
-            <h4 className="text-white font-semibold text-xs uppercase tracking-wider mb-3">
-              Thông Tin Liên Hệ
-            </h4>
-            <ul className="space-y-2.5">
-              <li className="flex items-start gap-2">
-                <Globe size={14} className="text-blue-400 shrink-0 mt-0.5" />
-                <span>
-                  Website: <strong>https://cvify.pro</strong>
-                </span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Phone size={14} className="text-emerald-400 shrink-0" />
-                <span>
-                  Hotline / Zalo: <strong>0855521052</strong>
-                </span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Mail size={14} className="text-purple-400 shrink-0" />
-                <span>
-                  Email: <strong>hotro@cvify.pro</strong>
-                </span>
-              </li>
-              <li className="flex items-start gap-2">
-                <MapPin size={14} className="text-rose-400 shrink-0 mt-0.5" />
-                <span>
-                  Địa chỉ:{" "}
-                  <strong>
-                    520/72A Quốc lộ 13, Hiệp Bình Phước, Thủ Đức, TP.HCM
-                  </strong>
-                </span>
-              </li>
-            </ul>
-          </div>
-        </div>
+        {/* 5. Tính năng Bento Grid */}
+        <Features />
 
-        {/* Bản quyền */}
-        <div className="max-w-6xl mx-auto pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-slate-500 text-[11px]">
+        {/* 6. So sánh trực quan Word vs CVify Pro */}
+        <Comparison />
+
+        {/* 7. Banner kêu gọi hành động CTA */}
+        <section className="cta-section reveal-on-scroll" id="community">
           <div>
-            © 2026 CVify Pro • Đồ án chuyên ngành Công nghệ thông tin. Bảo lưu
-            mọi quyền.
+            <span className="eyebrow">CƠ HỘI NGHỀ NGHIỆP BẮT ĐẦU TỪ ĐÂY</span>
+            <h2>Biến kinh nghiệm của bạn thành ấn tượng không thể bỏ qua.</h2>
+            <p>
+              Cùng hàng ngàn ứng viên xây dựng hồ sơ nổi bật thu hút nhà tuyển
+              dụng ngay hôm nay.
+            </p>
+            <Button onClick={onChuyenTrinhThietKe}>
+              Tạo CV Miễn Phí Ngay <Icon name="arrow" />
+            </Button>
+            <small>Không yêu cầu thẻ tín dụng · Xuất file bất kỳ lúc nào</small>
           </div>
-          <div className="flex items-center gap-4">
-            <span className="hover:text-slate-400 transition cursor-pointer">
-              Điều khoản dịch vụ
-            </span>
-            <span>•</span>
-            <span className="hover:text-slate-400 transition cursor-pointer">
-              Bảo mật thông tin
-            </span>
+          <div className="cta-decoration">
+            <span>CV</span>
+            <i />
+            <i />
+            <i />
           </div>
-        </div>
-      </footer>
+        </section>
+
+        {/* 7b. Bảng tin cộng đồng nghề nghiệp tương tác */}
+        <section className="section py-16 border-t border-slate-100 reveal-on-scroll">
+          <BangTinCongDong
+            tenNguoiDung={tenNguoiDung}
+            avatarNguoiDung={avatarNguoiDung}
+            daDangNhap={daDangNhap}
+            onYeuCauDangNhap={onMoDangNhap}
+          />
+        </section>
+
+        {/* 8. Hỏi đáp FAQ */}
+        <FAQ />
+      </main>
+
+      {/* 9. Footer */}
+      <Footer />
     </div>
   );
 };
