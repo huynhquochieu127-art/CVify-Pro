@@ -13,6 +13,7 @@ import { Layers, GripVertical } from 'lucide-react';
 import { SidebarKhoi, DANH_SACH_KHOI } from './SidebarKhoi';
 import { ToGiayA4 } from './ToGiayA4';
 import { useKhoLuuTruCV, KHOI_COT_TRAI_MAC_DINH } from '../../store/khoLuuTruCV';
+import type { CotTuChinh } from '../../types/cv';
 
 export const TrinhThietKeCV: React.FC = () => {
   const {
@@ -21,6 +22,7 @@ export const TrinhThietKeCV: React.FC = () => {
     sapXepKhoi,
     sapXepKhoiCot,
     chuyenKhoiSangCot,
+    chuyenKhoiSangTrang,
   } = useKhoLuuTruCV();
 
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -40,9 +42,33 @@ export const TrinhThietKeCV: React.FC = () => {
     tiLe: '35-65',
   };
 
-  const laCheDo2Cot = boCuc.cheDo === '2-cot';
-  const cotTrai = boCuc.cotTrai || [];
-  const cotPhai = boCuc.cotPhai || [];
+  const danhSachCot: CotTuChinh[] =
+    boCuc.danhSachCot && boCuc.danhSachCot.length > 0
+      ? boCuc.danhSachCot
+      : boCuc.cheDo === '1-cot'
+      ? [{ id: 'cot-1', ten: 'Cột chính', doRong: 100, khoiIds: cv.thuTuKhoi || [] }]
+      : boCuc.cheDo === '3-cot'
+      ? [
+          { id: 'cot-trai', ten: 'Cột 1', doRong: 28, khoiIds: boCuc.cotTrai || [] },
+          { id: 'cot-giua', ten: 'Cột 2', doRong: 44, khoiIds: boCuc.cotGiua || [] },
+          { id: 'cot-phai', ten: 'Cột 3', doRong: 28, khoiIds: boCuc.cotPhai || [] },
+        ]
+      : [
+          {
+            id: 'cot-trai',
+            ten: 'Cột Trái',
+            doRong: boCuc.cheDo === '2-cot-deu' ? 50 : 35,
+            khoiIds: boCuc.cotTrai || [],
+          },
+          {
+            id: 'cot-phai',
+            ten: 'Cột Phải',
+            doRong: boCuc.cheDo === '2-cot-deu' ? 50 : 65,
+            khoiIds: boCuc.cotPhai || [],
+          },
+        ];
+
+  const laCheDoNhieuCot = boCuc.cheDo !== '1-cot' && danhSachCot.length > 1;
 
   const danhSachKhoiHienThi = (cv.thuTuKhoi || []).filter(
     (khoiId) => cv.anHienKhoi[khoiId] !== false
@@ -60,41 +86,40 @@ export const TrinhThietKeCV: React.FC = () => {
     const activeIdStr = String(active.id);
     const overIdStr = String(over.id);
 
+    const laOverTrang2 =
+      overIdStr.endsWith('-p2') ||
+      overIdStr === 'a4-canvas-p2' ||
+      cv.dinhDang?.phanBoTrangKhoi?.[overIdStr] === 2;
+    const cleanOverId = overIdStr.replace('-p2', '');
+
     // =========================================================================
     // TRƯỜNG HỢP 1: Kéo một khối từ Sidebar thả sang tờ A4
     // =========================================================================
     if (activeIdStr.startsWith('sidebar-khoi-')) {
       const khoiId = activeIdStr.replace('sidebar-khoi-', '');
       batTatKhoi(khoiId, true);
+      chuyenKhoiSangTrang(khoiId, laOverTrang2 ? 2 : 1);
 
-      if (laCheDo2Cot) {
-        // Kiểm tra xem thả vào Cột Trái hay Cột Phải
-        const thaVaoCotTrai =
-          overIdStr === 'cot-trai' || cotTrai.includes(overIdStr);
-        const thaVaoCotPhai =
-          overIdStr === 'cot-phai' || cotPhai.includes(overIdStr);
+      if (laCheDoNhieuCot) {
+        const cotDich = danhSachCot.find(
+          (c) => c.id === cleanOverId || c.khoiIds.includes(cleanOverId)
+        );
 
-        if (thaVaoCotTrai) {
-          const targetIndex = cotTrai.includes(overIdStr)
-            ? cotTrai.indexOf(overIdStr)
-            : cotTrai.length;
-          chuyenKhoiSangCot(khoiId, 'cot-trai', targetIndex);
-        } else if (thaVaoCotPhai) {
-          const targetIndex = cotPhai.includes(overIdStr)
-            ? cotPhai.indexOf(overIdStr)
-            : cotPhai.length;
-          chuyenKhoiSangCot(khoiId, 'cot-phai', targetIndex);
+        if (cotDich) {
+          const targetIndex = cotDich.khoiIds.includes(cleanOverId)
+            ? cotDich.khoiIds.indexOf(cleanOverId)
+            : cotDich.khoiIds.length;
+          chuyenKhoiSangCot(khoiId, cotDich.id, targetIndex);
         } else {
-          // Thả vào nền A4 chung -> Phân bổ mặc định
           const cotMacDinh = KHOI_COT_TRAI_MAC_DINH.has(khoiId)
-            ? 'cot-trai'
-            : 'cot-phai';
+            ? danhSachCot[0].id
+            : danhSachCot[danhSachCot.length - 1].id;
           chuyenKhoiSangCot(khoiId, cotMacDinh);
         }
       } else {
         // Chế độ 1 Cột toàn khổ
-        if (overIdStr !== 'a4-canvas' && danhSachKhoiHienThi.includes(overIdStr)) {
-          const overIndex = danhSachKhoiHienThi.indexOf(overIdStr);
+        if (cleanOverId !== 'a4-canvas' && danhSachKhoiHienThi.includes(cleanOverId)) {
+          const overIndex = danhSachKhoiHienThi.indexOf(cleanOverId);
           const newOrder = [...danhSachKhoiHienThi];
           if (!newOrder.includes(khoiId)) {
             newOrder.splice(overIndex, 0, khoiId);
@@ -110,65 +135,48 @@ export const TrinhThietKeCV: React.FC = () => {
     }
 
     // =========================================================================
-    // TRƯỜNG HỢP 2: Kéo các khối đang có trên A4 để sắp xếp hoặc đổi cột
+    // TRƯỜNG HỢP 2: Kéo các khối đang có trên A4 để sắp xếp hoặc đổi giữa N cột
     // =========================================================================
-    if (laCheDo2Cot) {
-      const nguonLaCotTrai = cotTrai.includes(activeIdStr);
-      const nguonLaCotPhai = cotPhai.includes(activeIdStr);
+    if (laCheDoNhieuCot) {
+      const cotNguon = danhSachCot.find((c) => c.khoiIds.includes(activeIdStr));
+      const cotDich = danhSachCot.find(
+        (c) => c.id === cleanOverId || c.khoiIds.includes(cleanOverId)
+      );
 
-      const dichLaCotTrai =
-        overIdStr === 'cot-trai' || cotTrai.includes(overIdStr);
-      const dichLaCotPhai =
-        overIdStr === 'cot-phai' || cotPhai.includes(overIdStr);
+      if (!cotDich) return;
 
-      // Cùng Cột Trái -> Đổi thứ tự trong cột trái
-      if (nguonLaCotTrai && dichLaCotTrai) {
-        if (activeIdStr !== overIdStr && cotTrai.includes(overIdStr)) {
-          const oldIndex = cotTrai.indexOf(activeIdStr);
-          const newIndex = cotTrai.indexOf(overIdStr);
-          const newOrder = arrayMove(cotTrai, oldIndex, newIndex);
-          sapXepKhoiCot('cot-trai', newOrder);
+      if (overIdStr.endsWith('-p2')) {
+        chuyenKhoiSangTrang(activeIdStr, 2);
+      }
+
+      // Cùng 1 cột -> Sắp xếp thứ tự trong cột đó
+      if (cotNguon && cotNguon.id === cotDich.id) {
+        if (activeIdStr !== cleanOverId && cotNguon.khoiIds.includes(cleanOverId)) {
+          const oldIndex = cotNguon.khoiIds.indexOf(activeIdStr);
+          const newIndex = cotNguon.khoiIds.indexOf(cleanOverId);
+          const newOrder = arrayMove(cotNguon.khoiIds, oldIndex, newIndex);
+          sapXepKhoiCot(cotNguon.id, newOrder);
         }
         return;
       }
 
-      // Cùng Cột Phải -> Đổi thứ tự trong cột phải
-      if (nguonLaCotPhai && dichLaCotPhai) {
-        if (activeIdStr !== overIdStr && cotPhai.includes(overIdStr)) {
-          const oldIndex = cotPhai.indexOf(activeIdStr);
-          const newIndex = cotPhai.indexOf(overIdStr);
-          const newOrder = arrayMove(cotPhai, oldIndex, newIndex);
-          sapXepKhoiCot('cot-phai', newOrder);
-        }
-        return;
-      }
-
-      // Kéo xuyên cột: Từ Trái sang Phải
-      if (nguonLaCotTrai && dichLaCotPhai) {
-        const targetIndex = cotPhai.includes(overIdStr)
-          ? cotPhai.indexOf(overIdStr)
-          : cotPhai.length;
-        chuyenKhoiSangCot(activeIdStr, 'cot-phai', targetIndex);
-        return;
-      }
-
-      // Kéo xuyên cột: Từ Phải sang Trái
-      if (nguonLaCotPhai && dichLaCotTrai) {
-        const targetIndex = cotTrai.includes(overIdStr)
-          ? cotTrai.indexOf(overIdStr)
-          : cotTrai.length;
-        chuyenKhoiSangCot(activeIdStr, 'cot-trai', targetIndex);
-        return;
-      }
+      // Chuyển sang cột khác
+      const targetIndex = cotDich.khoiIds.includes(cleanOverId)
+        ? cotDich.khoiIds.indexOf(cleanOverId)
+        : cotDich.khoiIds.length;
+      chuyenKhoiSangCot(activeIdStr, cotDich.id, targetIndex);
     } else {
       // Chế độ 1 Cột: Sắp xếp thông thường
+      if (overIdStr.endsWith('-p2')) {
+        chuyenKhoiSangTrang(activeIdStr, 2);
+      }
       if (
-        activeIdStr !== overIdStr &&
+        activeIdStr !== cleanOverId &&
         danhSachKhoiHienThi.includes(activeIdStr) &&
-        danhSachKhoiHienThi.includes(overIdStr)
+        danhSachKhoiHienThi.includes(cleanOverId)
       ) {
         const oldIndex = danhSachKhoiHienThi.indexOf(activeIdStr);
-        const newIndex = danhSachKhoiHienThi.indexOf(overIdStr);
+        const newIndex = danhSachKhoiHienThi.indexOf(cleanOverId);
         const newOrder = arrayMove(danhSachKhoiHienThi, oldIndex, newIndex);
         sapXepKhoi(newOrder);
       }
@@ -202,7 +210,7 @@ export const TrinhThietKeCV: React.FC = () => {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <div className="flex-1 flex flex-col lg:flex-row min-h-[calc(100vh-53px)] bg-[#f7f9fc] overflow-hidden">
+      <div className="flex-1 flex flex-col lg:flex-row min-h-[calc(100vh-53px)] bg-[#f4f6fa] overflow-hidden print:overflow-visible print:min-h-0 print:h-auto print:block">
         {/* =================================================================== */}
         {/* CỘT TRÁI: SIDEBAR DANH SÁCH KHỐI & QUẢN LÝ CẤU TRÚC                 */}
         {/* =================================================================== */}
@@ -211,7 +219,7 @@ export const TrinhThietKeCV: React.FC = () => {
         {/* =================================================================== */}
         {/* CỘT PHẢI: TỜ GIẤY A4 KÍCH THƯỚC CHUẨN                               */}
         {/* =================================================================== */}
-        <main className="flex-1 h-auto lg:h-[calc(100vh-53px)] overflow-y-auto p-4 sm:p-8 flex justify-center items-start print:p-0 print:overflow-visible">
+        <main className="flex-1 h-auto lg:h-[calc(100vh-53px)] overflow-y-auto p-4 sm:p-8 flex justify-center items-start print:p-0 print:m-0 print:overflow-visible print:block print:w-full">
           <ToGiayA4 />
         </main>
       </div>

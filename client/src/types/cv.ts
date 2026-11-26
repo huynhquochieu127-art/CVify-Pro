@@ -2,45 +2,98 @@
  * client/src/types/cv.ts
  *
  * Định nghĩa kiểu dữ liệu toàn diện cho hệ thống CVify Pro:
- * - Hỗ trợ Bố Cục 1 Cột (Full-width) & Bố Cục 2 Cột (Trái 35% - Phải 65%).
+ * - Hỗ trợ Bố Cục Đa Cột Tùy Biến (1 cột, 2 cột, 3 cột, N cột tùy ý do người dùng tự tạo).
+ * - Hỗ trợ định dạng chữ chuyên sâu (IN HOA, Đậm, Nghiêng, Gạch chân, Màu sắc, Cỡ chữ).
+ * - Hỗ trợ Custom Icon cho mọi mục, trường thông tin liên hệ và nội dung.
  * - Hoàn toàn tương thích tsconfig.app.json (verbatimModuleSyntax: true, erasableSyntaxOnly: true).
- * - Không sử dụng runtime enum; chỉ sử dụng union type và interface để dễ dàng xóa bỏ khi compile (erasable syntax).
  */
 
 // ==========================================
-// 1. CÁC KIỂU BỐ CỤC (LAYOUT TYPES)
+// 1. CÁC KIỂU BỐ CỤC ĐA CỘT TÙY CHỈNH (LAYOUT TYPES)
 // ==========================================
 
 /**
  * Chế độ hiển thị bố cục CV:
  * - '1-cot': Hiển thị 1 cột duy nhất toàn chiều rộng (Full-width)
- * - '2-cot': Hiển thị 2 cột (Cột Trái 35% - Cột Phải 65%)
+ * - '2-cot': Hiển thị 2 cột lệch (Cột Trái 35% - Cột Phải 65%)
+ * - '2-cot-deu': Hiển thị 2 cột đều nhau (Cột Trái 50% - Cột Phải 50%)
+ * - '3-cot': Hiển thị 3 cột (Trái 25% - Giữa 50% - Phải 25%)
+ * - '4-cot': Hiển thị 4 cột đều nhau (25% x 4)
+ * - 'tuy-chinh': Bố cục N cột tùy chỉnh tự do (người dùng tự thêm/xóa/chỉnh tỉ lệ cột)
  */
-export type CheDoBoCuc = '1-cot' | '2-cot';
+export type CheDoBoCuc =
+  | '1-cot'
+  | '2-cot'
+  | '2-cot-deu'
+  | '3-cot'
+  | '4-cot'
+  | 'tuy-chinh';
 
 /**
- * Định danh vị trí cột trong bố cục 2 cột:
- * - 'cot-trai': Cột bên trái (chiếm 35% chiều rộng)
- * - 'cot-phai': Cột bên phải (chiếm 65% chiều rộng)
+ * Định danh vị trí cột trong bố cục đa cột (hỗ trợ cả cột cố định và cột động 'cot-1', 'cot-2', ...)
  */
-export type ViTriCot = 'cot-trai' | 'cot-phai';
+export type ViTriCot = 'cot-trai' | 'cot-phai' | 'cot-giua' | string;
+
+/**
+ * Cấu trúc 1 cột tùy chỉnh trong hệ thống đa cột động
+ */
+export interface CotTuChinh {
+  /** ID duy nhất của cột (VD: 'cot-trai', 'cot-phai', 'cot-giua', 'cot-4', ...) */
+  id: string;
+  /** Tên hiển thị của cột (VD: 'Cột 1', 'Cột 2', ...) */
+  ten: string;
+  /** Tỉ lệ phần trăm chiều rộng của cột (tổng các cột = 100) */
+  doRong: number;
+  /** Danh sách ID các khối nội dung nằm trong cột này */
+  khoiIds: string[];
+}
 
 /**
  * Cấu trúc dữ liệu cấu hình Bố Cục CV
  */
 export interface BoCucCV {
-  /** Chế độ bố cục hiện tại ('1-cot' hoặc '2-cot') */
+  /** Chế độ bố cục hiện tại */
   cheDo: CheDoBoCuc;
-  /** Danh sách ID các khối nằm ở Cột Trái (35%) */
+  /** Danh sách ID các khối nằm ở Cột Trái (tương thích ngược) */
   cotTrai: string[];
-  /** Danh sách ID các khối nằm ở Cột Phải (65%) */
+  /** Danh sách ID các khối nằm ở Cột Phải (tương thích ngược) */
   cotPhai: string[];
-  /** Tỉ lệ phân chia độ rộng cột (mặc định: '35-65') */
+  /** Danh sách ID các khối nằm ở Cột Giữa (nếu có) */
+  cotGiua?: string[];
+  /** Tỉ lệ phân chia độ rộng cột */
   tiLe?: string;
+  /** Danh sách các cột động tùy chỉnh (cho phép tạo bao nhiêu cột tùy thích) */
+  danhSachCot?: CotTuChinh[];
 }
 
 // ==========================================
-// 2. CÁC KIỂU MỤC CON TỪNG KHỐI (SECTION ITEM TYPES)
+// 2. KIỂU ĐỊNH DẠNG CHỮ & CUSTOM ICON
+// ==========================================
+
+/**
+ * Cấu hình kiểu chữ cho từng trường hoặc tiêu đề (IN HOA, Đậm, Nghiêng, Gạch chân, Màu sắc, Cỡ chữ)
+ */
+export interface KieuChuItem {
+  inDam?: boolean;
+  inNghieng?: boolean;
+  gachChan?: boolean;
+  inHoa?: boolean;
+  coChu?: string;
+  mauChu?: string;
+}
+
+/**
+ * Trường thông tin liên hệ tùy chỉnh dùng Icon
+ */
+export interface TruongLienHeTuyChinh {
+  id: string;
+  iconName: string;
+  giaTri: string;
+  placeholder?: string;
+}
+
+// ==========================================
+// 3. CÁC KIỂU MỤC CON TỪNG KHỐI (SECTION ITEM TYPES)
 // ==========================================
 
 export interface KinhNghiemItem {
@@ -51,6 +104,9 @@ export interface KinhNghiemItem {
   diaDiem?: string;
   loaiHinh?: string;
   moTa: string;
+  iconViTri?: string;
+  iconCongTy?: string;
+  iconThoiGian?: string;
 }
 
 export interface HocVanItem {
@@ -61,6 +117,10 @@ export interface HocVanItem {
   thanhTich: string;
   gpa?: string;
   diemSo?: string;
+  iconChuyenNganh?: string;
+  iconTruong?: string;
+  iconThoiGian?: string;
+  iconDiemSo?: string;
 }
 
 export interface KyNangItem {
@@ -69,6 +129,7 @@ export interface KyNangItem {
   mucDo: string;
   endorsements?: number;
   nhom?: string;
+  iconName?: string;
 }
 
 export interface DuAnItem {
@@ -79,6 +140,9 @@ export interface DuAnItem {
   lienKet?: string;
   congNghe?: string[];
   moTa: string;
+  iconTen?: string;
+  iconVaiTro?: string;
+  iconThoiGian?: string;
 }
 
 export interface ChungChiItem {
@@ -87,15 +151,26 @@ export interface ChungChiItem {
   toChuc: string;
   nam: string;
   maChungChi?: string;
+  iconTen?: string;
+  iconToChuc?: string;
+}
+
+export interface CotConTuyChinh {
+  id: string;
+  tieuDeCot?: string;
+  noiDung: string;
 }
 
 export interface KhoiTuyChinhItem {
   id: string;
   tieuDe: string;
   noiDung: string;
+  iconName?: string;
+  /** Cho phép chia nhiều cột ngay bên trong một mục tùy chỉnh */
+  danhSachCotCon?: CotConTuyChinh[];
 }
 
-// Type aliases ngắn gọn tương thích với Interface Contracts trong PROJECT.md
+// Type aliases ngắn gọn tương thích với Interface Contracts
 export type KinhNghiem = KinhNghiemItem;
 export type HocVan = HocVanItem;
 export type KyNang = KyNangItem;
@@ -104,7 +179,7 @@ export type ChungChi = ChungChiItem;
 export type KhoiTuyChinh = KhoiTuyChinhItem;
 
 // ==========================================
-// 3. ĐỊNH DẠNG & THÔNG TIN CÁ NHÂN
+// 4. ĐỊNH DẠNG & THÔNG TIN CÁ NHÂN
 // ==========================================
 
 export interface DinhDangCV {
@@ -113,6 +188,28 @@ export interface DinhDangCV {
   fontChu: string;
   matDo: 'compact' | 'normal' | 'relaxed';
   cheDoBoCuc?: CheDoBoCuc;
+  /** Lưu trữ icon tùy chỉnh cho từng khối (VD: { 'hoc-van': 'GraduationCap', 'ky-nang': 'Sparkles' }) */
+  iconKhoi?: Record<string, string>;
+  /** Lưu trữ tiêu đề tùy chỉnh cho các khối chuẩn */
+  tieuDeKhoi?: Record<string, string>;
+  /** Lưu trữ kiểu chữ tùy chỉnh (in hoa, đậm, nghiêng, màu, cỡ chữ) cho các trường/tiêu đề */
+  kieuChuTuyChinh?: Record<string, KieuChuItem>;
+  /** Hiển thị icon trước các trường thông tin con */
+  hienThiIconTruong?: boolean;
+  /** Đánh dấu khối nào cần ngắt sang trang mới (Page Break) khi in & thiết kế */
+  ngatTrangKhoi?: Record<string, boolean>;
+  /** Phân bổ từng khối vào Trang 1 hay Trang 2 (1 = Trang 1, 2 = Trang 2) */
+  phanBoTrangKhoi?: Record<string, number>;
+  /** Phân bổ từng item vào Trang 1 hay Trang 2 */
+  phanBoTrangItem?: Record<string, number>;
+  /** Tổng số trang CV đang thiết kế (1 hoặc 2) */
+  soTrangCV?: number;
+  /** Ngôn ngữ CV: vi, en, ja, zh */
+  ngonNgu?: 'vi' | 'en' | 'ja' | 'zh' | string;
+  /** Mẫu hình nền CV (background pattern/gradient) */
+  hinhNen?: string;
+  /** Khoảng cách dòng (line-height: 1.0 - 2.0) */
+  khoangCachDong?: number;
 }
 
 export interface ThongTinCaNhan {
@@ -124,10 +221,19 @@ export interface ThongTinCaNhan {
   website: string;
   avatarUrl?: string;
   coverColor?: string;
+  /** Icon tùy chỉnh cho các trường liên hệ mặc định */
+  iconLienHe?: {
+    email?: string;
+    soDienThoai?: string;
+    diaChi?: string;
+    website?: string;
+  };
+  /** Danh sách các trường thông tin liên hệ mở rộng dùng icon tùy thích */
+  lienHeTuyChinh?: TruongLienHeTuyChinh[];
 }
 
 // ==========================================
-// 4. MÔ HÌNH DỮ LIỆU CV TỔNG THỂ (ROOT CV MODEL)
+// 5. MÔ HÌNH DỮ LIỆU CV TỔNG THỂ (ROOT CV MODEL)
 // ==========================================
 
 export interface ThongTinCV {
@@ -144,6 +250,6 @@ export interface ThongTinCV {
   thuTuKhoi: string[];
   /** Trạng thái bật/tắt (ẩn/hiện) từng khối */
   anHienKhoi: Record<string, boolean>;
-  /** Cấu trúc phân bổ và thứ tự khối cho Bố Cục 2 Cột */
+  /** Cấu trúc phân bổ và thứ tự khối cho Bố Cục Đa Cột */
   boCuc?: BoCucCV;
 }

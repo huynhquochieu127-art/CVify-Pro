@@ -7,6 +7,8 @@ import {
   ShieldCheck,
   X,
 } from 'lucide-react';
+import { ChuongThongBao } from './ChuongThongBao';
+import type { ThongBaoItem } from '../../store/khoThongBao';
 
 export interface NguoiDung {
   id?: number | string;
@@ -22,6 +24,7 @@ interface ThanhDauTrangProps {
   onMoDangKy: () => void;
   onDangXuat: () => void;
   onVeTrangChu: () => void;
+  onChonHanhDongThongBao?: (hanhDong?: ThongBaoItem['hanhDong']) => void;
   coTaskbar?: boolean;
 }
 
@@ -31,6 +34,7 @@ export const ThanhDauTrang: React.FC<ThanhDauTrangProps> = ({
   onMoDangKy,
   onDangXuat,
   onVeTrangChu,
+  onChonHanhDongThongBao,
   coTaskbar = false,
 }) => {
   // Trạng thái mở menu dropdown tài khoản
@@ -66,11 +70,11 @@ export const ThanhDauTrang: React.FC<ThanhDauTrangProps> = ({
   return (
     <>
       <header
-        className={`sticky top-0 z-30 bg-white border-b border-[#d9deeb] transition-all ${
+        className={`fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/90 transition-all print:hidden ${
           coTaskbar ? 'pl-18' : ''
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 h-13 flex items-center justify-between gap-4">
           {/* Logo CVify Pro bên trái */}
           <div
             onClick={onVeTrangChu}
@@ -107,7 +111,9 @@ export const ThanhDauTrang: React.FC<ThanhDauTrangProps> = ({
               </div>
             ) : (
               /* TRẠNG THÁI 2: ĐÃ ĐĂNG NHẬP THÀNH CÔNG */
-              <div className="relative" ref={dropdownRef}>
+              <div className="flex items-center gap-2.5">
+                <ChuongThongBao onChonHanhDong={onChonHanhDongThongBao} />
+                <div className="relative" ref={dropdownRef}>
                 {/* Ô Tròn Profile Avatar ở góc trên bên phải */}
                 <button
                   type="button"
@@ -201,6 +207,7 @@ export const ThanhDauTrang: React.FC<ThanhDauTrangProps> = ({
                     </div>
                   </div>
                 )}
+                </div>
               </div>
             )}
           </div>

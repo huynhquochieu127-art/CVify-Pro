@@ -1,13 +1,48 @@
 import React, { useState, useRef } from 'react';
-import { Mail, Phone, MapPin, Globe, Camera, Trash2 } from 'lucide-react';
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Globe,
+  Camera,
+  Trash2,
+  X,
+  Link,
+} from 'lucide-react';
 import { useKhoLuuTruCV } from '../../store';
+import { NutChonIconTuyChinh } from '../ui/BangChonIcon';
+import { AutoResizeInput } from '../ui/AutoResizeInput';
 
 export const KhoiThongTinCaNhan: React.FC = () => {
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const [isAvatarDragOver, setIsAvatarDragOver] = useState(false);
 
-  const { cv, capNhatThongTinCaNhan } = useKhoLuuTruCV();
+  const {
+    cv,
+    capNhatThongTinCaNhan,
+    suaLienHeTuyChinh,
+    xoaLienHeTuyChinh,
+  } = useKhoLuuTruCV();
   const { dinhDang, thongTinCaNhan } = cv;
+
+  const iconLienHe = thongTinCaNhan.iconLienHe || {
+    email: 'Mail',
+    soDienThoai: 'Phone',
+    diaChi: 'MapPin',
+    website: 'Globe',
+  };
+
+  const handleDoiIconLienHe = (
+    key: 'email' | 'soDienThoai' | 'diaChi' | 'website',
+    newIcon: string
+  ) => {
+    capNhatThongTinCaNhan({
+      iconLienHe: {
+        ...iconLienHe,
+        [key]: newIcon,
+      },
+    });
+  };
 
   // Chọn ảnh từ máy tính
   const handleChonAvatarFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,7 +68,6 @@ export const KhoiThongTinCaNhan: React.FC = () => {
     e.preventDefault();
     setIsAvatarDragOver(false);
 
-    // Kéo thả file từ máy tính
     const file = e.dataTransfer.files?.[0];
     if (file && file.type.startsWith('image/')) {
       const reader = new FileReader();
@@ -45,12 +79,14 @@ export const KhoiThongTinCaNhan: React.FC = () => {
       return;
     }
 
-    // Kéo thả avatar dataURL từ Sidebar
     const droppedUrl = e.dataTransfer.getData('text/plain');
     if (droppedUrl) {
       capNhatThongTinCaNhan({ avatarUrl: droppedUrl });
     }
   };
+
+  const kieuHoTen = dinhDang.kieuChuTuyChinh?.['input-hoTen'] || {};
+  const kieuViTri = dinhDang.kieuChuTuyChinh?.['input-viTri'] || {};
 
   return (
     <div
@@ -67,7 +103,6 @@ export const KhoiThongTinCaNhan: React.FC = () => {
                 alt="Avatar"
                 className="w-full h-full object-cover"
               />
-              {/* Hover overlay thao tác ảnh */}
               <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 print:hidden">
                 <button
                   type="button"
@@ -88,7 +123,6 @@ export const KhoiThongTinCaNhan: React.FC = () => {
               </div>
             </div>
           ) : (
-            /* Chưa có ảnh: khung nét đứt kèm icon Camera */
             <div
               onDragOver={(e) => {
                 e.preventDefault();
@@ -120,48 +154,79 @@ export const KhoiThongTinCaNhan: React.FC = () => {
           />
         </div>
 
-        {/* Thông tin Họ tên, Vị trí & Liên hệ */}
+        {/* Thông tin Họ tên, Vị trí & Liên hệ bằng Icon */}
         <div className="flex-1 min-w-0 w-full text-center sm:text-left">
           {/* Họ và tên */}
-          <input
-            type="text"
+          <AutoResizeInput
+            dataStyleKey="input-hoTen"
             value={thongTinCaNhan.hoTen}
             onChange={(e) => capNhatThongTinCaNhan({ hoTen: e.target.value })}
             placeholder="HỌ VÀ TÊN CỦA BẠN"
-            className="w-full text-2xl sm:text-3xl font-extrabold tracking-tight uppercase bg-transparent hover:bg-slate-50 focus:bg-white border-b border-transparent hover:border-slate-300 focus:border-blue-600 focus:outline-none px-1 py-0.5 rounded transition text-center sm:text-left"
-            style={{ color: dinhDang.mauChuDao }}
+            className="w-full text-2xl sm:text-3xl font-extrabold tracking-tight bg-transparent hover:bg-slate-50 focus:bg-white border-b border-transparent hover:border-slate-300 focus:border-blue-600 focus:outline-none px-1 py-0.5 rounded transition text-center sm:text-left"
+            style={{
+              color: kieuHoTen.mauChu || dinhDang.mauChuDao,
+              fontSize: kieuHoTen.coChu || undefined,
+              fontWeight: kieuHoTen.inDam === false ? 500 : 800,
+              fontStyle: kieuHoTen.inNghieng ? 'italic' : 'normal',
+              textDecoration: kieuHoTen.gachChan ? 'underline' : 'none',
+              textTransform: kieuHoTen.inHoa === false ? 'none' : 'uppercase',
+            }}
           />
 
           {/* Vị trí ứng tuyển */}
-          <input
-            type="text"
+          <AutoResizeInput
+            dataStyleKey="input-viTri"
             value={thongTinCaNhan.viTriUngTuyen}
             onChange={(e) =>
               capNhatThongTinCaNhan({ viTriUngTuyen: e.target.value })
             }
             placeholder="Vị trí ứng tuyển (Ví dụ: Senior Software Engineer)"
             className="w-full text-sm font-semibold text-slate-600 bg-transparent hover:bg-slate-50 focus:bg-white border-b border-transparent hover:border-slate-300 focus:border-blue-600 focus:outline-none px-1 py-0.5 rounded transition mt-1 text-center sm:text-left"
+            style={{
+              color: kieuViTri.mauChu || undefined,
+              fontSize: kieuViTri.coChu || undefined,
+              fontWeight: kieuViTri.inDam ? 700 : 600,
+              fontStyle: kieuViTri.inNghieng ? 'italic' : 'normal',
+              textDecoration: kieuViTri.gachChan ? 'underline' : 'none',
+              textTransform: kieuViTri.inHoa ? 'uppercase' : 'none',
+            }}
           />
 
-          {/* Các thông tin liên hệ inline */}
-          <div className="flex flex-wrap items-center gap-3 sm:gap-5 mt-3 text-xs text-slate-600">
+          {/* Các thông tin liên hệ dùng Custom Icon thay cho chữ trường thường */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-3 text-xs text-slate-600">
             {/* Email */}
-            <div className="flex items-center gap-1.5 flex-1 min-w-[190px]">
-              <Mail size={13} style={{ color: dinhDang.mauChuDao }} className="shrink-0" />
-              <input
-                type="email"
+            <div className="flex items-center gap-1.5 flex-1 min-w-[185px]">
+              <NutChonIconTuyChinh
+                iconName={iconLienHe.email}
+                fallback={Mail}
+                onChonIcon={(ic) => handleDoiIconLienHe('email', ic)}
+                size={13}
+                mauChuDao={dinhDang.mauChuDao}
+                styleKey="input-email"
+                title="Nhấn để đổi icon & màu icon trường Email"
+              />
+              <AutoResizeInput
+                dataStyleKey="input-email"
                 value={thongTinCaNhan.email}
                 onChange={(e) => capNhatThongTinCaNhan({ email: e.target.value })}
                 placeholder="email@example.com"
-                className="w-full text-xs bg-transparent hover:bg-slate-50 focus:bg-white border-b border-transparent hover:border-slate-300 focus:border-blue-600 focus:outline-none px-1 py-0.5 rounded transition"
+                className="w-full text-xs bg-transparent hover:bg-slate-50 focus:bg-white border-b border-transparent hover:border-slate-300 focus:border-blue-600 focus:outline-none px-1 py-0.5 rounded transition break-all"
               />
             </div>
 
             {/* Số điện thoại */}
-            <div className="flex items-center gap-1.5 flex-1 min-w-[140px]">
-              <Phone size={13} style={{ color: dinhDang.mauChuDao }} className="shrink-0" />
-              <input
-                type="text"
+            <div className="flex items-center gap-1.5 flex-1 min-w-[135px]">
+              <NutChonIconTuyChinh
+                iconName={iconLienHe.soDienThoai}
+                fallback={Phone}
+                onChonIcon={(ic) => handleDoiIconLienHe('soDienThoai', ic)}
+                size={13}
+                mauChuDao={dinhDang.mauChuDao}
+                styleKey="input-phone"
+                title="Nhấn để đổi icon & màu icon trường Số điện thoại"
+              />
+              <AutoResizeInput
+                dataStyleKey="input-phone"
                 value={thongTinCaNhan.soDienThoai}
                 onChange={(e) =>
                   capNhatThongTinCaNhan({ soDienThoai: e.target.value })
@@ -172,10 +237,18 @@ export const KhoiThongTinCaNhan: React.FC = () => {
             </div>
 
             {/* Địa chỉ */}
-            <div className="flex items-center gap-1.5 flex-1 min-w-[150px]">
-              <MapPin size={13} style={{ color: dinhDang.mauChuDao }} className="shrink-0" />
-              <input
-                type="text"
+            <div className="flex items-center gap-1.5 flex-1 min-w-[145px]">
+              <NutChonIconTuyChinh
+                iconName={iconLienHe.diaChi}
+                fallback={MapPin}
+                onChonIcon={(ic) => handleDoiIconLienHe('diaChi', ic)}
+                size={13}
+                mauChuDao={dinhDang.mauChuDao}
+                styleKey="input-diaChi"
+                title="Nhấn để đổi icon & màu icon trường Địa chỉ"
+              />
+              <AutoResizeInput
+                dataStyleKey="input-diaChi"
                 value={thongTinCaNhan.diaChi}
                 onChange={(e) => capNhatThongTinCaNhan({ diaChi: e.target.value })}
                 placeholder="TP. Hồ Chí Minh"
@@ -184,16 +257,59 @@ export const KhoiThongTinCaNhan: React.FC = () => {
             </div>
 
             {/* Website / LinkedIn */}
-            <div className="flex items-center gap-1.5 flex-1 min-w-[170px]">
-              <Globe size={13} style={{ color: dinhDang.mauChuDao }} className="shrink-0" />
-              <input
-                type="text"
+            <div className="flex items-center gap-1.5 flex-1 min-w-[165px]">
+              <NutChonIconTuyChinh
+                iconName={iconLienHe.website}
+                fallback={Globe}
+                onChonIcon={(ic) => handleDoiIconLienHe('website', ic)}
+                size={13}
+                mauChuDao={dinhDang.mauChuDao}
+                styleKey="input-website"
+                title="Nhấn để đổi icon & màu icon trường Website/LinkedIn"
+              />
+              <AutoResizeInput
+                dataStyleKey="input-website"
                 value={thongTinCaNhan.website}
                 onChange={(e) => capNhatThongTinCaNhan({ website: e.target.value })}
                 placeholder="linkedin.com/in/my-profile"
-                className="w-full text-xs bg-transparent hover:bg-slate-50 focus:bg-white border-b border-transparent hover:border-slate-300 focus:border-blue-600 focus:outline-none px-1 py-0.5 rounded transition"
+                className="w-full text-xs bg-transparent hover:bg-slate-50 focus:bg-white border-b border-transparent hover:border-slate-300 focus:border-blue-600 focus:outline-none px-1 py-0.5 rounded transition break-all"
               />
             </div>
+
+            {/* Các trường liên hệ tùy chỉnh dùng Icon do người dùng tự thêm */}
+            {(thongTinCaNhan.lienHeTuyChinh || []).map((item) => (
+              <div
+                key={item.id}
+                className="group/lh flex items-center gap-1.5 flex-1 min-w-[165px] relative"
+              >
+                <NutChonIconTuyChinh
+                  iconName={item.iconName}
+                  fallback={Link}
+                  onChonIcon={(ic) => suaLienHeTuyChinh(item.id, { iconName: ic })}
+                  size={13}
+                  mauChuDao={dinhDang.mauChuDao}
+                  styleKey={`input-${item.id}`}
+                  title="Nhấn để chọn icon & màu icon cho trường này"
+                />
+                <AutoResizeInput
+                  dataStyleKey={`input-${item.id}`}
+                  value={item.giaTri}
+                  onChange={(e) =>
+                    suaLienHeTuyChinh(item.id, { giaTri: e.target.value })
+                  }
+                  placeholder={item.placeholder || 'Nhập thông tin...'}
+                  className="w-full text-xs bg-transparent hover:bg-slate-50 focus:bg-white border-b border-transparent hover:border-slate-300 focus:border-blue-600 focus:outline-none px-1 py-0.5 rounded transition"
+                />
+                <button
+                  type="button"
+                  onClick={() => xoaLienHeTuyChinh(item.id)}
+                  className="opacity-0 group-hover/lh:opacity-100 p-0.5 text-slate-400 hover:text-rose-500 transition cursor-pointer print:hidden"
+                  title="Xóa trường này"
+                >
+                  <X size={12} />
+                </button>
+              </div>
+            ))}
           </div>
         </div>
       </div>

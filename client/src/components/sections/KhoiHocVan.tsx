@@ -1,5 +1,13 @@
 import React from 'react';
-import { GraduationCap, Plus, Trash2, GripVertical } from 'lucide-react';
+import {
+  GraduationCap,
+  Plus,
+  Trash2,
+  GripVertical,
+  BookOpen,
+  Calendar,
+  BadgeCheck,
+} from 'lucide-react';
 import {
   DndContext,
   closestCenter,
@@ -17,14 +25,23 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { useKhoLuuTruCV, type HocVanItem } from '../../store/khoLuuTruCV';
 import { SortableKhoi } from './SortableKhoi';
+import { NutChonIconTuyChinh } from '../ui/BangChonIcon';
+import { AutoResizeInput } from '../ui/AutoResizeInput';
 
 interface ItemProps {
   hv: HocVanItem;
+  mauChuDao: string;
   onSua: (id: string, duLieu: Partial<HocVanItem>) => void;
   onXoa: (id: string) => void;
 }
 
-const SortableHocVanItemRow: React.FC<ItemProps> = ({ hv, onSua, onXoa }) => {
+const SortableHocVanItemRow: React.FC<ItemProps> = ({
+  hv,
+  mauChuDao,
+  onSua,
+  onXoa,
+}) => {
+  const { cv } = useKhoLuuTruCV();
   const {
     attributes,
     listeners,
@@ -39,19 +56,22 @@ const SortableHocVanItemRow: React.FC<ItemProps> = ({ hv, onSua, onXoa }) => {
     transition,
   };
 
+  const mauTruong =
+    cv.dinhDang?.kieuChuTuyChinh?.[`hv-truong-${hv.id}`]?.mauChu || mauChuDao;
+
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className={`group/item relative border-l-2 border-slate-200 pl-3.5 hover:border-emerald-500 transition-colors ${
-        isDragging ? 'opacity-40 bg-emerald-50/50 rounded-lg' : ''
+      className={`group/item relative border-l-2 border-slate-200 pl-3.5 transition-colors break-inside-avoid print:break-inside-avoid ${
+        isDragging ? 'opacity-40 bg-blue-50/50 rounded-lg' : ''
       }`}
     >
       {/* Tay cầm kéo thả cho từng mục học vấn */}
       <div
         {...attributes}
         {...listeners}
-        className="absolute -left-3.5 top-0.5 opacity-0 group-hover/item:opacity-100 p-0.5 text-slate-400 hover:text-emerald-600 cursor-grab active:cursor-grabbing transition print:hidden"
+        className="absolute -left-3.5 top-0.5 opacity-0 group-hover/item:opacity-100 p-0.5 text-slate-400 hover:text-slate-700 cursor-grab active:cursor-grabbing transition print:hidden"
         title="Kéo thả để đổi thứ tự học vấn này"
       >
         <GripVertical size={13} />
@@ -66,44 +86,116 @@ const SortableHocVanItemRow: React.FC<ItemProps> = ({ hv, onSua, onXoa }) => {
         <Trash2 size={13} />
       </button>
 
-      <div className="flex items-baseline justify-between gap-2">
-        <input
-          type="text"
-          value={hv.chuyenNganh}
-          onChange={(e) => onSua(hv.id, { chuyenNganh: e.target.value })}
-          placeholder="Chuyên ngành / Văn bằng"
-          className="font-semibold text-xs text-slate-800 bg-transparent border-0 focus:outline-none focus:bg-slate-50/80 rounded px-1 -ml-1 flex-1 placeholder:font-normal placeholder:italic placeholder:text-slate-400"
-        />
-        <input
-          type="text"
-          value={hv.thoiGian}
-          onChange={(e) => onSua(hv.id, { thoiGian: e.target.value })}
-          placeholder="2018 - 2022"
-          className="text-[11px] text-slate-400 text-right bg-transparent border-0 focus:outline-none focus:bg-slate-50/80 rounded px-1 w-24 shrink-0 placeholder:italic"
+      {/* Dòng 1: Chuyên ngành (Icon) & Thời gian (Icon) */}
+      <div className="flex flex-wrap items-start justify-between gap-x-2 gap-y-0.5">
+        <div className="flex items-start gap-1.5 flex-1 min-w-[140px]">
+          <div className="mt-0.5 shrink-0">
+            <NutChonIconTuyChinh
+              iconName={hv.iconChuyenNganh || 'BookOpen'}
+              fallback={BookOpen}
+              onChonIcon={(ic) => onSua(hv.id, { iconChuyenNganh: ic })}
+              size={12}
+              mauChuDao={mauChuDao}
+              styleKey={`hv-nganh-${hv.id}`}
+              title="Đổi icon & màu icon Chuyên ngành"
+            />
+          </div>
+          <AutoResizeInput
+            dataStyleKey={`hv-nganh-${hv.id}`}
+            value={hv.chuyenNganh}
+            onChange={(e) => onSua(hv.id, { chuyenNganh: e.target.value })}
+            placeholder="Chuyên ngành / Văn bằng"
+            className="font-semibold text-xs text-slate-800 bg-transparent border-0 focus:outline-none focus:bg-slate-50/80 rounded px-1 flex-1 min-w-0 placeholder:font-normal placeholder:italic placeholder:text-slate-400"
+          />
+        </div>
+
+        <div className="flex items-center gap-1 shrink-0 ml-auto pt-0.5">
+          <NutChonIconTuyChinh
+            iconName={hv.iconThoiGian || 'Calendar'}
+            fallback={Calendar}
+            onChonIcon={(ic) => onSua(hv.id, { iconThoiGian: ic })}
+            size={11}
+            mauChuDao="#94a3b8"
+            styleKey={`hv-tg-${hv.id}`}
+            title="Đổi icon & màu icon Thời gian"
+          />
+          <input
+            type="text"
+            data-style-key={`hv-tg-${hv.id}`}
+            value={hv.thoiGian}
+            onChange={(e) => onSua(hv.id, { thoiGian: e.target.value })}
+            placeholder="2022 - 2026"
+            className="text-[11px] text-slate-400 text-right bg-transparent border-0 focus:outline-none focus:bg-slate-50/80 rounded px-1 min-w-[70px] max-w-[120px] shrink-0 placeholder:italic"
+          />
+        </div>
+      </div>
+
+      {/* Dòng 2: Tên trường đại học */}
+      <div className="flex items-start gap-1.5 mt-0.5">
+        <div className="mt-0.5 shrink-0">
+          <NutChonIconTuyChinh
+            iconName={hv.iconTruong || 'GraduationCap'}
+            fallback={GraduationCap}
+            onChonIcon={(ic) => onSua(hv.id, { iconTruong: ic })}
+            size={12}
+            mauChuDao={mauChuDao}
+            styleKey={`hv-truong-${hv.id}`}
+            title="Đổi icon & màu icon Trường học"
+          />
+        </div>
+        <AutoResizeInput
+          dataStyleKey={`hv-truong-${hv.id}`}
+          value={hv.truong}
+          onChange={(e) => onSua(hv.id, { truong: e.target.value })}
+          placeholder="Tên trường đại học / Cơ sở đào tạo"
+          style={{ color: mauTruong }}
+          className="text-xs font-medium bg-transparent border-0 focus:outline-none focus:bg-slate-50/80 rounded px-1 w-full placeholder:font-normal placeholder:italic placeholder:text-slate-400"
         />
       </div>
 
-      <input
-        type="text"
-        value={hv.truong}
-        onChange={(e) => onSua(hv.id, { truong: e.target.value })}
-        placeholder="Tên trường đại học / Cơ sở đào tạo"
-        className="text-xs text-emerald-600 font-medium bg-transparent border-0 focus:outline-none focus:bg-slate-50/80 rounded px-1 -ml-1 w-full placeholder:font-normal placeholder:italic placeholder:text-slate-400"
-      />
-
-      <input
-        type="text"
-        value={hv.diemSo || hv.gpa || ''}
-        onChange={(e) => onSua(hv.id, { diemSo: e.target.value })}
-        placeholder="Điểm số / GPA / Xếp loại tốt nghiệp (không bắt buộc)"
-        className="text-[11px] text-slate-500 bg-transparent border-0 focus:outline-none focus:bg-slate-50/80 rounded px-1 -ml-1 w-full placeholder:italic placeholder:text-slate-400 mt-0.5"
-      />
+      {/* Dòng 3: Điểm GPA / Xếp loại */}
+      <div className="flex items-start gap-1.5 mt-0.5">
+        <div className="mt-0.5 shrink-0">
+          <NutChonIconTuyChinh
+            iconName={hv.iconDiemSo || 'BadgeCheck'}
+            fallback={BadgeCheck}
+            onChonIcon={(ic) => onSua(hv.id, { iconDiemSo: ic })}
+            size={12}
+            mauChuDao="#64748b"
+            styleKey={`hv-gpa-${hv.id}`}
+            title="Đổi icon & màu icon Điểm GPA / Thành tích"
+          />
+        </div>
+        <AutoResizeInput
+          dataStyleKey={`hv-gpa-${hv.id}`}
+          value={hv.diemSo || hv.gpa || ''}
+          onChange={(e) => onSua(hv.id, { diemSo: e.target.value })}
+          placeholder="GPA: 3.6/4.0 • Học bổng loại Giỏi"
+          className="text-[11px] text-slate-500 bg-transparent border-0 focus:outline-none focus:bg-slate-50/80 rounded px-1 w-full placeholder:italic placeholder:text-slate-400"
+        />
+      </div>
     </div>
   );
 };
 
-export const KhoiHocVan: React.FC = () => {
+export interface KhoiHocVanProps {
+  trang?: number;
+}
+
+export const KhoiHocVan: React.FC<KhoiHocVanProps> = ({ trang }) => {
   const { cv, themHocVan, suaHocVan, xoaHocVan, sapXepHocVan } = useKhoLuuTruCV();
+  const mauKhoi =
+    cv.dinhDang?.kieuChuTuyChinh?.['khoi-hoc-van']?.mauChu ||
+    cv.dinhDang.mauChuDao ||
+    '#1a91f0';
+
+  const trangChiDinh =
+    cv.dinhDang?.phanBoTrangKhoi?.['hoc-van'] ||
+    (cv.dinhDang?.ngatTrangKhoi?.['hoc-van'] ? 2 : 1);
+
+  if (trang && trang !== trangChiDinh) {
+    return null;
+  }
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -140,6 +232,7 @@ export const KhoiHocVan: React.FC = () => {
               <SortableHocVanItemRow
                 key={hv.id}
                 hv={hv}
+                mauChuDao={mauKhoi}
                 onSua={suaHocVan}
                 onXoa={xoaHocVan}
               />
@@ -148,7 +241,8 @@ export const KhoiHocVan: React.FC = () => {
             <button
               type="button"
               onClick={() => themHocVan()}
-              className="flex items-center gap-1.5 text-[11px] text-emerald-600 hover:text-emerald-700 font-medium hover:bg-emerald-50/60 px-2.5 py-1 rounded transition-colors cursor-pointer print:hidden"
+              style={{ color: mauKhoi }}
+              className="flex items-center gap-1.5 text-[11px] font-medium hover:bg-slate-100 px-2.5 py-1 rounded transition-colors cursor-pointer print:hidden"
             >
               <Plus size={12} />
               <span>Thêm Học Vấn</span>

@@ -1,5 +1,7 @@
 // client/src/components/home/BangTinCongDong.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useKhoThongBao } from '../../store/khoThongBao';
 import {
   Heart,
   MessageSquare,
@@ -13,6 +15,9 @@ import {
   Flame,
   Award,
   Briefcase,
+  Star,
+  FileText,
+  ExternalLink,
 } from 'lucide-react';
 
 export interface BaiDangType {
@@ -211,6 +216,21 @@ export const BangTinCongDong: React.FC<BangTinCongDongProps> = ({
   // Danh sách bài đăng trong state
   const [danhSachBaiDang, setDanhSachBaiDang] = useState<BaiDangType[]>(BAI_DANG_MAU);
 
+  // Danh sách CV đã được người dùng chủ động Push lên Cộng Đồng (từ MySQL)
+  const [danhSachCVPush, setDanhSachCVPush] = useState<any[]>([]);
+  // Danh sách CV cá nhân của người đang đăng nhập (để chọn đính kèm khi Đăng Bài)
+  const [danhSachCVCaNhan, setDanhSachCVCaNhan] = useState<any[]>([]);
+  const [moChonCVDinhKem, setMoChonCVDinhKem] = useState(false);
+  const [cvDinhKemId, setCvDinhKemId] = useState<number | null>(null);
+
+  // Quản lý form chấm điểm inline cho từng CV trên Bản Tin Cộng Đồng
+  const [moChamDiemCVId, setMoChamDiemCVId] = useState<number | null>(null);
+  const [diemBoCucInline, setDiemBoCucInline] = useState(5);
+  const [diemNoiDungInline, setDiemNoiDungInline] = useState(5);
+  const [diemKyNangInline, setDiemKyNangInline] = useState(5);
+  const [nhanXetInline, setNhanXetInline] = useState('');
+  const [dangGuiDanhGiaInline, setDangGuiDanhGiaInline] = useState(false);
+
   // Ô tạo bài viết
   const [noiDungBaiMoi, setNoiDungBaiMoi] = useState('');
   const [thongBaoDang, setThongBaoDang] = useState<string | null>(null);
@@ -225,21 +245,93 @@ export const BangTinCongDong: React.FC<BangTinCongDongProps> = ({
   // Modal xem chi tiết tin tức
   const [tinTucDangXem, setTinTucDangXem] = useState<TinTucType | null>(null);
 
+  // Tải danh sách CV đã được Push lên Cộng đồng từ MySQL
+  const taiDanhSachCVPushCongDong = async () => {
+    try {
+      const res = await axios.get('http://localhost:5000/api/cv/cong-dong');
+      if (res.data?.thanh_cong && Array.isArray(res.data.danh_sach)) {
+        setDanhSachCVPush(res.data.danh_sach);
+      }
+    } catch {
+      // Bỏ qua nếu server chưa bật
+    }
+  };
+
+  // Tải danh sách CV của user đang đăng nhập khi bấm nút Đính kèm CV
+  const taiDanhSachCVCuaToi = async () => {
+    const token = sessionStorage.getItem('token');
+    if (!token) {
+      if (onYeuCauDangNhap) onYeuCauDangNhap();
+      return;
+    }
+    try {
+      const res = await axios.get('http://localhost:5000/api/cv', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.data?.thanh_cong && Array.isArray(res.data.danh_sach)) {
+        setDanhSachCVCaNhan(res.data.danh_sach);
+        setMoChonCVDinhKem(true);
+      }
+    } catch {
+      alert('Không thể tải danh sách CV của bạn!');
+    }
+  };
+
+  useEffect(() => {
+    taiDanhSachCVPushCongDong();
+  }, []);
+
   // Xử lý gắn hashtag nhanh vào ô nhập
   const handleGanHashtag = (tag: string) => {
     if (!noiDungBaiMoi.includes(tag)) {
       setNoiDungBaiMoi((prev) => (prev ? `${prev} ${tag}` : tag));
     }
+    if (tag === '#ReviewCV') {
+      taiDanhSachCVCuaToi();
+    }
   };
 
-  // Xử lý đăng bài viết mới
-  const handleDangBai = (e: React.FormEvent) => {
+  // Xử lý đăng bài viết mới (Nếu có đính kèm CV thì Push CV đó lên Cộng Đồng trong MySQL)
+  const handleDangBai = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!noiDungBaiMoi.trim()) return;
+    if (!noiDungBaiMoi.trim() && !cvDinhKemId) return;
 
     if (!daDangNhap && onYeuCauDangNhap) {
       onYeuCauDangNhap();
       return;
+    }
+
+    const token = sessionStorage.getItem('token');
+    if (cvDinhKemId && token) {
+      try {
+        await axios.put(
+          `http://localhost:5000/api/cv/${cvDinhKemId}/push-cong-dong`,
+          {
+            cong_khai: true,
+            loi_nhan_cong_dong:
+              noiDungBaiMoi.trim() ||
+              'Mình vừa hoàn thiện bản CV này, nhờ mọi người trên cộng đồng chấm điểm và góp ý giúp mình nhé! #ReviewCV',
+          },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        await taiDanhSachCVPushCongDong();
+        useKhoThongBao.getState().themThongBao({
+          loai: 'cong-dong',
+          tieuDe: 'CV mới được chia sẻ lên Cộng đồng',
+          noiDung: `${tenNguoiDung || 'Thành viên'} vừa đăng CV lên bảng tin cộng đồng để nhận góp ý.`,
+          hanhDong: 'mo-cong-dong',
+        });
+        setNoiDungBaiMoi('');
+        setCvDinhKemId(null);
+        setMoChonCVDinhKem(false);
+        setThongBaoDang(
+          '🚀 Đã Push CV của bạn lên Bản Tin Cộng Đồng! Mọi người có thể xem và chấm điểm ngay bên dưới.'
+        );
+        setTimeout(() => setThongBaoDang(null), 4000);
+        return;
+      } catch {
+        alert('Có lỗi khi Push CV lên cộng đồng!');
+      }
     }
 
     // Tự động phân tích hashtags trong bài
@@ -262,9 +354,52 @@ export const BangTinCongDong: React.FC<BangTinCongDongProps> = ({
     };
 
     setDanhSachBaiDang([baiMoi, ...danhSachBaiDang]);
+    useKhoThongBao.getState().themThongBao({
+      loai: 'cong-dong',
+      tieuDe: 'Bài đăng mới trên Bảng tin cộng đồng',
+      noiDung: `${baiMoi.tacGia.ten}: ${baiMoi.noiDung.slice(0, 85)}${baiMoi.noiDung.length > 85 ? '...' : ''}`,
+      hanhDong: 'mo-cong-dong',
+    });
     setNoiDungBaiMoi('');
     setThongBaoDang('🎉 Bài viết của bạn đã được đăng lên cộng đồng!');
     setTimeout(() => setThongBaoDang(null), 3500);
+  };
+
+  // Gửi đánh giá thật cho 1 CV ngay trên Bản Tin Cộng Đồng (Lưu thẳng vào MySQL)
+  const handleGuiDanhGiaCVInline = async (cvId: number) => {
+    setDangGuiDanhGiaInline(true);
+    try {
+      const token = sessionStorage.getItem('token');
+      const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
+      const diemTB = Math.round(
+        (diemBoCucInline + diemNoiDungInline + diemKyNangInline) / 3
+      );
+
+      await axios.post(
+        `http://localhost:5000/api/cv/${cvId}/danh-gia`,
+        {
+          ten_nguoi_danh_gia: tenNguoiDung || 'Thành viên Cộng đồng',
+          diem_so: diemTB,
+          diem_bo_cuc: diemBoCucInline,
+          diem_noi_dung: diemNoiDungInline,
+          diem_ky_nang: diemKyNangInline,
+          nhan_xet:
+            nhanXetInline.trim() ||
+            `Đánh giá từ Bản Tin Cộng Đồng: Bố cục ${diemBoCucInline}★, Nội dung ${diemNoiDungInline}★, Kỹ năng ${diemKyNangInline}★.`,
+        },
+        { headers }
+      );
+
+      setNhanXetInline('');
+      setMoChamDiemCVId(null);
+      await taiDanhSachCVPushCongDong();
+      setThongBaoDang('⭐ Đã lưu đánh giá của bạn vào cơ sở dữ liệu thành công!');
+      setTimeout(() => setThongBaoDang(null), 3500);
+    } catch {
+      alert('Không thể gửi đánh giá! Vui lòng kiểm tra kết nối server.');
+    } finally {
+      setDangGuiDanhGiaInline(false);
+    }
   };
 
   // Xử lý Thích / Bỏ thích
@@ -352,7 +487,7 @@ export const BangTinCongDong: React.FC<BangTinCongDongProps> = ({
           {/* CỘT TRÁI (65% - lg:col-span-8): COMMUNITY FEED              */}
           {/* ========================================================== */}
           <div className="lg:col-span-8 space-y-5">
-            {/* 1. KHUNG TẠO BÀI VIẾT NHANH (Create Post Box) */}
+            {/* 1. KHUNG TẠO BÀI VIẾT NHANH & PUSH CV LÊN CỘNG ĐỒNG */}
             <div className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs transition hover:shadow-md">
               {thongBaoDang && (
                 <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold rounded-xl flex items-center gap-2 animate-fade-in">
@@ -381,20 +516,66 @@ export const BangTinCongDong: React.FC<BangTinCongDongProps> = ({
                   </div>
 
                   {/* Ô nhập nội dung */}
-                  <div className="flex-1">
+                  <div className="flex-1 space-y-2">
                     <textarea
                       rows={3}
                       value={noiDungBaiMoi}
                       onChange={(e) => setNoiDungBaiMoi(e.target.value)}
-                      placeholder={`${tenNguoiDung} ơi, bạn muốn chia sẻ kinh nghiệm làm CV hay mẹo phỏng vấn gì hôm nay?`}
+                      placeholder={`${tenNguoiDung} ơi, bạn muốn chia sẻ kinh nghiệm hay Push CV lên nhờ Cộng Đồng đánh giá hôm nay?`}
                       className="w-full text-xs sm:text-sm p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0a66c2]/20 focus:border-[#0a66c2] transition resize-none placeholder:text-slate-400 leading-relaxed text-slate-800"
                     />
+
+                    {/* Khung chọn bản CV của bạn để Push lên nhờ Cộng Đồng đánh giá */}
+                    {moChonCVDinhKem && (
+                      <div className="p-3 bg-blue-50/70 border border-blue-200 rounded-xl space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-extrabold text-blue-950 flex items-center gap-1.5">
+                            <FileText size={13} className="text-[#0a66c2]" />
+                            Chọn bản CV bạn muốn Push lên Cộng Đồng nhờ đánh giá:
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setMoChonCVDinhKem(false);
+                              setCvDinhKemId(null);
+                            }}
+                            className="text-slate-400 hover:text-slate-700 cursor-pointer"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+
+                        {danhSachCVCaNhan.length === 0 ? (
+                          <p className="text-[11px] text-slate-500">
+                            Bạn chưa có bản CV nào đã lưu. Hãy tạo và bấm "💾 Lưu CV" trước nhé!
+                          </p>
+                        ) : (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                            {danhSachCVCaNhan.map((c) => (
+                              <button
+                                key={c.id}
+                                type="button"
+                                onClick={() => setCvDinhKemId(c.id)}
+                                className={`flex items-center justify-between p-2 rounded-lg border text-left text-xs font-semibold transition cursor-pointer ${
+                                  cvDinhKemId === c.id
+                                    ? 'bg-[#0a66c2] text-white border-[#0a66c2]'
+                                    : 'bg-white text-slate-700 border-slate-200 hover:border-blue-300'
+                                }`}
+                              >
+                                <span className="truncate">{c.tieu_de_cv}</span>
+                                {cvDinhKemId === c.id && <CheckCircle2 size={13} />}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
 
                 {/* Hàng công cụ gắn tag & nút Đăng Bài */}
                 <div className="flex flex-wrap items-center justify-between gap-3 pt-1 border-t border-slate-100">
-                  {/* Gợi ý Hashtags nhanh */}
+                  {/* Gợi ý Hashtags nhanh & Nút Đính Kèm CV */}
                   <div className="flex flex-wrap items-center gap-1.5 text-xs">
                     <span className="text-[11px] font-semibold text-slate-400 mr-1 hidden sm:inline">
                       Gắn thẻ nhanh:
@@ -420,22 +601,238 @@ export const BangTinCongDong: React.FC<BangTinCongDongProps> = ({
                     >
                       #PhongVan
                     </button>
+
+                    <button
+                      type="button"
+                      onClick={taiDanhSachCVCuaToi}
+                      className={`flex items-center gap-1 px-3 py-1 rounded-full font-bold text-[11px] border transition cursor-pointer ${
+                        cvDinhKemId
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
+                          : 'bg-blue-50 text-[#0a66c2] border-blue-200 hover:bg-blue-100'
+                      }`}
+                    >
+                      <FileText size={12} />
+                      <span>
+                        {cvDinhKemId
+                          ? 'Đã chọn 1 CV để Push'
+                          : '+ Đính kèm CV nhờ đánh giá'}
+                      </span>
+                    </button>
                   </div>
 
                   {/* Nút bấm Đăng Bài màu xanh LinkedIn */}
                   <button
                     type="submit"
-                    disabled={!noiDungBaiMoi.trim()}
+                    disabled={!noiDungBaiMoi.trim() && !cvDinhKemId}
                     className="flex items-center gap-2 bg-[#0a66c2] hover:bg-[#004182] disabled:bg-blue-300 text-white font-bold text-xs px-5 py-2.5 rounded-full shadow-xs transition active:scale-95 cursor-pointer ml-auto"
                   >
                     <Send size={13} />
-                    <span>Đăng Bài</span>
+                    <span>{cvDinhKemId ? '🚀 Push CV & Đăng Bài' : 'Đăng Bài'}</span>
                   </button>
                 </div>
               </form>
             </div>
 
-            {/* 2. DANH SÁCH CÁC BÀI VIẾT (Feed Posts List) */}
+            {/* 1B. DANH SÁCH CÁC BẢN CV ĐÃ ĐƯỢC CHỦ ĐỘNG PUSH LÊN NHỜ ĐÁNH GIÁ */}
+            {danhSachCVPush.map((cvItem) => {
+              const tacGiaTen =
+                cvItem.nguoi_dung?.ho_ten ||
+                cvItem.noi_dung_cv?.thongTinCaNhan?.hoTen ||
+                'Thành viên CVify';
+              const viTriUT =
+                cvItem.noi_dung_cv?.thongTinCaNhan?.viTriUngTuyen ||
+                'Ứng viên tiềm năng';
+              const loiNhan =
+                cvItem.noi_dung_cv?.loi_nhan_cong_dong ||
+                'Mình vừa thiết kế xong bản CV này trên CVify Pro và chủ động Push lên Cộng đồng. Rất mong nhận được chấm điểm & góp ý từ mọi người ạ!';
+              const soLuotDG =
+                cvItem._count?.danh_gia ?? cvItem.so_luot_danh_gia ?? 0;
+              const dangMoChamDiem = moChamDiemCVId === cvItem.id;
+
+              return (
+                <article
+                  key={`pushed-cv-${cvItem.id}`}
+                  className="bg-white rounded-2xl border-2 border-blue-200/90 p-5 sm:p-6 shadow-xs hover:shadow-md transition duration-200"
+                >
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-11 h-11 rounded-full bg-gradient-to-br from-[#0a66c2] to-blue-700 text-white flex items-center justify-center font-bold text-sm shrink-0">
+                        {tacGiaTen.trim().charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h4 className="text-xs sm:text-sm font-extrabold text-slate-900">
+                            {tacGiaTen}
+                          </h4>
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-[#0a66c2] border border-blue-200">
+                            🚀 Đã Push CV nhờ Cộng Đồng đánh giá
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-slate-500">{viTriUT}</p>
+                        <div className="flex items-center gap-1 text-[10px] text-slate-400 mt-0.5">
+                          <Clock size={11} />
+                          <span>
+                            {new Date(cvItem.ngay_sua).toLocaleString('vi-VN')}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-1 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full shrink-0">
+                      <Star size={13} className="fill-amber-400 text-amber-500" />
+                      <span className="text-xs font-extrabold text-amber-900">
+                        {soLuotDG > 0 ? cvItem.diem_trung_binh : 'Mới'}
+                      </span>
+                      <span className="text-[10px] text-amber-700">
+                        ({soLuotDG} đánh giá)
+                      </span>
+                    </div>
+                  </div>
+
+                  <p className="text-xs sm:text-sm text-slate-700 leading-relaxed mb-3.5">
+                    {loiNhan}
+                  </p>
+
+                  {/* Thẻ Hồ Sơ CV Đính Kèm */}
+                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/90 flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span className="p-3 rounded-xl bg-[#0a66c2] text-white shrink-0">
+                        <FileText size={20} />
+                      </span>
+                      <div className="min-w-0">
+                        <h5 className="text-xs sm:text-sm font-extrabold text-slate-900 truncate">
+                          {cvItem.tieu_de_cv || `CV của ${tacGiaTen}`}
+                        </h5>
+                        <p className="text-[11px] text-slate-500 truncate">
+                          Ứng tuyển: <strong>{viTriUT}</strong>
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <a
+                        href={`/?shareId=${cvItem.id}`}
+                        className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold transition"
+                      >
+                        <ExternalLink size={13} />
+                        <span>Xem Tờ CV</span>
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setMoChamDiemCVId(dangMoChamDiem ? null : cvItem.id)
+                        }
+                        className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#0a66c2] hover:bg-[#004182] text-white text-xs font-bold transition cursor-pointer shadow-2xs"
+                      >
+                        <Star size={13} className="fill-amber-300 text-amber-300" />
+                        <span>Chấm Điểm & Đánh Giá</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Khung Chấm Điểm Inline ngay trên bài đăng Cộng Đồng */}
+                  {dangMoChamDiem && (
+                    <div className="p-4 rounded-2xl bg-blue-50/50 border border-blue-200 space-y-3 mb-3 animate-fade-in">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        {[
+                          {
+                            label: 'Bố cục CV',
+                            val: diemBoCucInline,
+                            setVal: setDiemBoCucInline,
+                          },
+                          {
+                            label: 'Nội dung',
+                            val: diemNoiDungInline,
+                            setVal: setDiemNoiDungInline,
+                          },
+                          {
+                            label: 'Kỹ năng',
+                            val: diemKyNangInline,
+                            setVal: setDiemKyNangInline,
+                          },
+                        ].map((tc) => (
+                          <div
+                            key={tc.label}
+                            className="bg-white p-2 rounded-xl border border-slate-200 flex items-center justify-between"
+                          >
+                            <span className="text-[11px] font-bold text-slate-700">
+                              {tc.label}
+                            </span>
+                            <div className="flex items-center gap-0.5">
+                              {[1, 2, 3, 4, 5].map((s) => (
+                                <button
+                                  key={s}
+                                  type="button"
+                                  onClick={() => tc.setVal(s)}
+                                  className="cursor-pointer"
+                                >
+                                  <Star
+                                    size={14}
+                                    className={
+                                      s <= tc.val
+                                        ? 'fill-amber-400 text-amber-400'
+                                        : 'text-slate-200'
+                                    }
+                                  />
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          value={nhanXetInline}
+                          onChange={(e) => setNhanXetInline(e.target.value)}
+                          placeholder="Nhập lời khuyên / góp ý của bạn cho bản CV này..."
+                          className="flex-1 text-xs bg-white border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#0a66c2]"
+                        />
+                        <button
+                          type="button"
+                          disabled={dangGuiDanhGiaInline}
+                          onClick={() => handleGuiDanhGiaCVInline(cvItem.id)}
+                          className="flex items-center gap-1.5 px-4 py-2 bg-[#0a66c2] hover:bg-[#004182] text-white text-xs font-bold rounded-xl transition cursor-pointer shrink-0"
+                        >
+                          <Send size={12} />
+                          <span>
+                            {dangGuiDanhGiaInline ? 'Đang lưu...' : 'Gửi Đánh Giá'}
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Hiển thị các đánh giá thật gần nhất của CV này ngay dưới bài đăng */}
+                  {cvItem.danh_gia && cvItem.danh_gia.length > 0 && (
+                    <div className="space-y-2 pt-2 border-t border-slate-100">
+                      <span className="text-[11px] font-bold text-slate-500">
+                        Nhận xét mới nhất từ cộng đồng:
+                      </span>
+                      {cvItem.danh_gia.slice(0, 3).map((dg: any) => (
+                        <div
+                          key={dg.id}
+                          className="flex items-start justify-between gap-2 bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-xs"
+                        >
+                          <div>
+                            <span className="font-bold text-slate-800">
+                              {dg.ten_nguoi_danh_gia}:{' '}
+                            </span>
+                            <span className="text-slate-600">{dg.nhan_xet}</span>
+                          </div>
+                          <span className="text-amber-500 font-bold shrink-0">
+                            {dg.diem_so} ★
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </article>
+              );
+            })}
+
+            {/* 2. DANH SÁCH CÁC BÀI VIẾT CHIA SẺ KINH NGHIỆM (Feed Posts List) */}
             <div className="space-y-4">
               {danhSachBaiDang.map((bai) => {
                 const moBinhLuan = moBinhLuanId === bai.id;

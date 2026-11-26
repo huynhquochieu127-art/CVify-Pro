@@ -1,8 +1,21 @@
-import React, { useState, useEffect, type ReactNode } from "react";
+import React, { useState, useEffect, useMemo, type ReactNode } from "react";
+import { Search, X, Globe, Briefcase, RotateCcw } from "lucide-react";
 import { BangTinCongDong } from "./BangTinCongDong";
+import {
+  DANH_SACH_MAU_CV,
+  VI_TRI_NOI_BAT,
+  NHAN_PHONG_CACH,
+  NHAN_NGON_NGU,
+  locDanhSachMauCV,
+  type LoaiPhongCachCV,
+  type NgonNguMauCV,
+  type MauCVItem,
+} from "../kho-mau/KhoCVMau";
+import { useKhoLuuTruCV } from "../../store/khoLuuTruCV";
 
 export interface TrangChuProps {
   onChuyenTrinhThietKe: () => void;
+  onChonMauTrucTiep?: (mau: MauCVItem) => void;
   onMoDangNhap: () => void;
   onMoDangKy: () => void;
   daDangNhap?: boolean;
@@ -351,62 +364,30 @@ function DocSection({
   );
 }
 
-const templateData = [
-  {
-    name: "Nordic Tech",
-    role: "Kỹ Sư Phần Mềm",
-    category: "Công Nghệ (IT)",
-    accent: "#2563EB",
-    person: "Daniel Kim",
-  },
-  {
-    name: "Strata Growth",
-    role: "Giám Đốc Sản Phẩm",
-    category: "Kinh Doanh",
-    accent: "#0F766E",
-    person: "Amelia Jones",
-  },
-  {
-    name: "Atelier Art",
-    role: "Giám Đốc Sáng Tạo",
-    category: "Sáng Tạo",
-    accent: "#C2410C",
-    person: "Sofia Rossi",
-  },
-  {
-    name: "Mono AI",
-    role: "Chuyên Gia Dữ Liệu",
-    category: "Công Nghệ (IT)",
-    accent: "#4F46E5",
-    person: "Ethan Brooks",
-  },
-  {
-    name: "Ledger Finance",
-    role: "Quản Lý Tài Chính",
-    category: "Kinh Doanh",
-    accent: "#334155",
-    person: "Noah Williams",
-  },
-  {
-    name: "Studio Brand",
-    role: "Thiết Kế Thương Hiệu",
-    category: "Sáng Tạo",
-    accent: "#BE185D",
-    person: "Emma Laurent",
-  },
-];
+function Templates({
+  onSelectTemplate,
+}: {
+  onSelectTemplate: (mau: MauCVItem) => void;
+}) {
+  const [phongCach, setPhongCach] = useState<LoaiPhongCachCV | "tat-ca">("tat-ca");
+  const [viTri, setViTri] = useState<string>("tat-ca");
+  const [ngonNgu, setNgonNgu] = useState<NgonNguMauCV | "tat-ca">("tat-ca");
+  const [tuKhoa, setTuKhoa] = useState("");
 
-function Templates({ onSelectTemplate }: { onSelectTemplate: () => void }) {
-  const [filter, setFilter] = useState("Tất cả");
-  const categories = ["Tất cả", "Công Nghệ (IT)", "Kinh Doanh", "Sáng Tạo"];
-  const filtered =
-    filter === "Tất cả"
-      ? templateData
-      : templateData.filter((item) => item.category === filter);
+  const filtered = useMemo(
+    () =>
+      locDanhSachMauCV(DANH_SACH_MAU_CV, {
+        phongCach,
+        viTri,
+        ngonNgu,
+        tuKhoa,
+      }),
+    [phongCach, viTri, ngonNgu, tuKhoa]
+  );
 
   return (
     <section
-      className="section templates-section reveal-on-scroll"
+      className="section templates-section"
       id="templates"
     >
       <div className="section-heading split-heading">
@@ -415,46 +396,193 @@ function Templates({ onSelectTemplate }: { onSelectTemplate: () => void }) {
           <h2>Kho Mẫu CV Tuyển Dụng Chuyên Nghiệp</h2>
         </div>
         <p>
-          Bố cục được chuẩn hóa vượt qua mọi hệ thống lọc hồ sơ tự động ATS mà
-          vẫn giữ trọn vẻ đẹp thẩm mỹ cao cấp.
+          Đồng bộ đầy đủ theo phong cách thiết kế, vị trí ứng tuyển và ngôn ngữ
+          chuẩn ATS — sẵn sàng dùng ngay và giữ trọn nội dung của bạn.
         </p>
       </div>
-      <div className="filter-row" role="group" aria-label="Bộ lọc mẫu CV">
-        {categories.map((item) => (
-          <button
-            key={item}
-            className={filter === item ? "active" : ""}
-            onClick={() => setFilter(item)}
-          >
-            {item}
-          </button>
-        ))}
-      </div>
-      <div className="template-grid">
-        {filtered.map((template, idx) => (
-          <article
-            className={`template-card reveal-on-scroll reveal-delay-${(idx % 3) + 1}`}
-            key={template.name}
-          >
-            <div className="template-paper-wrap">
-              <MiniResume
-                accent={template.accent}
-                name={template.person}
-                role={template.role}
+
+      {/* Bộ lọc tổng hợp ngoài Trang Chủ: Dạng mẫu + Vị trí ứng tuyển + Tìm kiếm + Ngôn ngữ */}
+      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-4 mb-8 space-y-3.5">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          {/* Lọc theo dạng mẫu (Đơn giản / Ấn tượng / Chuyên nghiệp) */}
+          <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label="Lọc theo dạng mẫu CV">
+            {[
+              { id: "tat-ca" as const, nhan: "Tất cả mẫu" },
+              { id: "don-gian" as const, nhan: "Đơn giản" },
+              { id: "an-tuong" as const, nhan: "Ấn tượng" },
+              { id: "chuyen-nghiep" as const, nhan: "Chuyên nghiệp" },
+            ].map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => setPhongCach(item.id)}
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition cursor-pointer ${
+                  phongCach === item.id
+                    ? "bg-slate-900 text-white border-slate-900 shadow-2xs"
+                    : "bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200/80"
+                }`}
+              >
+                {item.nhan}
+              </button>
+            ))}
+          </div>
+
+          {/* Tìm kiếm vị trí bất kỳ + Chọn ngôn ngữ */}
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2">
+            <div className="relative flex-1 sm:w-60">
+              <Search
+                size={14}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
               />
+              <input
+                type="text"
+                value={tuKhoa}
+                onChange={(e) => setTuKhoa(e.target.value)}
+                placeholder="Tìm vị trí ứng tuyển, ngành..."
+                className="w-full text-xs bg-slate-50 focus:bg-white border border-slate-200 focus:border-[#1a91f0] rounded-xl pl-8 pr-7 py-2 text-slate-800 focus:outline-none transition"
+              />
+              {tuKhoa && (
+                <button
+                  type="button"
+                  onClick={() => setTuKhoa("")}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+                >
+                  <X size={13} />
+                </button>
+              )}
             </div>
-            <div className="template-meta">
-              <div>
-                <h3>{template.name}</h3>
-                <p>{template.category} · Chuẩn tối ưu ATS</p>
-              </div>
-              <Button variant="small" onClick={onSelectTemplate}>
-                Dùng Mẫu Này <Icon name="arrow" size={14} />
-              </Button>
+
+            <div className="flex items-center gap-1.5 shrink-0">
+              <Globe size={14} className="text-[#1a91f0] hidden sm:block" />
+              <select
+                value={ngonNgu}
+                onChange={(e) => setNgonNgu(e.target.value as NgonNguMauCV | "tat-ca")}
+                className="text-xs font-semibold bg-slate-50 hover:bg-white border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:outline-none focus:border-[#1a91f0] cursor-pointer"
+              >
+                <option value="tat-ca">Tất cả ngôn ngữ</option>
+                <option value="vi">VI • Tiếng Việt</option>
+                <option value="en">EN • Tiếng Anh</option>
+                <option value="ja">JA • Tiếng Nhật</option>
+                <option value="zh">ZH • Tiếng Trung</option>
+              </select>
             </div>
-          </article>
-        ))}
+          </div>
+        </div>
+
+        {/* Lọc theo 4 vị trí ứng tuyển nổi bật */}
+        <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mr-1 inline-flex items-center gap-1">
+              <Briefcase size={12} className="text-emerald-600" />
+              Vị trí ứng tuyển:
+            </span>
+            <button
+              type="button"
+              onClick={() => setViTri("tat-ca")}
+              className={`px-3 py-1 rounded-lg text-xs font-semibold border transition cursor-pointer ${
+                viTri === "tat-ca"
+                  ? "bg-slate-900 text-white border-slate-900"
+                  : "bg-white hover:bg-slate-50 text-slate-600 border-slate-200"
+              }`}
+            >
+              Tất cả vị trí
+            </button>
+            {VI_TRI_NOI_BAT.map((item) => (
+              <button
+                key={item}
+                type="button"
+                onClick={() => setViTri(item)}
+                className={`px-3 py-1 rounded-lg text-xs font-semibold border transition cursor-pointer ${
+                  viTri === item
+                    ? "bg-emerald-600 text-white border-emerald-600 shadow-2xs"
+                    : "bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border-slate-200 hover:border-emerald-300"
+                }`}
+              >
+                {item}
+              </button>
+            ))}
+          </div>
+
+          <span className="text-[11px] font-semibold text-slate-400">
+            {filtered.length} mẫu phù hợp
+          </span>
+        </div>
       </div>
+
+      {filtered.length === 0 ? (
+        <div className="bg-white rounded-2xl border border-dashed border-slate-300 p-10 text-center space-y-3">
+          <p className="text-sm font-bold text-slate-700">
+            Chưa có mẫu CV nào khớp với bộ lọc hiện tại
+          </p>
+          <p className="text-xs text-slate-500">
+            Các vị trí mới sẽ tự động xuất hiện ngay khi Quản trị viên cập nhật thêm mẫu CV.
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              setPhongCach("tat-ca");
+              setViTri("tat-ca");
+              setNgonNgu("tat-ca");
+              setTuKhoa("");
+            }}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition cursor-pointer"
+          >
+            <RotateCcw size={13} />
+            <span>Xem tất cả mẫu</span>
+          </button>
+        </div>
+      ) : (
+        <div className="template-grid">
+          {filtered.map((template) => {
+            const infoLoai = NHAN_PHONG_CACH[template.loaiPhongCach];
+            const infoNN = NHAN_NGON_NGU[template.ngonNgu];
+
+            return (
+              <article className="template-card" key={template.id}>
+                <div className="template-paper-wrap relative">
+                  <span className="absolute top-3 left-3 z-10 inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-white/95 text-slate-700 border border-slate-200/90 shadow-2xs">
+                    <span className="text-[#1a91f0]">{infoNN.ma}</span>
+                    <span>{infoNN.ten}</span>
+                  </span>
+                  <span
+                    className={`absolute top-3 right-3 z-10 text-[10px] font-bold px-2 py-0.5 rounded-md border shadow-2xs ${infoLoai.badgeClass}`}
+                  >
+                    {infoLoai.ten}
+                  </span>
+
+                  {template.hinhAnhPreview ? (
+                    <img
+                      src={template.hinhAnhPreview}
+                      alt={template.ten}
+                      className="h-52 w-auto object-contain rounded shadow-sm border border-slate-200"
+                    />
+                  ) : (
+                    <MiniResume
+                      accent={template.mauChuDao}
+                      name={template.ten}
+                      role={template.viTriUngTuyen}
+                    />
+                  )}
+                </div>
+                <div className="template-meta">
+                  <div className="min-w-0">
+                    <h3 className="truncate">{template.ten}</h3>
+                    <p className="truncate">
+                      {template.viTriUngTuyen} · {template.soCot}
+                    </p>
+                  </div>
+                  <Button
+                    variant="small"
+                    onClick={() => onSelectTemplate(template)}
+                  >
+                    Dùng Mẫu Này <Icon name="arrow" size={14} />
+                  </Button>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      )}
     </section>
   );
 }
@@ -882,6 +1010,7 @@ function Footer() {
 
 export const TrangChu = ({
   onChuyenTrinhThietKe,
+  onChonMauTrucTiep,
   onMoDangNhap,
   onMoDangKy,
   daDangNhap = false,
@@ -891,6 +1020,19 @@ export const TrangChu = ({
   anHeader = false,
 }: TrangChuProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { cv, apDungMauCV, doiNgonNguCV } = useKhoLuuTruCV();
+
+  const handleChonMauTuTrangChu = (mau: MauCVItem) => {
+    if (onChonMauTrucTiep) {
+      onChonMauTrucTiep(mau);
+      return;
+    }
+    apDungMauCV(mau.mauHeThongId, true);
+    if ((cv.dinhDang.ngonNgu || "vi") !== mau.ngonNgu) {
+      doiNgonNguCV(mau.ngonNgu);
+    }
+    onChuyenTrinhThietKe();
+  };
 
   // Hiệu ứng cuộn tới đâu xuất hiện tới đó (Scroll-Triggered Reveal)
   useEffect(() => {
@@ -1101,7 +1243,7 @@ export const TrangChu = ({
         <Showcase />
 
         {/* 4. Kho mẫu CV tuyển chọn */}
-        <Templates onSelectTemplate={onChuyenTrinhThietKe} />
+        <Templates onSelectTemplate={handleChonMauTuTrangChu} />
 
         {/* 5. Tính năng Bento Grid */}
         <Features />

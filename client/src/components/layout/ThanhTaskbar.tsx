@@ -12,6 +12,7 @@ import type { NguoiDung } from './index';
 
 export type ManHinhType =
   | 'trang-chu'
+  | 'tao-cv'
   | 'quan-ly-cv'
   | 'kho-mau'
   | 'trinh-thiet-ke'
@@ -54,11 +55,11 @@ export const ThanhTaskbar: React.FC<ThanhTaskbarProps> = ({
       active: manHinhHienTai === 'trang-chu',
     },
     {
-      id: 'trinh-thiet-ke' as ManHinhType,
+      id: 'tao-cv' as ManHinhType,
       ten: 'Tạo CV Mới',
       icon: PlusCircle,
-      action: onTaoCVMoi || (() => onChuyenManHinh('trinh-thiet-ke')),
-      active: manHinhHienTai === 'trinh-thiet-ke',
+      action: onTaoCVMoi || (() => onChuyenManHinh('tao-cv')),
+      active: manHinhHienTai === 'tao-cv' || manHinhHienTai === 'trinh-thiet-ke',
     },
     {
       id: 'quan-ly-cv' as ManHinhType,
@@ -91,7 +92,7 @@ export const ThanhTaskbar: React.FC<ThanhTaskbarProps> = ({
         width: dangMoRong ? '240px' : '70px',
         transition: 'width 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
       }}
-      className="fixed left-0 top-0 h-screen bg-white border-r border-[#d9deeb] z-50 overflow-hidden shadow-xs hover:shadow-xl flex flex-col justify-between py-4 select-none"
+      className="fixed left-0 top-0 h-screen bg-white border-r border-slate-200/90 z-50 overflow-hidden shadow-xs hover:shadow-xl flex flex-col justify-between py-4 select-none print:hidden"
     >
       {/* ============================================================== */}
       {/* 1. PHẦN TRÊN: LOGO & CÁC NÚT ĐIỀU HƯỚNG                        */}
@@ -139,9 +140,10 @@ export const ThanhTaskbar: React.FC<ThanhTaskbarProps> = ({
                 {/* Icon căn giữa */}
                 <div className="w-6 h-6 flex items-center justify-center shrink-0">
                   <Icon
-                    size={20}
+                    size={19}
+                    strokeWidth={1.75}
                     className={`shrink-0 transition-colors ${
-                      dangChon ? 'text-[#1a91f0]' : 'text-[#828ba2]'
+                      dangChon ? 'text-[#1a91f0]' : 'text-slate-500'
                     }`}
                   />
                 </div>
